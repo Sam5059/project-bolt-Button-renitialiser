@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "EXPO_NO_TELEMETRY=1 expo start",
+    "dev": "EXPO_NO_TELEMETRY=1 EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0 expo start --web --port 5000 --host lan",
     "build": "expo export --platform web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit"
@@ -45,7 +45,8 @@
     "react-native-svg": "15.12.1",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "^0.21.0",
-    "react-native-webview": "13.15.0"
+    "react-native-webview": "13.15.0",
+    "serve": "^14.2.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
