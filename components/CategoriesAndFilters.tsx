@@ -13,8 +13,9 @@ import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { SlidersHorizontal, RotateCcw, Car, Hop as Home, Smartphone, Briefcase, ChevronDown, ChevronRight, Pin, PinOff, X, ListFilter as Filter } from 'lucide-react-native';
+import { SlidersHorizontal, Search, Car, Hop as Home, Smartphone, Briefcase, ChevronDown, ChevronRight, Pin, PinOff, X, ListFilter as Filter } from 'lucide-react-native';
 import { saveSearchHistory } from '@/lib/searchHistoryUtils';
+import { useSearch } from '@/contexts/SearchContext';
 
 interface CategoriesAndFiltersProps {
   onFiltersApply: (listings: any[]) => void;
@@ -61,6 +62,7 @@ export default function CategoriesAndFilters({
 }: CategoriesAndFiltersProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const { globalSearchQuery, setGlobalSearchQuery } = useSearch();
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(initialCategory);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(initialCategory || null);
@@ -110,10 +112,10 @@ export default function CategoriesAndFilters({
     }
   }, [initialCategory]);
 
-  // Détecter si searchQuery correspond à une catégorie et la sélectionner automatiquement
+  // Détecter si globalSearchQuery correspond à une catégorie et la sélectionner automatiquement
   useEffect(() => {
-    if (searchQuery && categories.length > 0 && !initialCategory && !selectedCategory) {
-      const normalizedQuery = searchQuery.toLowerCase().trim();
+    if (globalSearchQuery && categories.length > 0 && !initialCategory && !selectedCategory) {
+      const normalizedQuery = globalSearchQuery.toLowerCase().trim();
 
       // Chercher une correspondance dans les noms de catégories
       const matchedCategory = categories.find(cat => {
@@ -137,7 +139,7 @@ export default function CategoriesAndFilters({
       });
 
       if (matchedCategory) {
-        console.log('[CategoriesAndFilters] Auto-selecting category from searchQuery:', matchedCategory.name);
+        console.log('[CategoriesAndFilters] Auto-selecting category from globalSearchQuery:', matchedCategory.name);
         setSelectedCategory(matchedCategory.id);
         setExpandedCategory(matchedCategory.id);
         if (onCategorySelect) {
@@ -145,7 +147,7 @@ export default function CategoriesAndFilters({
         }
       }
     }
-  }, [searchQuery, categories, initialCategory, selectedCategory]);
+  }, [globalSearchQuery, categories, initialCategory, selectedCategory]);
 
   useEffect(() => {
     if (filters.wilaya) {
@@ -204,7 +206,7 @@ export default function CategoriesAndFilters({
   useEffect(() => {
     // Ne déclencher applyFilters que si une catégorie est sélectionnée
     // ou si des filtres sont actifs (pas au montage initial vide)
-    if (selectedCategory || Object.keys(filters).length > 0 || searchQuery) {
+    if (selectedCategory || Object.keys(filters).length > 0 || globalSearchQuery) {
       // Debounce pour éviter trop de requêtes lors de la saisie
       const timeoutId = setTimeout(() => {
         applyFilters();
@@ -212,7 +214,7 @@ export default function CategoriesAndFilters({
 
       return () => clearTimeout(timeoutId);
     }
-  }, [filters, selectedCategory, searchQuery]);
+  }, [filters, selectedCategory, globalSearchQuery]);
 
   async function loadCategories() {
     const { data } = await supabase
@@ -316,12 +318,12 @@ export default function CategoriesAndFilters({
   async function applyFilters() {
     setLoading(true);
     console.log('[applyFilters] ========================================');
-    console.log('[applyFilters] Applying filters:', { selectedCategory, filters, searchQuery });
+    console.log('[applyFilters] Applying filters:', { selectedCategory, filters, globalSearchQuery });
     console.log('[applyFilters] Active filters count:', Object.keys(filters).length);
 
     try {
       const searchParams = {
-        search_term: searchQuery || '',
+        search_term: globalSearchQuery || '',
         category_filter: selectedCategory || null,
         subcategory_filter: filters.subcategory_id || null,
         wilaya_filter: filters.wilaya || null,
@@ -489,10 +491,10 @@ export default function CategoriesAndFilters({
       onFiltersApply(filteredData);
 
       // Enregistrer dans l'historique de recherche si l'utilisateur est connecté et qu'il y a une recherche
-      if (user && searchQuery.trim()) {
+      if (user && globalSearchQuery.trim()) {
         saveSearchHistory({
           userId: user.id,
-          searchQuery: searchQuery.trim(),
+          searchQuery: globalSearchQuery.trim(),
           categoryId: selectedCategory,
           filters,
           resultsCount: filteredData.length,
@@ -1530,17 +1532,28 @@ export default function CategoriesAndFilters({
         {/* Zone de contenu scrollable avec animation */}
         {isSidebarOpen && (
           <>
-            {/* Reset Filters Button */}
-            {(selectedCategory || Object.keys(filters).length > 0) && (
-              <View style={styles.resetContainer}>
-                <TouchableOpacity onPress={resetFilters} style={styles.resetButton}>
-                  <RotateCcw size={16} color="#64748B" />
-                  <Text style={styles.resetText}>
-                    {language === 'ar' ? 'إعادة تعيين' : language === 'en' ? 'Reset' : 'Réinitialiser'}
-                  </Text>
-                </TouchableOpacity>
+            {/* Search Input */}
+            <View style={styles.searchContainer}>
+              <View style={styles.searchInputWrapper}>
+                <Search size={18} color="#64748B" style={styles.searchInputIcon} />
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder={language === 'ar' ? 'ابحث...' : language === 'en' ? 'Search...' : 'Rechercher...'}
+                  placeholderTextColor="#94A3B8"
+                  value={globalSearchQuery}
+                  onChangeText={setGlobalSearchQuery}
+                  returnKeyType="search"
+                />
+                {globalSearchQuery.length > 0 && (
+                  <TouchableOpacity
+                    onPress={() => setGlobalSearchQuery('')}
+                    style={styles.clearSearchIconButton}
+                  >
+                    <X size={16} color="#94A3B8" />
+                  </TouchableOpacity>
+                )}
               </View>
-            )}
+            </View>
 
             {/* Categories List - Scrollable */}
             <ScrollView
@@ -1795,28 +1808,35 @@ const styles = StyleSheet.create({
     color: '#0F172A',
     letterSpacing: 0.3,
   },
-  resetContainer: {
+  searchContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
   },
-  resetButton: {
+  searchInputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#FEE2E2',
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
-  resetText: {
+  searchInputIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
     fontSize: 14,
-    fontWeight: '600',
-    color: '#DC2626',
+    color: '#0F172A',
+    paddingVertical: 4,
+  },
+  clearSearchIconButton: {
+    padding: 4,
+    marginLeft: 4,
   },
   scrollView: {
     flex: 1,
