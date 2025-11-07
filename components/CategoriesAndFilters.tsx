@@ -710,6 +710,32 @@ export default function CategoriesAndFilters({
     );
   };
 
+  const renderListingTypeFilter = () => (
+    <View style={styles.filterGroup}>
+      <Text style={styles.filterLabel}>
+        {language === 'ar' ? 'نوع الإعلان' : language === 'en' ? 'Listing Type' : 'Type d\'annonce'}
+      </Text>
+      <View style={styles.chipContainer}>
+        <TouchableOpacity
+          style={[styles.chip, filters.listing_type === 'offre' && styles.chipActive]}
+          onPress={() => updateFilter('listing_type', filters.listing_type === 'offre' ? '' : 'offre')}
+        >
+          <Text style={[styles.chipText, filters.listing_type === 'offre' && styles.chipTextActive]}>
+            {language === 'ar' ? 'عروض' : language === 'en' ? 'Offers' : 'Offres'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.chip, filters.listing_type === 'je_cherche' && styles.chipActive]}
+          onPress={() => updateFilter('listing_type', filters.listing_type === 'je_cherche' ? '' : 'je_cherche')}
+        >
+          <Text style={[styles.chipText, filters.listing_type === 'je_cherche' && styles.chipTextActive]}>
+            {language === 'ar' ? 'طلبات' : language === 'en' ? 'Requests' : 'Demandes'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   const renderLocationFilters = () => (
     <>
       {/* Wilaya */}
@@ -812,6 +838,9 @@ export default function CategoriesAndFilters({
 
   const renderVehicleFilters = () => (
     <View style={styles.filtersContainer}>
+      {/* Type d'annonce */}
+      {renderListingTypeFilter()}
+
       {/* Sous-catégorie */}
       {renderSubcategoryFilter()}
 
@@ -1009,6 +1038,9 @@ export default function CategoriesAndFilters({
 
   const renderRealEstateFilters = () => (
     <View style={styles.filtersContainer}>
+      {/* Type d'annonce */}
+      {renderListingTypeFilter()}
+
       {/* Sous-catégorie */}
       {renderSubcategoryFilter()}
 
@@ -1097,6 +1129,9 @@ export default function CategoriesAndFilters({
 
   const renderElectronicsFilters = () => (
     <View style={styles.filtersContainer}>
+      {/* Type d'annonce */}
+      {renderListingTypeFilter()}
+
       {/* Sous-catégorie */}
       {renderSubcategoryFilter()}
 
@@ -1220,6 +1255,9 @@ export default function CategoriesAndFilters({
 
   const renderServiceFilters = () => (
     <View style={styles.filtersContainer}>
+      {/* Type d'annonce */}
+      {renderListingTypeFilter()}
+
       {/* Sous-catégorie */}
       {renderSubcategoryFilter()}
 
@@ -1254,6 +1292,9 @@ export default function CategoriesAndFilters({
 
   const renderEmploymentFilters = () => (
     <View style={styles.filtersContainer}>
+      {/* Type d'annonce */}
+      {renderListingTypeFilter()}
+
       {/* Sous-catégorie */}
       {renderSubcategoryFilter()}
 
@@ -1393,6 +1434,9 @@ export default function CategoriesAndFilters({
 
   const renderGenericFilters = () => (
     <View style={styles.filtersContainer}>
+      {/* Type d'annonce */}
+      {renderListingTypeFilter()}
+
       {/* Sous-catégorie */}
       {renderSubcategoryFilter()}
 
