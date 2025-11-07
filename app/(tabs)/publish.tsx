@@ -2805,6 +2805,116 @@ export default function PublishScreen() {
             </>
           )}
 
+          {/* ANIMAUX - Chiens, chats, oiseaux, etc. */}
+          {categories.find(c => c.id === parentCategoryId)?.slug === 'animaux' && (
+            <>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>🐾 Informations sur l'animal</Text>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Âge
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 2 ans, 6 mois"
+                  value={categoryAttributes.age}
+                  onChangeText={(value) => handleAttributeChange('age', value)}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Race
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: Berger Allemand, Persan, Canari"
+                  value={categoryAttributes.breed}
+                  onChangeText={(value) => handleAttributeChange('breed', value)}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Sexe
+                </Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={categoryAttributes.gender}
+                    onValueChange={(value) => handleAttributeChange('gender', value)}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Sélectionner" value="" />
+                    <Picker.Item label="Mâle" value="male" />
+                    <Picker.Item label="Femelle" value="female" />
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>💉 Santé & Soins</Text>
+              </View>
+
+              <View style={styles.checkboxGrid}>
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('is_vaccinated', !categoryAttributes.is_vaccinated)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.is_vaccinated && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.is_vaccinated && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Vacciné</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('is_sterilized', !categoryAttributes.is_sterilized)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.is_sterilized && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.is_sterilized && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Stérilisé</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_pedigree', !categoryAttributes.has_pedigree)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_pedigree && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_pedigree && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Pedigree</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('is_microchipped', !categoryAttributes.is_microchipped)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.is_microchipped && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.is_microchipped && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Pucé</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  État de santé
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: Bonne santé, suivi vétérinaire régulier"
+                  value={categoryAttributes.health_status}
+                  onChangeText={(value) => handleAttributeChange('health_status', value)}
+                  multiline
+                  numberOfLines={2}
+                />
+              </View>
+            </>
+          )}
+
           {/* Prix: Affiché seulement pour vente et location, PAS pour emploi et services, et PAS si gratuit */}
           {getFormType() !== 'job' && getFormType() !== 'service' && offerType !== 'free' && (
             <>
