@@ -423,9 +423,28 @@ export default function PublishScreen() {
   };
 
   const loadWilayas = async () => {
-    const { data } = await supabase.from('wilayas').select('*').order('id');
+    const { data, error } = await supabase
+      .from('wilayas')
+      .select('id, code, name_fr, name_ar, name_en')
+      .order('code', { ascending: true });
 
-    if (data) setWilayas(data);
+    if (error) {
+      console.error('Erreur chargement wilayas:', error);
+      Alert.alert(
+        language === 'ar' ? 'خطأ' : language === 'en' ? 'Error' : 'Erreur',
+        language === 'ar' 
+          ? 'فشل تحميل الولايات. يرجى المحاولة مرة أخرى.'
+          : language === 'en'
+          ? 'Failed to load wilayas. Please try again.'
+          : 'Impossible de charger les wilayas. Veuillez réessayer.'
+      );
+      return;
+    }
+
+    if (data) {
+      console.log('Wilayas chargées:', data.length);
+      setWilayas(data);
+    }
   };
 
   const loadSubcategories = async (parentId: string) => {
@@ -540,9 +559,9 @@ export default function PublishScreen() {
   };
 
   const getWilayaName = (wilaya: Wilaya) => {
-    if (language === 'ar') return wilaya.name_ar || wilaya.name;
-    if (language === 'en') return wilaya.name_en || wilaya.name;
-    return wilaya.name;
+    if (language === 'ar') return wilaya.name_ar || wilaya.name_fr;
+    if (language === 'en') return wilaya.name_en || wilaya.name_fr;
+    return wilaya.name_fr;
   };
 
   const handleAddImage = async () => {
@@ -2411,7 +2430,7 @@ export default function PublishScreen() {
               >
                 <Picker.Item label="Dans quelle wilaya ?" value="" color="#94A3B8" />
                 {wilayas.map((w) => (
-                  <Picker.Item key={w.id} label={`${w.code} - ${getWilayaName(w)}`} value={w.name} />
+                  <Picker.Item key={w.id} label={`${w.code} - ${getWilayaName(w)}`} value={w.name_fr} />
                 ))}
               </Picker>
             </View>
@@ -2422,7 +2441,7 @@ export default function PublishScreen() {
               label="Commune *"
               placeholder="Dans quelle commune ?"
               value={commune}
-              wilayaId={wilayas.find(w => w.name === wilaya)?.id.toString() || null}
+              wilayaId={wilayas.find(w => w.name_fr === wilaya)?.id.toString() || null}
               wilayaName={wilaya || null}
               onSelect={(value) => {
                 setCommune(value);

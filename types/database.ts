@@ -137,9 +137,9 @@ export interface Message {
 export interface Wilaya {
   id: number;
   code: string;
-  name: string;
+  name_fr: string;
   name_ar: string;
-  name_en?: string;
+  name_en: string;
 }
 
 export interface Brand {

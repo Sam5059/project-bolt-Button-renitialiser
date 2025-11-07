@@ -1,0 +1,137 @@
+Objectif
+Corriger le système de sélection des wilayas et communes dans le formulaire de publication d'annonces. Actuellement, les wilayas s'affichent comme "undefined" et les communes ne se filtrent pas selon la wilaya sélectionnée.
+📋 Contexte de l'application
+
+App: Marketplace algérienne (OuechDZ/BuyNgo)
+Stack: React Native/Expo + Supabase
+Données: 58 wilayas algériennes + communes associées
+
+🔴 Problèmes identifiés
+
+Wilayas undefined dans les dropdowns de sélection
+Communes non filtrées selon la wilaya choisie
+Perte de synchronisation entre les deux champs
+
+📊 Structure attendue des données
+typescript// Table: wilayas
+{
+  id: number,
+  code: string, // "01", "02", etc.
+  name_fr: string,
+  name_ar: string,
+  name_en: string
+}
+
+// Table: communes
+{
+  id: number,
+  wilaya_id: number, // FK vers wilayas
+  name_fr: string,
+  name_ar: string,
+  name_en: string
+}
+🛠️ Corrections à apporter
+1. Vérifier la requête Supabase
+typescript// ❌ Problème probable
+const { data: wilayas } = await supabase.from('wilayas').select('*');
+
+// ✅ Solution
+const { data: wilayas, error } = await supabase
+  .from('wilayas')
+  .select('id, code, name_fr, name_ar, name_en')
+  .order('code', { ascending: true });
+
+if (error) console.error('Erreur wilayas:', error);
+2. Composant de sélection Wilaya
+Créer/corriger le composant avec :
+
+Chargement des wilayas au montage
+Gestion des états (loading, error, data)
+Affichage correct du label (name_fr ou name_ar selon la langue)
+Réinitialisation de la commune quand la wilaya change
+
+3. Composant de sélection Commune
+Créer/corriger avec :
+
+Filtre dynamique basé sur wilaya_id
+Désactivation si aucune wilaya sélectionnée
+Rechargement automatique lors du changement de wilaya
+
+💻 Code à implémenter
+Hook personnalisé pour la gestion
+typescriptconst useLocationData = () => {
+  const [wilayas, setWilayas] = useState([]);
+  const [communes, setCommunes] = useState([]);
+  const [selectedWilaya, setSelectedWilaya] = useState(null);
+  const [selectedCommune, setSelectedCommune] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Charger les wilayas
+  useEffect(() => {
+    loadWilayas();
+  }, []);
+
+  // Charger les communes quand la wilaya change
+  useEffect(() => {
+    if (selectedWilaya) {
+      loadCommunesByWilaya(selectedWilaya);
+      setSelectedCommune(null); // Reset commune
+    }
+  }, [selectedWilaya]);
+
+  const loadWilayas = async () => {
+    // Implémentation
+  };
+
+  const loadCommunesByWilaya = async (wilayaId) => {
+    // Implémentation
+  };
+
+  return {
+    wilayas,
+    communes,
+    selectedWilaya,
+    selectedCommune,
+    setSelectedWilaya,
+    setSelectedCommune,
+    loading
+  };
+};
+Composant Dropdown
+typescript<Dropdown
+  data={wilayas}
+  labelField="name_fr" // ou name_ar selon locale
+  valueField="id"
+  placeholder="Dans quelle wilaya ?"
+  value={selectedWilaya}
+  onChange={(item) => setSelectedWilaya(item.id)}
+/>
+
+<Dropdown
+  data={communes}
+  labelField="name_fr"
+  valueField="id"
+  placeholder="Dans quelle commune ?"
+  value={selectedCommune}
+  onChange={(item) => setSelectedCommune(item.id)}
+  disable={!selectedWilaya}
+/>
+✅ Points de validation
+
+ Les wilayas s'affichent avec leur nom correct
+ Les wilayas sont triées par code (01 à 58)
+ La sélection d'une wilaya charge ses communes
+ Le champ commune se réinitialise au changement de wilaya
+ Le champ commune est désactivé si pas de wilaya
+ Gestion des erreurs affichée à l'utilisateur
+ Support multilingue (FR/AR/EN)
+
+🔍 Débogage suggéré
+Ajouter des logs à ces points :
+
+Après la requête wilayas: console.log('Wilayas chargées:', wilayas?.length)
+Après la requête communes: console.log('Communes pour wilaya', wilayaId, ':', communes?.length)
+Au changement de wilaya: console.log('Wilaya sélectionnée:', selectedWilaya)
+
+
+Note: Vérifie également que les RLS (Row Level Security) policies dans Supabase autorisent la lecture publique des tables wilayas et communes.RéessayerClaude peut faire des erreurs. Assurez-vous de vérifier ses réponses. Sonnet 4.5
