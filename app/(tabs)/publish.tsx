@@ -1100,15 +1100,15 @@ export default function PublishScreen() {
             {profileLoading ? (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="small" color="#2563EB" />
-                <Text style={styles.loadingText}>{t('common.loading')}</Text>
+                <Text style={[styles.loadingText, isRTL && styles.textRTL]}>{t('common.loading')}</Text>
               </View>
             ) : userProfile?.has_active_pro_package === true ? (
               <View style={styles.proBadgeContainer}>
                 <View style={styles.proBadge}>
                   <Text style={styles.proBadgeIcon}>💼</Text>
                   <View style={styles.proBadgeTextContainer}>
-                    <Text style={styles.proBadgeTitle}>Compte PRO Actif</Text>
-                    <Text style={styles.proBadgeSubtitle}>
+                    <Text style={[styles.proBadgeTitle, isRTL && styles.textRTL]}>Compte PRO Actif</Text>
+                    <Text style={[styles.proBadgeSubtitle, isRTL && styles.textRTL]}>
                       Expire le {userProfile.pro_package_expires_at ? new Date(userProfile.pro_package_expires_at).toLocaleDateString('fr-FR') : 'N/A'}
                     </Text>
                   </View>
@@ -1117,7 +1117,7 @@ export default function PublishScreen() {
                   style={styles.upgradeButton}
                   onPress={() => router.push('/pro/packages')}
                 >
-                  <Text style={styles.upgradeButtonText}>⭐ Renouveler</Text>
+                  <Text style={[styles.upgradeButtonText, isRTL && styles.textRTL]}>⭐ Renouveler</Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -1131,8 +1131,8 @@ export default function PublishScreen() {
                     <Text style={styles.userTypeIconText}>👤</Text>
                   </View>
                   <View style={styles.userTypeInfo}>
-                    <Text style={styles.userTypeLabel}>Type de compte</Text>
-                    <Text style={styles.userTypeName}>Particulier</Text>
+                    <Text style={[styles.userTypeLabel, isRTL && styles.textRTL]}>Type de compte</Text>
+                    <Text style={[styles.userTypeName, isRTL && styles.textRTL]}>Particulier</Text>
                   </View>
                 </TouchableOpacity>
 
@@ -1266,13 +1266,15 @@ export default function PublishScreen() {
                       <View style={styles.typeTextContainer}>
                         <Text style={[
                           styles.typeButtonText,
-                          listingType === type && styles.typeButtonTextActive
+                          listingType === type && styles.typeButtonTextActive,
+                          isRTL && styles.textRTL
                         ]}>
                           {type === 'offre' ? 'Offres' : 'Demandes'}
                         </Text>
                         <Text style={[
                           styles.typeButtonDescription,
-                          listingType === type && styles.typeButtonDescriptionActive
+                          listingType === type && styles.typeButtonDescriptionActive,
+                          isRTL && styles.textRTL
                         ]}>
                           {type === 'offre' ? 'Proposer un produit/service' : 'Rechercher un produit/service'}
                         </Text>
@@ -1306,6 +1308,7 @@ export default function PublishScreen() {
                         styles.offerTypeLabel,
                         offerType === 'sale' && styles.offerTypeLabelActive,
                         offerType === 'sale' && { color: '#10B981' },
+                        isRTL && styles.textRTL
                       ]}>
                         À vendre
                       </Text>
@@ -1323,6 +1326,7 @@ export default function PublishScreen() {
                         styles.offerTypeLabel,
                         offerType === 'free' && styles.offerTypeLabelActive,
                         offerType === 'free' && { color: '#8B5CF6' },
+                        isRTL && styles.textRTL
                       ]}>
                         À donner
                       </Text>
@@ -1340,6 +1344,7 @@ export default function PublishScreen() {
                         styles.offerTypeLabel,
                         offerType === 'exchange' && styles.offerTypeLabelActive,
                         offerType === 'exchange' && { color: '#F59E0B' },
+                        isRTL && styles.textRTL
                       ]}>
                         À échanger
                       </Text>
@@ -1357,6 +1362,7 @@ export default function PublishScreen() {
                         styles.offerTypeLabel,
                         offerType === 'rent' && styles.offerTypeLabelActive,
                         offerType === 'rent' && { color: '#3B82F6' },
+                        isRTL && styles.textRTL
                       ]}>
                         À louer
                       </Text>
@@ -1377,6 +1383,7 @@ export default function PublishScreen() {
                         styles.offerTypeLabel,
                         offerType === 'sale' && styles.offerTypeLabelActive,
                         offerType === 'sale' && { color: '#2563EB' },
+                        isRTL && styles.textRTL
                       ]}>
                         J'achète
                       </Text>
@@ -1394,6 +1401,7 @@ export default function PublishScreen() {
                         styles.offerTypeLabel,
                         offerType === 'free' && styles.offerTypeLabelActive,
                         offerType === 'free' && { color: '#8B5CF6' },
+                        isRTL && styles.textRTL
                       ]}>
                         Je souhaite recevoir
                       </Text>
@@ -1411,6 +1419,7 @@ export default function PublishScreen() {
                         styles.offerTypeLabel,
                         offerType === 'exchange' && styles.offerTypeLabelActive,
                         offerType === 'exchange' && { color: '#F59E0B' },
+                        isRTL && styles.textRTL
                       ]}>
                         J'échange
                       </Text>
@@ -1428,6 +1437,7 @@ export default function PublishScreen() {
                         styles.offerTypeLabel,
                         offerType === 'rent' && styles.offerTypeLabelActive,
                         offerType === 'rent' && { color: '#3B82F6' },
+                        isRTL && styles.textRTL
                       ]}>
                         Je loue
                       </Text>
@@ -1438,7 +1448,7 @@ export default function PublishScreen() {
               {offerType === 'free' && (
                 <View style={styles.offerTypeNotice}>
                   <Text style={styles.offerTypeNoticeIcon}>ℹ️</Text>
-                  <Text style={styles.offerTypeNoticeText}>
+                  <Text style={[styles.offerTypeNoticeText, isRTL && styles.textRTL]}>
                     {listingType === 'offre'
                       ? 'Le prix sera automatiquement défini comme gratuit'
                       : 'Vous recherchez quelque chose gratuitement'}
