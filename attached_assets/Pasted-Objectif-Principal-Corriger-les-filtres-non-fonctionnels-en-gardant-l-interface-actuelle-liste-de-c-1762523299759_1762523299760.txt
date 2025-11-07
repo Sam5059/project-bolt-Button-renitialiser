@@ -1,0 +1,67 @@
+Objectif Principal
+Corriger les filtres non fonctionnels en gardant l'interface actuelle (liste de catégories cliquables) et implémenter un système où chaque catégorie affiche ses propres champs de filtrage pour trouver les annonces précisément.🔴 Problèmes IdentifiésProblème Principal
+Les filtres à l'intérieur de chaque catégorie ne fonctionnent pas pour afficher les annonces correspondantes. Les champs sont présents mais n'appliquent pas réellement les filtres.Problèmes Secondaires
+
+Désynchronisation entre formulaire de publication et filtres de recherche
+Structure des données incohérente
+Requêtes de recherche non configurées
+Champs de filtres non adaptés à chaque catégorie
+📐 Architecture de l'InterfaceStructure Actuelle à ConserverPanneau de Filtres Principal:
+
+En-tête avec titre "Filtres"
+Barre de recherche globale (recherche texte dans titre/description)
+Liste scrollable de catégories:
+
+Stores PRO
+Véhicules
+Immobilier
+Électronique
+Location Immobilière
+Location Vacances
+Location Véhicules
+Location Équipements
+Mode & Beauté
+Maison & Jardin
+Emploi
+(Autres catégories)
+
+
+Comportement à ImplémenterÉtat Initial:
+
+Toutes les catégories affichées en liste
+Aucune catégorie sélectionnée
+Chaque ligne cliquable avec chevron ">"
+Couleur de texte: gris/noir standard
+Au Clic sur une Catégorie:
+
+La catégorie cliquée se surligne (background coloré, ex: bleu clair/vert clair)
+La ligne s'expanse ou une section s'ouvre en dessous
+Les filtres spécifiques à cette catégorie apparaissent
+Les autres catégories restent visibles mais non surlignées
+Un badge de compteur peut apparaître sur la catégorie (ex: "12 filtres actifs")
+Deux Options d'Implémentation:Option 1: Expansion Inline (Recommandé)
+☐ Stores PRO                           >
+☑ Véhicules                            ∨
+    [Filtres spécifiques véhicules apparaissent ici]
+    - Type de véhicule
+    - Marque
+    - Année
+    - Prix
+    [Bouton: Appliquer les filtres]
+☐ Immobilier                          >
+☐ Électronique                        >Option 2: Panneau Latéral
+[Liste catégories]      [Panneau filtres détaillés]
+☐ Stores PRO            
+☑ Véhicules        →    [Filtres Véhicules]
+☐ Immobilier           - Type: [dropdown]
+☐ Électronique         - Marque: [dropdown]
+                       - Année: [slider]
+                       [Bouton: Appliquer]🏗️ Structure des Filtres par CatégorieCatégorie: Stores PRODescription:
+Annonces de comptes professionnels/boutiques.Filtres Disponibles:
+
+Type d'activité: Commerce, Service, Restaurant, Artisan, Prestataire
+Secteur d'activité: Multiselect (Alimentaire, Mode, Électronique, Bâtiment, Beauté, etc.)
+Services offerts: Multiselect (Livraison, Installation, SAV, Garantie)
+Horaires: Ouvert 7j/7, Ouvert weekend, Horaires flexibles
+Localisation: Wilaya + Commune
+Tri: Plus récents, Mieux notés, Plus populaires

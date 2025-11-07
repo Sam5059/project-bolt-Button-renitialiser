@@ -1,0 +1,575 @@
+Catégorie: Véhicules (Vente)
+Filtres Principaux:
+
+Type de véhicule: Voiture, Moto, Scooter, Quad, Camion, Bus, Autre
+État: Neuf, Occasion, Importé, Accidenté
+Marque: Liste déroulante avec recherche (Renault, Peugeot, Toyota, Hyundai, etc.)
+Modèle: Dépend de la marque sélectionnée
+Année: Plage avec slider (1980-2025)
+Carburant: Essence, Diesel, Hybride, Électrique, GPL
+Boîte de vitesse: Manuelle, Automatique, Séquentielle
+Kilométrage: Plage min-max (0-500,000 km)
+Prix: Plage min-max en DZD
+
+Filtres Secondaires:
+
+Nombre de portes: 2, 3, 4, 5
+Nombre de places: 2, 4, 5, 7, 9+
+Couleur: Noir, Blanc, Gris, Rouge, Bleu, etc.
+Options: Multiselect (Climatisation, GPS, Caméra recul, Toit ouvrant, Sièges cuir, etc.)
+Papiers: En règle, À régulariser
+Échange possible: Oui/Non
+
+Tri:
+
+Plus récents
+Prix croissant/décroissant
+Kilométrage croissant/décroissant
+Année décroissante (plus récents)
+Plus vues
+
+
+Catégorie: Immobilier (Vente)
+Filtres Principaux:
+
+Type de bien: Appartement, Villa, Maison, Terrain, Local commercial, Bureau, Garage, Ferme
+Nombre de pièces: Studio, F2, F3, F4, F5+
+Surface: Plage min-max en m²
+Prix: Plage min-max en DZD
+
+Filtres Secondaires:
+
+Nombre de chambres: 1, 2, 3, 4+
+Nombre de salles de bain: 1, 2, 3+
+Étage: RDC, 1er, 2ème, 3ème, 4ème+
+Âge du bien: Neuf, < 5 ans, 5-10 ans, 10-20 ans, 20+ ans
+État: Neuf, Excellent, Bon, À rénover, En construction
+Équipements: Multiselect (Ascenseur, Parking, Jardin, Piscine, Balcon, Terrasse, Cave, Gardiennage, Interphone)
+Chauffage: Individuel, Central, Climatisation
+Orientation: Nord, Sud, Est, Ouest
+Vue: Mer, Montagne, Ville, Dégagée
+Titre foncier: Acte notarié, Livret foncier, Attestation
+
+Tri:
+
+Plus récents
+Prix croissant/décroissant
+Surface croissante/décroissante
+Plus vues
+
+
+Catégorie: Électronique
+Sous-catégories à afficher d'abord:
+
+Téléphones & Tablettes
+Ordinateurs & Laptops
+TV & Audio & Photo
+Consoles & Jeux vidéo
+Accessoires & Pièces
+
+Sous-catégorie: Téléphones & Tablettes
+Filtres:
+
+Type: Smartphone, Téléphone classique, Tablette
+Marque: Samsung, Apple, Xiaomi, Huawei, Oppo, Realme, etc.
+Modèle: Dépend de la marque
+État: Neuf scellé, Neuf déballé, Occasion, Reconditionné
+Mémoire interne: 16GB, 32GB, 64GB, 128GB, 256GB, 512GB, 1TB
+RAM: 2GB, 3GB, 4GB, 6GB, 8GB, 12GB, 16GB
+Taille écran: Plage 4"-7"
+Prix: Plage min-max
+
+Filtres Avancés:
+
+Système: Android, iOS, Windows, Autre
+Nombre de SIM: Simple, Double
+Réseau: 3G, 4G, 5G
+Caméra principale: 8MP, 12MP, 48MP, 64MP, 108MP+
+Batterie: < 3000mAh, 3000-4000, 4000-5000, 5000+
+Garantie: Sous garantie, Sans garantie
+Accessoires inclus: Chargeur, Écouteurs, Boîte, Protection
+
+Sous-catégorie: Ordinateurs & Laptops
+Filtres:
+
+Type: Laptop, Desktop, All-in-One, Mini PC
+Marque: Dell, HP, Lenovo, Asus, Acer, Apple, MSI, etc.
+Processeur: Intel i3, i5, i7, i9 / AMD Ryzen 3, 5, 7, 9
+Génération processeur: 8ème, 9ème, 10ème, 11ème, 12ème, 13ème
+RAM: 4GB, 8GB, 16GB, 32GB, 64GB
+Stockage type: HDD, SSD, Hybride
+Capacité stockage: 128GB, 256GB, 512GB, 1TB, 2TB+
+Carte graphique: Intégrée, Dédiée (NVIDIA, AMD)
+Taille écran: 11", 13", 14", 15.6", 17", 21", 24", 27"
+État: Neuf, Occasion
+Prix: Plage min-max
+
+Tri:
+
+Plus récents
+Prix croissant/décroissant
+Meilleur état
+RAM/Stockage décroissant
+
+
+Catégorie: Location Immobilière
+Filtres Principaux:
+
+Type de location: Appartement, Maison, Villa, Studio, Chambre, Bureau, Local commercial
+Type de bail: Meublé, Non meublé, Semi-meublé
+Durée: Longue durée (année), Courte durée (mois), Saisonnière
+Loyer mensuel: Plage min-max en DZD
+Nombre de pièces: Studio, F2, F3, F4, F5+
+Surface: Plage min-max en m²
+
+Filtres Secondaires:
+
+Charges incluses: Eau, Électricité, Gaz, Internet, Gardiennage
+Étage: RDC, 1er, 2ème+
+Équipements: Multiselect (Ascenseur, Parking, Balcon, Jardin, Piscine)
+Animaux acceptés: Oui/Non
+Cuisine équipée: Oui/Non
+Climatisation: Oui/Non
+Disponibilité immédiate: Oui/Non
+Date disponibilité: Calendrier
+
+Tri:
+
+Plus récents
+Loyer croissant/décroissant
+Surface décroissante
+
+
+Catégorie: Location Vacances
+Filtres Principaux:
+
+Type: Appartement, Villa, Bungalow, Chalet, Chambre d'hôte, Riad
+Capacité: Nombre de personnes (1-2, 3-4, 5-6, 7-10, 10+)
+Nombre de chambres: 1, 2, 3, 4+
+Localisation type: Bord de mer, Montagne, Ville, Campagne, Désert
+Prix par nuit: Plage min-max en DZD
+
+Filtres Secondaires:
+
+Équipements: Multiselect (Piscine, WiFi, Climatisation, Parking, Cuisine équipée, BBQ, Jardin, Vue mer, Terrasse)
+Services: Ménage inclus, Linge fourni, Conciergerie
+Check-in flexible: Oui/Non
+Annulation gratuite: Oui/Non
+Période disponible: Calendrier ou sélection période
+
+Tri:
+
+Plus récents
+Prix croissant/décroissant
+Meilleure capacité
+Mieux équipés
+
+
+Catégorie: Location Véhicules
+Filtres Principaux:
+
+Type: Voiture, Moto, Scooter, Vélo, Camping-car, Utilitaire, Bus
+Marque: Liste selon type
+Modèle: Dépend de la marque
+Transmission: Manuelle, Automatique
+Carburant: Essence, Diesel, Hybride, Électrique
+Nombre de places: 2, 4, 5, 7, 9+
+Année: Plage min-max
+Prix par jour: Plage min-max en DZD
+
+Filtres Secondaires:
+
+Durée minimum: Jour, Week-end, Semaine, Mois
+Assurance: Basique, Tous risques
+Kilométrage: Limité, Illimité
+Avec chauffeur: Oui/Non
+Livraison possible: Oui/Non
+Équipements: GPS, Climatisation, Sièges enfant, Porte-bagages
+Disponibilité: Calendrier
+
+Tri:
+
+Plus récents
+Prix croissant/décroissant
+Véhicules récents (année)
+Plus de places
+
+
+Catégorie: Location Équipements
+Sous-catégories:
+
+Outils de construction
+Matériel événementiel
+Électroménager
+Équipement sportif
+Matériel de jardinage
+Équipement professionnel
+
+Filtres Génériques:
+
+Type d'équipement: Spécifique à la sous-catégorie
+État: Neuf, Bon, Moyen
+Prix par jour: Plage min-max
+Durée minimum: Heure, Jour, Semaine, Mois
+Livraison: Oui/Non
+Installation: Oui/Non
+Caution requise: Oui/Non (montant)
+
+Tri:
+
+Plus récents
+Prix croissant/décroissant
+Meilleur état
+
+
+Catégorie: Mode & Beauté
+Sous-catégories:
+
+Vêtements Homme
+Vêtements Femme
+Vêtements Enfant
+Chaussures
+Sacs & Accessoires
+Bijoux & Montres
+Produits de beauté
+
+Filtres (exemple Vêtements):
+
+Type: Chemise, Pantalon, Veste, Robe, T-shirt, etc.
+Taille: XS, S, M, L, XL, XXL, XXXL
+Couleur: Multiselect
+Marque: Liste
+État: Neuf avec étiquette, Neuf sans étiquette, Occasion
+Matière: Coton, Lin, Polyester, Laine, Cuir, etc.
+Saison: Été, Hiver, Mi-saison, Toutes saisons
+Prix: Plage min-max
+
+
+Catégorie: Maison & Jardin
+Sous-catégories:
+
+Meubles
+Décoration
+Électroménager
+Bricolage & Outils
+Jardinage & Extérieur
+Literie
+
+Filtres (exemple Meubles):
+
+Type: Canapé, Table, Chaise, Lit, Armoire, Bureau, etc.
+Pièce: Salon, Chambre, Cuisine, Bureau, Salle à manger
+Matériau: Bois, Métal, Plastique, Tissu, Cuir, Verre
+Couleur: Liste
+État: Neuf, Très bon, Bon, Moyen
+Dimensions: Longueur x Largeur x Hauteur (champs optionnels)
+Livraison/Montage: Oui/Non
+Prix: Plage min-max
+
+
+Catégorie: Emploi
+Filtres:
+
+Type de poste: CDI, CDD, Stage, Freelance, Intérim, Saisonnier
+Secteur d'activité: Informatique, Commerce, Santé, Éducation, BTP, etc.
+Niveau d'études: Sans diplôme, Bac, Licence, Master, Doctorat
+Expérience requise: Débutant, 1-3 ans, 3-5 ans, 5-10 ans, 10+ ans
+Salaire: Plage min-max en DZD/mois
+Télétravail: Oui, Non, Hybride
+Horaires: Temps plein, Temps partiel, Flexible
+Date de début: Immédiat, Dans le mois, À convenir
+
+
+🔄 Implémentation du Système
+Étape 1: Gestion de l'État de Catégorie
+État à Gérer:
+
+Catégorie sélectionnée (ID ou null)
+Sous-catégorie sélectionnée (si applicable)
+Filtres actifs pour cette catégorie (objet JSON)
+Résultats de recherche
+Tri actif
+
+Comportement:
+
+Quand on clique sur une catégorie → Stocker l'ID, charger son template de filtres
+Quand on change de catégorie → Réinitialiser tous les filtres
+Quand on applique des filtres → Exécuter la recherche avec ces filtres
+
+Étape 2: Chargement Dynamique des Filtres
+Configuration par Catégorie:
+Créer un fichier de configuration définissant pour chaque catégorie:
+
+Liste des filtres disponibles
+Type de chaque filtre (select, multiselect, range, toggle, date, text)
+Options pour les listes déroulantes
+Labels multilingues
+Valeurs par défaut
+Validations
+
+Rendu Dynamique:
+Quand une catégorie est sélectionnée:
+
+Récupérer sa configuration de filtres
+Générer dynamiquement les composants de filtres
+Afficher dans le panneau expansé
+
+Étape 3: Synchronisation Formulaire-Filtre
+Règle d'Or:
+Chaque champ dans le formulaire de publication = Un filtre disponible dans la recherche
+Implémentation:
+
+Utiliser la même configuration pour générer formulaire ET filtres
+Stocker les données dans la même structure JSON
+Valider avec le même schéma
+
+Exemple de Structure:
+categories_config = {
+  vehicules: {
+    fields: {
+      type: {
+        component: 'select',
+        options: ['voiture', 'moto', 'scooter'],
+        required: true,
+        in_form: true,
+        in_filter: true,
+        filter_type: 'multiselect'
+      },
+      marque: {
+        component: 'select_search',
+        options_source: 'brands_db',
+        required: true,
+        in_form: true,
+        in_filter: true,
+        filter_type: 'multiselect'
+      },
+      prix: {
+        component: 'number',
+        required: true,
+        in_form: true,
+        in_filter: true,
+        filter_type: 'range'
+      }
+    }
+  }
+}
+Étape 4: Construction de la Requête de Recherche
+Logique de Filtrage:
+Base:
+Sélectionner toutes les annonces de la catégorie active.
+Ajout des Filtres:
+Pour chaque filtre actif, ajouter une condition:
+
+Select simple: Valeur exacte
+Multiselect: Valeur dans la liste (OR)
+Range: Entre min et max (AND)
+Toggle: Valeur booléenne
+Checkbox multiple (équipements): Contient TOUTES les valeurs (AND)
+
+Exemple de Requête:
+Catégorie: Véhicules
+Filtres actifs:
+- Type: [voiture, moto]
+- Marque: [Renault, Peugeot]
+- Année: 2015-2023
+- Prix: 500000-2000000
+- Carburant: [diesel]
+- Boîte: [automatique]
+
+Requête Supabase:
+SELECT * FROM listings
+WHERE category_id = 'vehicules'
+AND filters->>'type' IN ('voiture', 'moto')
+AND filters->>'marque' IN ('renault', 'peugeot')
+AND (filters->>'annee')::int >= 2015
+AND (filters->>'annee')::int <= 2023
+AND price >= 500000
+AND price <= 2000000
+AND filters->>'carburant' = 'diesel'
+AND filters->>'boite' = 'automatique'
+ORDER BY created_at DESC
+Étape 5: Affichage des Résultats
+Après Application des Filtres:
+
+Exécuter la requête
+Afficher le nombre de résultats trouvés
+Afficher les annonces correspondantes
+Afficher les filtres actifs en badges
+Permettre de retirer un filtre individuellement
+
+Gestion Aucun Résultat:
+
+Message clair: "Aucune annonce ne correspond à vos critères"
+Suggestions: "Essayez d'élargir votre recherche"
+Bouton "Réinitialiser les filtres"
+
+
+🎨 Design de l'Interface
+Surbrillance de Catégorie Active
+État Normal:
+
+Fond: Blanc
+Texte: Gris foncé
+Icône: Gris moyen
+Chevron: Pointant vers la droite ">"
+
+État Actif (sélectionné):
+
+Fond: Bleu clair (#E3F2FD) ou Vert clair (#E8F5E9)
+Texte: Bleu foncé (#1976D2) ou Vert foncé (#388E3C)
+Icône: Même couleur que texte
+Chevron: Pointant vers le bas "∨" OU disparaît
+Border gauche: Barre colorée de 3-4px
+
+Zone d'Expansion des Filtres
+Apparence:
+
+Fond légèrement différent (gris très clair #FAFAFA)
+Padding interne confortable
+Séparateur subtil avec catégorie suivante
+Animation d'ouverture fluide (300ms)
+
+Organisation des Filtres:
+
+Titre "Filtres de recherche" (optionnel)
+Filtres principaux d'abord (non collapsibles)
+Section "Filtres avancés" collapsible (optionnel)
+Bouton "Appliquer les filtres" en bas (coloré, visible)
+Lien "Réinitialiser" à côté
+
+Types de Composants de Filtre
+Select Simple:
+
+Dropdown classique
+Placeholder clair
+Icône de dropdown
+
+Multiselect:
+
+Dropdown avec checkboxes
+Affichage des sélections en badges
+Option "Tout sélectionner" / "Tout désélectionner"
+
+Range (Prix, Surface, Année):
+
+Deux inputs (min/max) côte à côte
+OU Slider double curseur
+Labels clairs "De" / "À"
+
+Toggle:
+
+Switch on/off
+Label explicite
+
+Checkbox Groupe (Équipements):
+
+Liste de checkboxes
+Max 6-8 visibles, reste en "Voir plus"
+Affichage du nombre sélectionné
+
+Recherche avec Autocomplete:
+
+Input avec icône loupe
+Suggestions au typing
+Pour marques, modèles
+
+
+📊 Gestion des Index et Performance
+Index Base de Données Nécessaires
+Pour Catégories:
+Index sur: category_id
+Index sur: category_id + created_at
+Index sur: category_id + price
+Pour Localisation:
+Index sur: wilaya_id
+Index sur: commune_id
+Index sur: wilaya_id + commune_id
+Pour Filtres JSON:
+Index GIN sur: filters (pour contains)
+Index sur: (filters->>'type')
+Index sur: (filters->>'marque')
+Index sur: (filters->>'annee')::int
+etc. pour champs fréquemment filtrés
+Optimisation des Requêtes
+Stratégies:
+
+Limiter à 20-50 résultats par page
+Pagination côté serveur
+Cache des résultats fréquents
+Debounce sur inputs texte (300ms)
+Pas de recherche automatique sur chaque changement de filtre
+Bouton "Appliquer" explicite
+
+
+✅ Checklist de Validation
+Tests Fonctionnels
+
+ Clic sur catégorie → Surbrillance + Expansion
+ Clic sur autre catégorie → Première se ferme, nouvelle s'ouvre
+ Filtres affichés correspondent à la catégorie
+ Tous les types de filtres fonctionnent (select, range, toggle, etc.)
+ Application des filtres lance la recherche
+ Résultats correspondent aux filtres appliqués
+ Aucun résultat → Message approprié
+ Réinitialiser → Tous filtres remis à zéro
+ Badges de filtres actifs affichés
+ Retrait d'un badge retire le filtre
+ Tri fonctionne avec filtres actifs
+ Changement de catégorie réinitialise filtres
+
+Tests par Catégorie
+Pour CHAQUE catégorie:
+
+ Publier une annonce test avec tous les champs remplis
+ Rechercher cette annonce via les filtres
+ Vérifier qu'elle apparaît avec les bons critères
+ Vérifier qu'elle n'apparaît pas si critère différent
+ Tester toutes les combinaisons de filtres importantes
+
+Tests de Performance
+
+ Recherche avec 1 filtre < 500ms
+ Recherche avec 5 filtres < 1s
+ Interface réactive (pas de freeze)
+ Animation d'expansion fluide
+ Scroll performant avec beaucoup de catégories
+
+Tests UX
+
+ Catégorie active bien visible
+ Filtres bien organisés et lisibles
+ Boutons d'action bien visibles
+ Feedback visuel sur actions (loading, succès)
+ Messages d'erreur clairs
+ Mobile responsive
+
+
+🎯 Résultat Attendu
+Interface Utilisateur
+Un panneau de filtres avec liste de catégories où:
+
+Cliquer sur une catégorie la surligne et affiche ses filtres spécifiques
+Chaque catégorie a ses propres filtres pertinents
+L'interface est claire et intuitive
+La transition est fluide
+
+Fonctionnalité
+Un système de filtrage qui:
+
+Affiche réellement les annonces correspondant aux critères
+Synchronise parfaitement formulaires et filtres
+Permet des recherches précises
+Gère correctement tous les types de filtres
+Performe bien même avec beaucoup d'annonces
+
+Expérience Utilisateur
+Une recherche où l'utilisateur:
+
+Trouve facilement ce qu'il cherche
+Comprend immédiatement comment utiliser les filtres
+Voit clairement les filtres actifs
+Peut modifier/retirer facilement ses critères
+Obtient des résultats pertinents rapidement
+
+
+Livrable Final: Un système de filtrage hiérarchique fonctionnel où chaque catégorie affiche ses propres champs de filtrage pertinents, avec surbrillance visuelle de la catégorie active, et où les filtres appliqués retournent précisément les annonces correspondantes.RéessayerClaude peut faire des erreurs. Assurez-vous de vérifier ses réponses.
