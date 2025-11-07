@@ -1177,13 +1177,13 @@ export default function PublishScreen() {
                     <View style={styles.featureItem}>
                       <Text style={styles.featureCheck}>✓</Text>
                       <Text style={[styles.featureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'نشر مجاني' : language === 'en' ? 'Free posting' : 'Publication gratuite'}
+                        {language === 'ar' ? 'إيداع إعلان' : language === 'en' ? 'Post an ad' : 'Déposer une annonce'}
                       </Text>
                     </View>
                     <View style={styles.featureItem}>
                       <Text style={styles.featureCheck}>✓</Text>
                       <Text style={[styles.featureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'حتى 5 إعلانات نشطة' : language === 'en' ? 'Up to 5 active listings' : 'Jusqu\'à 5 annonces actives'}
+                        {language === 'ar' ? 'إعلان واحد نشط لكل فئة' : language === 'en' ? '1 active listing per category' : '1 annonce active par catégorie'}
                       </Text>
                     </View>
                     <View style={styles.featureItem}>
