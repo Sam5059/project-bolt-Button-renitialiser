@@ -64,7 +64,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="publish"
         options={{
-          title: language === 'ar' ? 'نشر' : language === 'en' ? 'Post' : 'Publier',
+          title: language === 'ar' ? 'نشر' : language === 'en' ? 'Post' : 'Déposer',
           tabBarIcon: ({ color, size, focused }) => (
             <PlusCircle size={size + 4} color={focused ? '#2563EB' : color} />
           ),

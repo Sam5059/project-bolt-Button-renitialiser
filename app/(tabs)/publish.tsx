@@ -1122,7 +1122,11 @@ export default function PublishScreen() {
               </View>
             ) : (
               <View style={styles.nonProContainer}>
-                <View style={styles.userTypeBadge}>
+                <TouchableOpacity 
+                  style={styles.userTypeBadge}
+                  activeOpacity={0.9}
+                  onPress={() => {}}
+                >
                   <View style={styles.userTypeIcon}>
                     <Text style={styles.userTypeIconText}>👤</Text>
                   </View>
@@ -1130,9 +1134,13 @@ export default function PublishScreen() {
                     <Text style={styles.userTypeLabel}>Type de compte</Text>
                     <Text style={styles.userTypeName}>Particulier</Text>
                   </View>
-                </View>
+                </TouchableOpacity>
 
-                <View style={styles.proInfoBox}>
+                <TouchableOpacity
+                  style={styles.proInfoBox}
+                  activeOpacity={0.95}
+                  onPress={() => router.push('/pro/packages')}
+                >
                   <View style={styles.proInfoHeader}>
                     <Text style={styles.proInfoIcon}>✨</Text>
                     <View style={styles.proInfoHeaderText}>
@@ -1142,15 +1150,12 @@ export default function PublishScreen() {
                       </Text>
                     </View>
                   </View>
-                  <TouchableOpacity
-                    style={styles.proUpgradeButton}
-                    onPress={() => router.push('/pro/packages')}
-                  >
+                  <View style={styles.proUpgradeButton}>
                     <Text style={[styles.proUpgradeButtonText, isRTL && styles.textRTL]}>
                       Achetez un forfait PRO
                     </Text>
-                  </TouchableOpacity>
-                </View>
+                  </View>
+                </TouchableOpacity>
               </View>
             )}
           </View>
@@ -1210,7 +1215,240 @@ export default function PublishScreen() {
             />
           </View>
 
-          {/* 2.3 Catégorie */}
+          {/* 2.3 TYPE D'ANNONCE - Offres/Demandes */}
+          {getFormType() !== 'job' && getFormType() !== 'service' && (
+            <View style={styles.inputGroup}>
+              <Text style={[styles.label, isRTL && styles.textRTL]}>
+                Type d'annonce <Text style={styles.required}>*</Text>
+              </Text>
+              <View style={styles.typeSelector}>
+                {getAvailableListingTypes().map((type) => (
+                  <TouchableOpacity
+                    key={type}
+                    style={[
+                      styles.typeButton,
+                      listingType === type && styles.typeButtonActive,
+                      type === 'offre' && listingType === type && styles.typeButtonOffreActive,
+                      type === 'je_cherche' && listingType === type && styles.typeButtonDemandeActive,
+                    ]}
+                    onPress={() => {
+                      setListingType(type as 'offre' | 'je_cherche');
+                      if (type === 'je_cherche') {
+                        setOfferType('sale');
+                      }
+                    }}
+                  >
+                    <View style={styles.typeButtonContent}>
+                      {type === 'offre' ? (
+                        <View style={[
+                          styles.typeIconContainer,
+                          listingType === type && styles.typeIconContainerActive
+                        ]}>
+                          <ShoppingBag
+                            size={24}
+                            color={listingType === type ? '#FFFFFF' : '#10B981'}
+                            strokeWidth={2.5}
+                          />
+                        </View>
+                      ) : (
+                        <View style={[
+                          styles.typeIconContainer,
+                          styles.typeIconContainerSearch,
+                          listingType === type && styles.typeIconContainerActive
+                        ]}>
+                          <Search
+                            size={24}
+                            color={listingType === type ? '#FFFFFF' : '#2563EB'}
+                            strokeWidth={2.5}
+                          />
+                        </View>
+                      )}
+                      <View style={styles.typeTextContainer}>
+                        <Text style={[
+                          styles.typeButtonText,
+                          listingType === type && styles.typeButtonTextActive
+                        ]}>
+                          {type === 'offre' ? 'Offres' : 'Demandes'}
+                        </Text>
+                        <Text style={[
+                          styles.typeButtonDescription,
+                          listingType === type && styles.typeButtonDescriptionActive
+                        ]}>
+                          {type === 'offre' ? 'Proposer un produit/service' : 'Rechercher un produit/service'}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* 2.4 TYPE D'OFFRE - À vendre/À donner/etc. */}
+          {getFormType() !== 'job' && getFormType() !== 'service' && (
+            <View style={styles.inputGroup}>
+              <Text style={[styles.label, isRTL && styles.textRTL]}>
+                {listingType === 'offre' ? 'Type d\'offre' : 'Type de recherche'} <Text style={styles.required}>*</Text>
+              </Text>
+              <View style={styles.offerTypeGrid}>
+                {listingType === 'offre' ? (
+                  <>
+                    <TouchableOpacity
+                      style={[
+                        styles.offerTypeButton,
+                        offerType === 'sale' && styles.offerTypeButtonActive,
+                        offerType === 'sale' && { borderColor: '#10B981' },
+                      ]}
+                      onPress={() => setOfferType('sale')}
+                    >
+                      <Text style={styles.offerTypeIcon}>💰</Text>
+                      <Text style={[
+                        styles.offerTypeLabel,
+                        offerType === 'sale' && styles.offerTypeLabelActive,
+                        offerType === 'sale' && { color: '#10B981' },
+                      ]}>
+                        À vendre
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.offerTypeButton,
+                        offerType === 'free' && styles.offerTypeButtonActive,
+                        offerType === 'free' && { borderColor: '#8B5CF6' },
+                      ]}
+                      onPress={() => setOfferType('free')}
+                    >
+                      <Text style={styles.offerTypeIcon}>🎁</Text>
+                      <Text style={[
+                        styles.offerTypeLabel,
+                        offerType === 'free' && styles.offerTypeLabelActive,
+                        offerType === 'free' && { color: '#8B5CF6' },
+                      ]}>
+                        À donner
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.offerTypeButton,
+                        offerType === 'exchange' && styles.offerTypeButtonActive,
+                        offerType === 'exchange' && { borderColor: '#F59E0B' },
+                      ]}
+                      onPress={() => setOfferType('exchange')}
+                    >
+                      <Text style={styles.offerTypeIcon}>🔄</Text>
+                      <Text style={[
+                        styles.offerTypeLabel,
+                        offerType === 'exchange' && styles.offerTypeLabelActive,
+                        offerType === 'exchange' && { color: '#F59E0B' },
+                      ]}>
+                        À échanger
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.offerTypeButton,
+                        offerType === 'rent' && styles.offerTypeButtonActive,
+                        offerType === 'rent' && { borderColor: '#3B82F6' },
+                      ]}
+                      onPress={() => setOfferType('rent')}
+                    >
+                      <Text style={styles.offerTypeIcon}>🏠</Text>
+                      <Text style={[
+                        styles.offerTypeLabel,
+                        offerType === 'rent' && styles.offerTypeLabelActive,
+                        offerType === 'rent' && { color: '#3B82F6' },
+                      ]}>
+                        À louer
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <>
+                    <TouchableOpacity
+                      style={[
+                        styles.offerTypeButton,
+                        offerType === 'sale' && styles.offerTypeButtonActive,
+                        offerType === 'sale' && { borderColor: '#2563EB' },
+                      ]}
+                      onPress={() => setOfferType('sale')}
+                    >
+                      <Text style={styles.offerTypeIcon}>🛒</Text>
+                      <Text style={[
+                        styles.offerTypeLabel,
+                        offerType === 'sale' && styles.offerTypeLabelActive,
+                        offerType === 'sale' && { color: '#2563EB' },
+                      ]}>
+                        J'achète
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.offerTypeButton,
+                        offerType === 'free' && styles.offerTypeButtonActive,
+                        offerType === 'free' && { borderColor: '#8B5CF6' },
+                      ]}
+                      onPress={() => setOfferType('free')}
+                    >
+                      <Text style={styles.offerTypeIcon}>🙏</Text>
+                      <Text style={[
+                        styles.offerTypeLabel,
+                        offerType === 'free' && styles.offerTypeLabelActive,
+                        offerType === 'free' && { color: '#8B5CF6' },
+                      ]}>
+                        Je souhaite recevoir
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.offerTypeButton,
+                        offerType === 'exchange' && styles.offerTypeButtonActive,
+                        offerType === 'exchange' && { borderColor: '#F59E0B' },
+                      ]}
+                      onPress={() => setOfferType('exchange')}
+                    >
+                      <Text style={styles.offerTypeIcon}>🔄</Text>
+                      <Text style={[
+                        styles.offerTypeLabel,
+                        offerType === 'exchange' && styles.offerTypeLabelActive,
+                        offerType === 'exchange' && { color: '#F59E0B' },
+                      ]}>
+                        J'échange
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.offerTypeButton,
+                        offerType === 'rent' && styles.offerTypeButtonActive,
+                        offerType === 'rent' && { borderColor: '#3B82F6' },
+                      ]}
+                      onPress={() => setOfferType('rent')}
+                    >
+                      <Text style={styles.offerTypeIcon}>🔑</Text>
+                      <Text style={[
+                        styles.offerTypeLabel,
+                        offerType === 'rent' && styles.offerTypeLabelActive,
+                        offerType === 'rent' && { color: '#3B82F6' },
+                      ]}>
+                        Je loue
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+              {offerType === 'free' && (
+                <View style={styles.offerTypeNotice}>
+                  <Text style={styles.offerTypeNoticeIcon}>ℹ️</Text>
+                  <Text style={styles.offerTypeNoticeText}>
+                    {listingType === 'offre'
+                      ? 'Le prix sera automatiquement défini comme gratuit'
+                      : 'Vous recherchez quelque chose gratuitement'}
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* 2.5 Catégorie */}
           <View style={styles.inputGroup}>
             <Text style={[styles.label, isRTL && styles.textRTL]}>
               {t('publish.category')} <Text style={styles.required}>*</Text>
@@ -2144,242 +2382,7 @@ export default function PublishScreen() {
           </ScrollView>
         </View>
 
-        {/* 4. TYPE D'ANNONCE FUSIONNÉ - AVANT LOCALISATION */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, isRTL && styles.textRTL]}>Type d'annonce</Text>
-
-          <View style={styles.inputGroup}>
-            {/* Sélection du mode: Offre ou Demande */}
-            {getFormType() !== 'job' && getFormType() !== 'service' && (
-              <View style={styles.typeSelector}>
-                {getAvailableListingTypes().map((type) => (
-                  <TouchableOpacity
-                    key={type}
-                    style={[
-                      styles.typeButton,
-                      listingType === type && styles.typeButtonActive,
-                      type === 'offre' && listingType === type && styles.typeButtonOffreActive,
-                      type === 'je_cherche' && listingType === type && styles.typeButtonDemandeActive,
-                    ]}
-                    onPress={() => {
-                      setListingType(type as 'offre' | 'je_cherche');
-                      if (type === 'je_cherche') {
-                        setOfferType('sale');
-                      }
-                    }}
-                  >
-                    <View style={styles.typeButtonContent}>
-                      {type === 'offre' ? (
-                        <View style={[
-                          styles.typeIconContainer,
-                          listingType === type && styles.typeIconContainerActive
-                        ]}>
-                          <ShoppingBag
-                            size={24}
-                            color={listingType === type ? '#FFFFFF' : '#10B981'}
-                            strokeWidth={2.5}
-                          />
-                        </View>
-                      ) : (
-                        <View style={[
-                          styles.typeIconContainer,
-                          styles.typeIconContainerSearch,
-                          listingType === type && styles.typeIconContainerActive
-                        ]}>
-                          <Search
-                            size={24}
-                            color={listingType === type ? '#FFFFFF' : '#2563EB'}
-                            strokeWidth={2.5}
-                          />
-                        </View>
-                      )}
-                      <View style={styles.typeTextContainer}>
-                        <Text style={[
-                          styles.typeButtonText,
-                          listingType === type && styles.typeButtonTextActive
-                        ]}>
-                          {type === 'offre' ? 'Je vends' : 'Je cherche'}
-                        </Text>
-                        <Text style={[
-                          styles.typeButtonDescription,
-                          listingType === type && styles.typeButtonDescriptionActive
-                        ]}>
-                          {type === 'offre' ? 'Proposer un produit/service' : 'Rechercher un produit/service'}
-                        </Text>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-
-            {/* Grille fusionnée des types d'offre */}
-            {getFormType() !== 'job' && getFormType() !== 'service' && (
-              <View style={styles.offerTypeContainer}>
-                <Text style={[styles.label, isRTL && styles.textRTL]}>
-                  {listingType === 'offre' ? 'Type d\'offre' : 'Type de recherche'} <Text style={styles.required}>*</Text>
-                </Text>
-                <View style={styles.offerTypeGrid}>
-                  {listingType === 'offre' ? (
-                    <>
-                      <TouchableOpacity
-                        style={[
-                          styles.offerTypeButton,
-                          offerType === 'sale' && styles.offerTypeButtonActive,
-                          offerType === 'sale' && { borderColor: '#10B981' },
-                        ]}
-                        onPress={() => setOfferType('sale')}
-                      >
-                        <Text style={styles.offerTypeIcon}>💰</Text>
-                        <Text style={[
-                          styles.offerTypeLabel,
-                          offerType === 'sale' && styles.offerTypeLabelActive,
-                          offerType === 'sale' && { color: '#10B981' },
-                        ]}>
-                          À vendre
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          styles.offerTypeButton,
-                          offerType === 'free' && styles.offerTypeButtonActive,
-                          offerType === 'free' && { borderColor: '#8B5CF6' },
-                        ]}
-                        onPress={() => setOfferType('free')}
-                      >
-                        <Text style={styles.offerTypeIcon}>🎁</Text>
-                        <Text style={[
-                          styles.offerTypeLabel,
-                          offerType === 'free' && styles.offerTypeLabelActive,
-                          offerType === 'free' && { color: '#8B5CF6' },
-                        ]}>
-                          À donner
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          styles.offerTypeButton,
-                          offerType === 'exchange' && styles.offerTypeButtonActive,
-                          offerType === 'exchange' && { borderColor: '#F59E0B' },
-                        ]}
-                        onPress={() => setOfferType('exchange')}
-                      >
-                        <Text style={styles.offerTypeIcon}>🔄</Text>
-                        <Text style={[
-                          styles.offerTypeLabel,
-                          offerType === 'exchange' && styles.offerTypeLabelActive,
-                          offerType === 'exchange' && { color: '#F59E0B' },
-                        ]}>
-                          À échanger
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          styles.offerTypeButton,
-                          offerType === 'rent' && styles.offerTypeButtonActive,
-                          offerType === 'rent' && { borderColor: '#3B82F6' },
-                        ]}
-                        onPress={() => setOfferType('rent')}
-                      >
-                        <Text style={styles.offerTypeIcon}>🏠</Text>
-                        <Text style={[
-                          styles.offerTypeLabel,
-                          offerType === 'rent' && styles.offerTypeLabelActive,
-                          offerType === 'rent' && { color: '#3B82F6' },
-                        ]}>
-                          À louer
-                        </Text>
-                      </TouchableOpacity>
-                    </>
-                  ) : (
-                    <>
-                      <TouchableOpacity
-                        style={[
-                          styles.offerTypeButton,
-                          offerType === 'sale' && styles.offerTypeButtonActive,
-                          offerType === 'sale' && { borderColor: '#2563EB' },
-                        ]}
-                        onPress={() => setOfferType('sale')}
-                      >
-                        <Text style={styles.offerTypeIcon}>🛒</Text>
-                        <Text style={[
-                          styles.offerTypeLabel,
-                          offerType === 'sale' && styles.offerTypeLabelActive,
-                          offerType === 'sale' && { color: '#2563EB' },
-                        ]}>
-                          J'achète
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          styles.offerTypeButton,
-                          offerType === 'free' && styles.offerTypeButtonActive,
-                          offerType === 'free' && { borderColor: '#8B5CF6' },
-                        ]}
-                        onPress={() => setOfferType('free')}
-                      >
-                        <Text style={styles.offerTypeIcon}>🙏</Text>
-                        <Text style={[
-                          styles.offerTypeLabel,
-                          offerType === 'free' && styles.offerTypeLabelActive,
-                          offerType === 'free' && { color: '#8B5CF6' },
-                        ]}>
-                          Je souhaite recevoir
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          styles.offerTypeButton,
-                          offerType === 'exchange' && styles.offerTypeButtonActive,
-                          offerType === 'exchange' && { borderColor: '#F59E0B' },
-                        ]}
-                        onPress={() => setOfferType('exchange')}
-                      >
-                        <Text style={styles.offerTypeIcon}>🔄</Text>
-                        <Text style={[
-                          styles.offerTypeLabel,
-                          offerType === 'exchange' && styles.offerTypeLabelActive,
-                          offerType === 'exchange' && { color: '#F59E0B' },
-                        ]}>
-                          J'échange
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          styles.offerTypeButton,
-                          offerType === 'rent' && styles.offerTypeButtonActive,
-                          offerType === 'rent' && { borderColor: '#3B82F6' },
-                        ]}
-                        onPress={() => setOfferType('rent')}
-                      >
-                        <Text style={styles.offerTypeIcon}>🔑</Text>
-                        <Text style={[
-                          styles.offerTypeLabel,
-                          offerType === 'rent' && styles.offerTypeLabelActive,
-                          offerType === 'rent' && { color: '#3B82F6' },
-                        ]}>
-                          Je loue
-                        </Text>
-                      </TouchableOpacity>
-                    </>
-                  )}
-                </View>
-                {offerType === 'free' && (
-                  <View style={styles.offerTypeNotice}>
-                    <Text style={styles.offerTypeNoticeIcon}>ℹ️</Text>
-                    <Text style={styles.offerTypeNoticeText}>
-                      {listingType === 'offre'
-                        ? 'Le prix sera automatiquement défini comme gratuit'
-                        : 'Vous recherchez quelque chose gratuitement'}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            )}
-          </View>
-        </View>
-
-        {/* 5. LOCALISATION */}
+        {/* 4. LOCALISATION */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, isRTL && styles.textRTL]}>{t('publish.location')}</Text>
 
@@ -2508,7 +2511,7 @@ export default function PublishScreen() {
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={[styles.publishButtonText, isRTL && styles.textRTL]}>
-                {isEditMode ? '✓ METTRE À JOUR' : '✓ PUBLIER'}
+                {isEditMode ? '✓ METTRE À JOUR' : '✓ Déposer une annonce'}
               </Text>
             )}
           </TouchableOpacity>
