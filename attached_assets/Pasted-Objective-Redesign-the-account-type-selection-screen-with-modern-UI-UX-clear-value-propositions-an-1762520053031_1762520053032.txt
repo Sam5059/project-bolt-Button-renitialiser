@@ -1,0 +1,177 @@
+Objective
+Redesign the account type selection screen with modern UI/UX, clear value propositions, and an engaging interface that highlights the benefits of each option while encouraging PRO upgrades.📋 Current Issues
+
+Basic design with minimal visual hierarchy
+Unclear value proposition for PRO accounts
+No detailed explanation of features
+Poor visual distinction between free and premium options
+Missing engagement elements
+🎨 Design RequirementsOverall Layout
+
+Modern card-based design with interactive elements
+Clear visual hierarchy with proper spacing
+Responsive layout that works on all screen sizes
+Smooth animations and transitions
+Professional color scheme aligned with brand
+Visual Hierarchy
+
+Section Header
+
+Title: "Account Type" or "Choose Your Plan"
+Subtitle: "Select the account type that fits your needs"
+
+
+
+Free Option Card (Particulier)
+
+Position: First card
+Visual priority: Medium
+Color theme: Green/Teal (#10B981)
+Border: Subtle, light gray
+
+
+
+PRO Option Card
+
+Position: Second card
+Visual priority: High (featured/recommended)
+Color theme: Orange/Gold (#F59E0B)
+Special treatment: Gradient background, "RECOMMENDED" badge
+Border: Warm orange tone
+
+
+📝 Content StructureCard 1: Free Account (Particulier)Header Section:
+
+Icon: Simple user or home icon
+Title: "Particulier"
+Badge: "FREE" in green
+Description:
+
+Main tagline: "Perfect for selling your personal items"
+Features List:
+
+✓ Free posting
+✓ Up to 5 active listings
+✓ Photos and full description
+✓ Basic seller profile
+Visual Treatment:
+
+Clean, minimal design
+Green accent color
+Subtle shadows
+Checkmark icons for features
+Card 2: PRO AccountHeader Section:
+
+Special badge at top: "⭐ RECOMMENDED" or "POPULAR CHOICE"
+Icon: Briefcase, store, or crown icon
+Title: "PRO Account"
+Subtitle: "Boost your sales"
+Description:
+
+Main tagline: "For professionals and regular sellers"
+Features List:
+
+⭐ Unlimited listings
+🚀 Priority visibility in search
+📊 Detailed analytics dashboard
+🎯 Verified PRO badge
+📞 Customer support priority
+🔄 Auto-repost feature
+🏆 Featured listings option
+Call-to-Action:
+
+Button: "View PRO Plans" with arrow icon
+Secondary text: "Starting from XXXX DZD/month"
+Visual Treatment:
+
+Gradient background (light orange to cream)
+Elevated design (more shadow/depth)
+Gold/orange accent colors
+Premium feel with shimmer or subtle animation
+🎯 UX RequirementsInteraction StatesDefault State:
+
+Both cards visible and selectable
+PRO card has "RECOMMENDED" badge
+Free option pre-selected by default
+Selection State:
+
+Selected card shows checkmark icon
+Border highlight in accent color
+Subtle scale or glow effect
+Hover/Press State:
+
+Slight scale down (0.98x)
+Increased shadow
+Smooth transition (200ms)
+User Flow
+User sees both options clearly presented
+Free option is pre-selected
+User can easily compare features side-by-side
+If user taps PRO card → two options:
+
+If not selecting: Opens modal/page with PRO plans details
+If selecting: Marks PRO as selected and continues
+
+
+Clear visual feedback for selected option
+"Continue" or "Next" button at bottom
+📐 Layout SpecificationsMobile (Portrait)
+
+Vertical stack of cards
+Full-width cards with 16-20px margins
+16px gap between cards
+PRO card slightly taller due to more features
+Tablet/Desktop
+
+Side-by-side layout (2 columns)
+Equal height cards
+Maximum width: 800px
+Center aligned
+Spacing
+
+Section padding: 20px
+Card padding: 20px
+Between elements: 12-16px
+Icon size: 24-32px
+Button height: 48-54px
+🎨 Color PaletteFree Account Theme
+
+Primary: #10B981 (Emerald Green)
+Background: #ECFDF5 (Light Green)
+Border: #E5E7EB (Light Gray)
+Text: #1F2937 (Dark Gray)
+PRO Account Theme
+
+Primary: #F59E0B (Amber/Gold)
+Secondary: #FF9500 (Bright Orange)
+Background Gradient: #FFF7ED → #FFEDD5
+Border: #FED7AA (Light Orange)
+Badge: #FFFBEB (Light Yellow)
+Common
+
+Card Background: #FFFFFF
+Text Primary: #1F2937
+Text Secondary: #6B7280
+Success: #10B981
+Shadow: rgba(0,0,0,0.05-0.15)
+💡 Interactive ElementsAnimations
+
+Card entrance: Fade in + slide up (300ms, staggered)
+Selection: Smooth border color change (200ms)
+Hover/Press: Scale + shadow transition
+Badge: Subtle pulse animation for "RECOMMENDED"
+Micro-interactions
+
+Checkmark appears with spring animation
+Feature icons animate on card selection
+Button has press state with feedback
+Smooth scroll if cards extend beyond viewport
+✅ Success Criteria
+ Clear visual distinction between free and PRO options
+ PRO option is attractive but not pushy
+ All features are easy to read and understand
+ Selection state is obvious
+ Mobile and tablet layouts are responsive
+ Animations are smooth (60fps)
+
+Claude peut faire des erreurs. Assurez-vous de vérifier ses réponses.
