@@ -1,0 +1,235 @@
+PROJECT CONTEXT
+Platform: OuechDZ/BuyNgo - Algerian Marketplace
+Tech Stack: React Native/Expo + Supabase
+Form: "Publier" (Publish Listing Form)
+Database: Tables include Wilaya and communes
+
+OBJECTIVE
+Improve the "Publish Form" UI/UX experience for all categories with better visual feedback, reorganized structure, proper localization integration, and synchronized filtering system.
+
+MODIFICATIONS PLAN
+1. ADVERTISER TYPE SECTION - Visual Feedback
+Current State:
+
+Two options: "Particulier" (Individual) and "Passez en PRO" (Upgrade to PRO)
+No visual highlight when selected
+
+Required Changes:
+
+Add visual highlight/border when "Particulier" is clicked
+Add visual highlight/border when "Passez en PRO" section is clicked
+Maintain current green border for "Particulier" selection
+Add similar visual feedback for PRO upgrade section
+
+
+2. FORM STRUCTURE - Field Reordering
+Current Order:
+
+Type d'annonceur (Advertiser Type)
+Informations section
+
+Titre (Title)
+Description
+Catégorie (Category)
+Prix DA (Price)
+
+
+
+New Order:
+
+Type d'annonceur (Advertiser Type)
+Informations section
+
+Titre (Title)
+Description
+[MOVE HERE] Type d'annonce (Listing Type: Offres/Demandes)
+[MOVE HERE] Type d'offre (Offer Type: À vendre/À donner/À échanger/À louer)
+Catégorie (Category)
+Prix DA (Price)
+
+
+Localisation section
+
+
+3. LISTING TYPE - Terminology Update
+Current Terms:
+
+"Je vends" (I'm selling)
+"Je cherche" (I'm looking for)
+
+New Terms:
+
+"Offres" (Offers) - replaces "Je vends"
+"Demandes" (Requests) - replaces "Je cherche"
+
+Requirements:
+
+Keep all existing functionality/links
+Update labels only
+Maintain icon associations
+
+
+4. LOCATION SYSTEM - Fix Wilaya/Commune Integration
+Current Issue:
+
+Wilaya dropdown shows "undefined"
+Communes not loading based on Wilaya selection
+
+Required Fix:
+
+Connect to existing Supabase tables: Wilaya and communes
+Populate Wilaya dropdown from Wilaya table (58 wilayas)
+Implement cascading dropdown: when Wilaya is selected → load corresponding communes from communes table
+Display format: "Dans quelle wilaya ?" / "Dans quelle commune ?"
+Ensure proper foreign key relationship between tables
+
+Database Structure to Use:
+Table: Wilaya
+- Fields needed: id, name (or equivalent)
+
+Table: communes  
+- Fields needed: id, name, wilaya_id (foreign key)
+
+5. BUTTON LABELS - Global Rename
+Current Label: "Publier" / "PUBLIER GRATUITEMENT"
+New Label: "Déposer une annonce"
+Locations to Update:
+
+Main submit button at bottom of form
+"PUBLIER GRATUITEMENT" button in header
+Any other "Publier" references in the publish flow
+Mobile bottom navigation "Publier" button
+
+
+6. SYNCHRONIZATION SYSTEM - Form ↔ Sidebar ↔ Listings
+Components to Synchronize:
+A. Publish Form Fields:
+
+Catégorie (Category)
+Type d'annonce (Offres/Demandes)
+Type d'offre (À vendre/À donner/À échanger/À louer)
+Wilaya
+Commune
+
+B. Sidebar Filters (Image 4 shows):
+
+Stores PRO
+Véhicules
+Immobilier
+Électronique
+Location Immobilière
+Location Vacances
+Location Véhicules
+Location Équipements
+Mode & Beauté
+Maison & Jardin
+Emploi
+Services
+Emploi & Services
+Loisirs & Hobbies
+
+Synchronization Requirements:
+
+When user selects a category in the form → update available subcategories
+When user selects category in sidebar → filter listings by that category
+When user applies filters in sidebar → show only matching listings
+Form category dropdown should match sidebar category structure
+Listings display should respect ALL active filters simultaneously:
+
+Category + Subcategory
+Offer Type (Offres/Demandes)
+Listing Type (À vendre/À louer/etc.)
+Location (Wilaya + Commune)
+
+
+
+
+7. RTL SUPPORT - Multi-language Interface
+Languages Required:
+
+FR (French) - LTR
+EN (English) - LTR
+AR (Arabic) - RTL
+
+RTL Requirements:
+
+Form fields should flip for Arabic
+Button alignment should reverse
+Icon positions should mirror
+Text alignment: right for AR, left for FR/EN
+Dropdown menus should flip
+Navigation elements should reverse
+Maintain functionality across all languages
+
+Test Cases:
+
+Switch language → form layout adapts
+All buttons remain functional in RTL mode
+Wilaya/Commune dropdowns work in RTL
+Category selection works in all languages
+
+
+FUNCTIONAL REQUIREMENTS SUMMARY
+Must Maintain:
+✓ All existing button functionality
+✓ PRO account upgrade flow
+✓ Form validation rules
+✓ Data submission to Supabase
+✓ Mobile responsiveness
+✓ Category-specific filters
+✓ Price field for applicable categories
+Must Improve:
+✓ Visual feedback for user selections
+✓ Logical field ordering
+✓ Clear terminology (Offres/Demandes)
+✓ Working location system (Wilaya → Communes)
+✓ Consistent button labeling
+✓ Synchronized filtering system
+✓ Full RTL support
+
+EXPECTED OUTCOMES
+
+Better User Experience:
+
+Clear visual feedback when making selections
+More logical form flow
+Clearer action terminology
+
+
+Working Location System:
+
+No more "undefined" errors
+Proper cascading dropdowns
+Integration with existing database structure
+
+
+Consistent Labeling:
+
+"Déposer une annonce" across all touchpoints
+Professional terminology
+
+
+Powerful Filtering:
+
+Form data feeds filter system
+Sidebar filters update listings
+Multi-filter support
+
+
+International Ready:
+
+Full RTL support for Arabic
+Seamless language switching
+Maintained functionality across languages
+
+
+
+
+PRIORITY ORDER
+
+Fix Wilaya/Commune (critical functionality issue)
+Add visual feedback for selections (immediate UX improvement)
+Reorder form fields (better logic flow)
+Update terminology (Offres/Demandes, Déposer une annonce)
+Implement filter synchronization (enhanced functionality)
+Complete RTL support (market requirement)
