@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { SlidersHorizontal, Search, Car, Hop as Home, Smartphone, Briefcase, ChevronDown, ChevronRight, Pin, PinOff, X, ListFilter as Filter } from 'lucide-react-native';
 import { saveSearchHistory } from '@/lib/searchHistoryUtils';
 import { useSearch } from '@/contexts/SearchContext';
+import { uiToDbListingType, dbToUiListingType } from '@/lib/listingTypeMap';
 
 interface CategoriesAndFiltersProps {
   onFiltersApply: (listings: any[]) => void;
@@ -74,7 +75,7 @@ export default function CategoriesAndFilters({
   const [loading, setLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isPinned, setIsPinned] = useState(true);
-  const [wilayas, setWilayas] = useState<Array<{code: string, name: string}>>([]);
+  const [wilayas, setWilayas] = useState<Array<{id: number, code: string, name_fr: string, name_ar: string, name_en: string}>>([]);
   const [communes, setCommunes] = useState<any[]>([]);
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [showWilayaDropdown, setShowWilayaDropdown] = useState(false);
@@ -230,7 +231,7 @@ export default function CategoriesAndFilters({
   async function loadWilayas() {
     const { data } = await supabase
       .from('wilayas')
-      .select('code, name')
+      .select('id, code, name_fr, name_ar, name_en')
       .order('code', { ascending: true });
     if (data) {
       setWilayas(data);
@@ -245,9 +246,9 @@ export default function CategoriesAndFilters({
 
     const { data } = await supabase
       .from('communes')
-      .select('id, name, wilaya_code')
+      .select('id, name_fr, name_ar, name_en, wilaya_code')
       .eq('wilaya_code', parseInt(wilayaCode))
-      .order('name', { ascending: true });
+      .order('name_fr', { ascending: true });
 
     if (data) {
       setCommunes(data);
@@ -264,7 +265,7 @@ export default function CategoriesAndFilters({
       .from('categories')
       .select('*')
       .eq('parent_id', categoryId)
-      .order('name', { ascending: true });
+      .order('display_order', { ascending: true });
 
     if (data) {
       setSubcategories(data);
@@ -330,7 +331,7 @@ export default function CategoriesAndFilters({
         commune_filter: filters.commune || null,
         min_price_filter: filters.priceMin ? parseFloat(filters.priceMin) : null,
         max_price_filter: filters.priceMax ? parseFloat(filters.priceMax) : null,
-        listing_type_filter: filters.listing_type || null
+        listing_type_filter: filters.listing_type ? uiToDbListingType(filters.listing_type) : null
       };
 
       console.log('[applyFilters] RPC params:', JSON.stringify(searchParams, null, 2));
@@ -579,7 +580,18 @@ export default function CategoriesAndFilters({
 
   const getWilayaName = (code: string) => {
     const wilaya = wilayas.find(w => w.code === code);
-    return wilaya?.name || code;
+    if (!wilaya) return code;
+    if (language === 'ar') return wilaya.name_ar || wilaya.name_fr;
+    if (language === 'en') return wilaya.name_en || wilaya.name_fr;
+    return wilaya.name_fr;
+  };
+
+  const getCommuneName = (communeName: string) => {
+    const commune = communes.find(c => c.name_fr === communeName);
+    if (!commune) return communeName;
+    if (language === 'ar') return commune.name_ar || commune.name_fr;
+    if (language === 'en') return commune.name_en || commune.name_fr;
+    return commune.name_fr;
   };
 
   const getCategoryIcon = (slug: string) => {
@@ -778,7 +790,7 @@ export default function CategoriesAndFilters({
                 }}
               >
                 <Text style={[styles.dropdownItemText, filters.wilaya === wilaya.code && styles.dropdownItemTextActive]}>
-                  {wilaya.name}
+                  {getWilayaName(wilaya.code)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -797,7 +809,7 @@ export default function CategoriesAndFilters({
             onPress={() => setShowCommuneDropdown(!showCommuneDropdown)}
           >
             <Text style={[styles.dropdownText, !filters.commune && styles.dropdownPlaceholder]}>
-              {filters.commune ? communes.find(c => c.name === filters.commune)?.name : (language === 'ar' ? 'اختر البلدية' : language === 'en' ? 'Select commune' : 'Toutes les communes')}
+              {filters.commune ? getCommuneName(filters.commune) : (language === 'ar' ? 'اختر البلدية' : language === 'en' ? 'Select commune' : 'Toutes les communes')}
             </Text>
             <ChevronDown size={20} color="#64748B" />
           </TouchableOpacity>
@@ -818,14 +830,14 @@ export default function CategoriesAndFilters({
               {communes.map((commune) => (
                 <TouchableOpacity
                   key={commune.id}
-                  style={[styles.dropdownItem, filters.commune === commune.name && styles.dropdownItemActive]}
+                  style={[styles.dropdownItem, filters.commune === commune.name_fr && styles.dropdownItemActive]}
                   onPress={() => {
-                    updateFilter('commune', commune.name);
+                    updateFilter('commune', commune.name_fr);
                     setShowCommuneDropdown(false);
                   }}
                 >
-                  <Text style={[styles.dropdownItemText, filters.commune === commune.name && styles.dropdownItemTextActive]}>
-                    {commune.name}
+                  <Text style={[styles.dropdownItemText, filters.commune === commune.name_fr && styles.dropdownItemTextActive]}>
+                    {getCommuneName(commune.name_fr)}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -1432,6 +1444,45 @@ export default function CategoriesAndFilters({
     </View>
   );
 
+  const renderAnimalFilters = () => (
+    <View style={styles.filtersContainer}>
+      {/* Type d'annonce */}
+      {renderListingTypeFilter()}
+
+      {/* Sous-catégorie */}
+      {renderSubcategoryFilter()}
+
+      {/* Prix */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'السعر' : language === 'en' ? 'Price' : 'Prix'}
+        </Text>
+        <View style={styles.rangeInputs}>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            value={filters.priceMin || ''}
+            onChangeText={(val) => updateFilter('priceMin', val)}
+            keyboardType="numeric"
+          />
+          <Text style={styles.rangeSeparator}>-</Text>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            value={filters.priceMax || ''}
+            onChangeText={(val) => updateFilter('priceMax', val)}
+            keyboardType="numeric"
+          />
+        </View>
+      </View>
+
+      {/* NOTE: Pas de filtre "État" pour les animaux - non applicable */}
+
+      {/* Localisation (Wilaya + Commune) */}
+      {renderLocationFilters()}
+    </View>
+  );
+
   const renderGenericFilters = () => (
     <View style={styles.filtersContainer}>
       {/* Type d'annonce */}
@@ -1484,21 +1535,8 @@ export default function CategoriesAndFilters({
         </View>
       </View>
 
-      {/* Wilaya */}
-      <View style={styles.filterGroup}>
-        <Text style={styles.filterLabel}>
-          {language === 'ar' ? 'الولاية' : language === 'en' ? 'Wilaya' : 'Wilaya'}
-        </Text>
-        <TouchableOpacity
-          style={styles.dropdown}
-          onPress={() => setShowWilayaDropdown(!showWilayaDropdown)}
-        >
-          <Text style={[styles.dropdownText, !filters.wilaya && styles.dropdownPlaceholder]}>
-            {filters.wilaya ? getWilayaName(filters.wilaya) : (language === 'ar' ? 'اختر الولاية' : language === 'en' ? 'Select wilaya' : 'Sélectionner une wilaya')}
-          </Text>
-          <ChevronDown size={20} color="#64748B" />
-        </TouchableOpacity>
-      </View>
+      {/* Localisation (Wilaya + Commune) */}
+      {renderLocationFilters()}
     </View>
   );
 
@@ -1517,6 +1555,7 @@ export default function CategoriesAndFilters({
       case 'service':
         return renderServiceFilters();
       case 'animals':
+        return renderAnimalFilters();
       case 'fashion':
       case 'home':
       case 'equipment_rental':
