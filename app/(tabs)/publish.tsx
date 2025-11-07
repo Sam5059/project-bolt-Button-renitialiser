@@ -2190,6 +2190,621 @@ export default function PublishScreen() {
             </>
           )}
 
+          {/* IMMOBILIER - Vente d'appartements, maisons, terrains */}
+          {categories.find(c => c.id === parentCategoryId)?.slug === 'immobilier' && (
+            <>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>🏢 Caractéristiques du bien</Text>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Type de bien <Text style={styles.required}>*</Text>
+                </Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={categoryAttributes.property_type}
+                    onValueChange={(value) => handleAttributeChange('property_type', value)}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Sélectionner le type" value="" />
+                    <Picker.Item label="Appartement" value="appartement" />
+                    <Picker.Item label="Maison" value="maison" />
+                    <Picker.Item label="Villa" value="villa" />
+                    <Picker.Item label="Studio" value="studio" />
+                    <Picker.Item label="Terrain" value="terrain" />
+                    <Picker.Item label="Local commercial" value="commercial" />
+                    <Picker.Item label="Bureau" value="bureau" />
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Surface (m²) <Text style={styles.required}>*</Text>
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 100"
+                  value={categoryAttributes.surface_area}
+                  onChangeText={(value) => handleAttributeChange('surface_area', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Nombre de pièces <Text style={styles.required}>*</Text>
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 3"
+                  value={categoryAttributes.rooms}
+                  onChangeText={(value) => handleAttributeChange('rooms', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Nombre de chambres
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 2"
+                  value={categoryAttributes.bedrooms}
+                  onChangeText={(value) => handleAttributeChange('bedrooms', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Nombre de salles de bain
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 1"
+                  value={categoryAttributes.bathrooms}
+                  onChangeText={(value) => handleAttributeChange('bathrooms', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Étage
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 3"
+                  value={categoryAttributes.floor}
+                  onChangeText={(value) => handleAttributeChange('floor', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>✨ Équipements & Commodités</Text>
+              </View>
+
+              <View style={styles.checkboxGrid}>
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_elevator', !categoryAttributes.has_elevator)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_elevator && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_elevator && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Ascenseur</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_parking', !categoryAttributes.has_parking)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_parking && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_parking && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Parking</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_balcony', !categoryAttributes.has_balcony)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_balcony && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_balcony && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Balcon</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_garden', !categoryAttributes.has_garden)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_garden && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_garden && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Jardin</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_garage', !categoryAttributes.has_garage)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_garage && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_garage && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Garage</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_pool', !categoryAttributes.has_pool)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_pool && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_pool && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Piscine</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_air_conditioning', !categoryAttributes.has_air_conditioning)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_air_conditioning && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_air_conditioning && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Climatisation</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_heating', !categoryAttributes.has_heating)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_heating && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_heating && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Chauffage</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+
+          {/* LOCATION IMMOBILIÈRE - Location d'appartements, maisons */}
+          {categories.find(c => c.id === parentCategoryId)?.slug === 'location-immobiliere' && (
+            <>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>🏠 Informations sur le logement</Text>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Type de bien <Text style={styles.required}>*</Text>
+                </Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={categoryAttributes.property_type}
+                    onValueChange={(value) => handleAttributeChange('property_type', value)}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Sélectionner le type" value="" />
+                    <Picker.Item label="Appartement" value="appartement" />
+                    <Picker.Item label="Maison" value="maison" />
+                    <Picker.Item label="Villa" value="villa" />
+                    <Picker.Item label="Studio" value="studio" />
+                    <Picker.Item label="Chambre" value="chambre" />
+                    <Picker.Item label="Colocation" value="colocation" />
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Meublé <Text style={styles.required}>*</Text>
+                </Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={categoryAttributes.furnished}
+                    onValueChange={(value) => handleAttributeChange('furnished', value)}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Sélectionner" value="" />
+                    <Picker.Item label="Meublé" value="meuble" />
+                    <Picker.Item label="Non meublé" value="non_meuble" />
+                    <Picker.Item label="Semi-meublé" value="semi_meuble" />
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Surface (m²) <Text style={styles.required}>*</Text>
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 80"
+                  value={categoryAttributes.surface_area}
+                  onChangeText={(value) => handleAttributeChange('surface_area', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Nombre de pièces <Text style={styles.required}>*</Text>
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 3"
+                  value={categoryAttributes.rooms}
+                  onChangeText={(value) => handleAttributeChange('rooms', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Nombre de chambres
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 2"
+                  value={categoryAttributes.bedrooms}
+                  onChangeText={(value) => handleAttributeChange('bedrooms', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Étage
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 2"
+                  value={categoryAttributes.floor}
+                  onChangeText={(value) => handleAttributeChange('floor', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>✨ Équipements</Text>
+              </View>
+
+              <View style={styles.checkboxGrid}>
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_wifi', !categoryAttributes.has_wifi)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_wifi && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_wifi && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>WiFi</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_tv', !categoryAttributes.has_tv)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_tv && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_tv && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>TV</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_air_conditioning', !categoryAttributes.has_air_conditioning)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_air_conditioning && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_air_conditioning && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Climatisation</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_heating', !categoryAttributes.has_heating)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_heating && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_heating && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Chauffage</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_kitchen', !categoryAttributes.has_kitchen)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_kitchen && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_kitchen && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Cuisine équipée</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_washing_machine', !categoryAttributes.has_washing_machine)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_washing_machine && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_washing_machine && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Lave-linge</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_elevator', !categoryAttributes.has_elevator)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_elevator && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_elevator && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Ascenseur</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_parking', !categoryAttributes.has_parking)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_parking && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_parking && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Parking</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Loyer mensuel (DA) <Text style={styles.required}>*</Text>
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 30000"
+                  value={categoryAttributes.monthly_rent}
+                  onChangeText={(value) => handleAttributeChange('monthly_rent', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Charges mensuelles (DA)
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 5000"
+                  value={categoryAttributes.charges}
+                  onChangeText={(value) => handleAttributeChange('charges', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+            </>
+          )}
+
+          {/* ÉLECTRONIQUE - Téléphones, ordinateurs, etc. */}
+          {categories.find(c => c.id === parentCategoryId)?.slug === 'electronique' && (
+            <>
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Marque <Text style={styles.required}>*</Text>
+                </Text>
+                {loadingBrands ? (
+                  <View style={[styles.input, { justifyContent: 'center', alignItems: 'center', flexDirection: 'row', gap: 10 }]}>
+                    <ActivityIndicator size="small" color="#2563EB" />
+                    <Text style={{ color: '#64748B' }}>Chargement des marques...</Text>
+                  </View>
+                ) : (
+                  <View style={styles.pickerContainer}>
+                    <Picker
+                      selectedValue={categoryAttributes.brand_id}
+                      onValueChange={(value) => {
+                        handleAttributeChange('brand_id', value);
+                        setModels([]);
+                        if (value) loadModels(value);
+                      }}
+                      style={styles.picker}
+                      enabled={brands.length > 0}
+                    >
+                      <Picker.Item
+                        label={brands.length > 0 ? "Sélectionner une marque" : "Aucune marque disponible"}
+                        value=""
+                        color="#94A3B8"
+                      />
+                      {brands.map((brand) => (
+                        <Picker.Item key={brand.id} label={brand.name} value={brand.id} />
+                      ))}
+                    </Picker>
+                  </View>
+                )}
+              </View>
+
+              {categoryAttributes.brand_id && (
+                <View style={styles.inputGroup}>
+                  <Text style={[styles.label, isRTL && styles.textRTL]}>
+                    Modèle <Text style={styles.required}>*</Text>
+                  </Text>
+                  <View style={styles.pickerContainer}>
+                    <Picker
+                      selectedValue={categoryAttributes.model_id}
+                      onValueChange={(value) => handleAttributeChange('model_id', value)}
+                      style={styles.picker}
+                      enabled={models.length > 0}
+                    >
+                      <Picker.Item
+                        label={models.length > 0 ? "Sélectionner un modèle" : "Chargement..."}
+                        value=""
+                        color="#94A3B8"
+                      />
+                      {models.map((model) => (
+                        <Picker.Item key={model.id} label={model.name} value={model.id} />
+                      ))}
+                    </Picker>
+                  </View>
+                </View>
+              )}
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  État <Text style={styles.required}>*</Text>
+                </Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={categoryAttributes.condition}
+                    onValueChange={(value) => handleAttributeChange('condition', value)}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Sélectionner l'état" value="" />
+                    <Picker.Item label="Neuf (jamais utilisé)" value="neuf" />
+                    <Picker.Item label="Comme neuf" value="comme_neuf" />
+                    <Picker.Item label="Très bon état" value="tres_bon" />
+                    <Picker.Item label="Bon état" value="bon" />
+                    <Picker.Item label="État correct" value="correct" />
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Capacité de stockage
+                </Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={categoryAttributes.storage}
+                    onValueChange={(value) => handleAttributeChange('storage', value)}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Sélectionner" value="" />
+                    <Picker.Item label="16 GB" value="16gb" />
+                    <Picker.Item label="32 GB" value="32gb" />
+                    <Picker.Item label="64 GB" value="64gb" />
+                    <Picker.Item label="128 GB" value="128gb" />
+                    <Picker.Item label="256 GB" value="256gb" />
+                    <Picker.Item label="512 GB" value="512gb" />
+                    <Picker.Item label="1 TB" value="1tb" />
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={styles.checkboxGrid}>
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_warranty', !categoryAttributes.has_warranty)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_warranty && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_warranty && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Sous garantie</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_box', !categoryAttributes.has_box)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_box && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_box && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Boîte d'origine</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxItem}
+                  onPress={() => handleAttributeChange('has_accessories', !categoryAttributes.has_accessories)}
+                >
+                  <View style={[styles.checkboxBox, categoryAttributes.has_accessories && styles.checkboxBoxChecked]}>
+                    {categoryAttributes.has_accessories && <Text style={styles.checkboxCheck}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Accessoires inclus</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+
+          {/* LOCATION ÉQUIPEMENTS - Location d'outils, matériel */}
+          {categories.find(c => c.id === parentCategoryId)?.slug === 'location-equipements' && (
+            <>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>🛠️ Informations sur l'équipement</Text>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Type d'équipement <Text style={styles.required}>*</Text>
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: Perceuse, Échafaudage, Nacelle"
+                  value={categoryAttributes.equipment_type}
+                  onChangeText={(value) => handleAttributeChange('equipment_type', value)}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  État <Text style={styles.required}>*</Text>
+                </Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={categoryAttributes.condition}
+                    onValueChange={(value) => handleAttributeChange('condition', value)}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Sélectionner l'état" value="" />
+                    <Picker.Item label="Neuf" value="neuf" />
+                    <Picker.Item label="Très bon état" value="tres_bon" />
+                    <Picker.Item label="Bon état" value="bon" />
+                    <Picker.Item label="État correct" value="correct" />
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>💰 Tarification</Text>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Prix par jour (DA) <Text style={styles.required}>*</Text>
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 2000"
+                  value={categoryAttributes.price_per_day}
+                  onChangeText={(value) => handleAttributeChange('price_per_day', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Prix par semaine (DA)
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 10000"
+                  value={categoryAttributes.price_per_week}
+                  onChangeText={(value) => handleAttributeChange('price_per_week', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={[styles.label, isRTL && styles.textRTL]}>
+                  Caution (DA) <Text style={styles.required}>*</Text>
+                </Text>
+                <TextInput
+                  style={[styles.input, isRTL && styles.textRTL]}
+                  placeholder="Ex: 10000"
+                  value={categoryAttributes.deposit_required}
+                  onChangeText={(value) => handleAttributeChange('deposit_required', value)}
+                  keyboardType="numeric"
+                />
+              </View>
+            </>
+          )}
+
           {/* Prix: Affiché seulement pour vente et location, PAS pour emploi et services, et PAS si gratuit */}
           {getFormType() !== 'job' && getFormType() !== 'service' && offerType !== 'free' && (
             <>
