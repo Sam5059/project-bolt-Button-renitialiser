@@ -37,13 +37,38 @@ interface FilterState {
   priceMax?: string;
   fuel?: string;
   transmission?: string;
+  mileageMin?: string;
+  mileageMax?: string;
+  color?: string;
   propertyType?: string;
   wilaya?: string;
   commune?: string;
   surface?: string;
+  surfaceMin?: string;
+  surfaceMax?: string;
   rooms?: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  hasElevator?: boolean;
+  hasParking?: boolean;
+  hasBalcony?: boolean;
+  hasGarden?: boolean;
+  hasPool?: boolean;
+  hasAirConditioning?: boolean;
+  hasHeating?: boolean;
   deviceType?: string;
   condition?: string;
+  storage?: string;
+  hasWarranty?: boolean;
+  hasBox?: boolean;
+  hasAccessories?: boolean;
+  furnished?: string;
+  monthlyRentMin?: string;
+  monthlyRentMax?: string;
+  hasWifi?: boolean;
+  hasTV?: boolean;
+  hasKitchen?: boolean;
+  hasWashingMachine?: boolean;
   tariff?: string;
   contractType?: string;
   salary?: string;
@@ -425,6 +450,31 @@ export default function CategoriesAndFilters({
         );
       }
 
+      if (filters.mileageMin) {
+        const mileageMin = parseInt(filters.mileageMin);
+        console.log('[applyFilters] Filtering by mileageMin:', mileageMin);
+        filteredData = filteredData.filter(item => {
+          const mileage = parseInt(item.attributes?.mileage || '0');
+          return mileage >= mileageMin;
+        });
+      }
+
+      if (filters.mileageMax) {
+        const mileageMax = parseInt(filters.mileageMax);
+        console.log('[applyFilters] Filtering by mileageMax:', mileageMax);
+        filteredData = filteredData.filter(item => {
+          const mileage = parseInt(item.attributes?.mileage || '999999999');
+          return mileage <= mileageMax;
+        });
+      }
+
+      if (filters.color) {
+        console.log('[applyFilters] Filtering by color:', filters.color);
+        filteredData = filteredData.filter(item =>
+          item.attributes?.color?.toLowerCase().includes(filters.color.toLowerCase())
+        );
+      }
+
       // Filtres Immobilier
       if (filters.propertyType) {
         console.log('[applyFilters] Filtering by propertyType:', filters.propertyType);
@@ -433,20 +483,72 @@ export default function CategoriesAndFilters({
         );
       }
 
-      if (filters.surface) {
-        const surface = parseFloat(filters.surface);
-        console.log('[applyFilters] Filtering by surface:', surface);
+      if (filters.surfaceMin) {
+        const surfaceMin = parseFloat(filters.surfaceMin);
+        console.log('[applyFilters] Filtering by surfaceMin:', surfaceMin);
         filteredData = filteredData.filter(item => {
-          const itemSurface = parseFloat(item.attributes?.surface || '0');
-          return itemSurface >= surface;
+          const surface = parseFloat(item.attributes?.surface_area || '0');
+          return surface >= surfaceMin;
+        });
+      }
+
+      if (filters.surfaceMax) {
+        const surfaceMax = parseFloat(filters.surfaceMax);
+        console.log('[applyFilters] Filtering by surfaceMax:', surfaceMax);
+        filteredData = filteredData.filter(item => {
+          const surface = parseFloat(item.attributes?.surface_area || '999999');
+          return surface <= surfaceMax;
         });
       }
 
       if (filters.rooms) {
         console.log('[applyFilters] Filtering by rooms:', filters.rooms);
-        filteredData = filteredData.filter(item =>
-          item.attributes?.rooms === filters.rooms
-        );
+        const roomsVal = filters.rooms === '5+' ? 5 : parseInt(filters.rooms);
+        filteredData = filteredData.filter(item => {
+          const itemRooms = parseInt(item.attributes?.rooms || '0');
+          return filters.rooms === '5+' ? itemRooms >= roomsVal : itemRooms === roomsVal;
+        });
+      }
+
+      if (filters.bedrooms) {
+        console.log('[applyFilters] Filtering by bedrooms:', filters.bedrooms);
+        const bedroomsVal = filters.bedrooms === '5+' ? 5 : parseInt(filters.bedrooms);
+        filteredData = filteredData.filter(item => {
+          const itemBedrooms = parseInt(item.attributes?.bedrooms || '0');
+          return filters.bedrooms === '5+' ? itemBedrooms >= bedroomsVal : itemBedrooms === bedroomsVal;
+        });
+      }
+
+      if (filters.bathrooms) {
+        console.log('[applyFilters] Filtering by bathrooms:', filters.bathrooms);
+        const bathroomsVal = filters.bathrooms === '3+' ? 3 : parseInt(filters.bathrooms);
+        filteredData = filteredData.filter(item => {
+          const itemBathrooms = parseInt(item.attributes?.bathrooms || '0');
+          return filters.bathrooms === '3+' ? itemBathrooms >= bathroomsVal : itemBathrooms === bathroomsVal;
+        });
+      }
+
+      // Amenities Immobilier
+      if (filters.hasElevator) {
+        filteredData = filteredData.filter(item => item.attributes?.has_elevator === true);
+      }
+      if (filters.hasParking) {
+        filteredData = filteredData.filter(item => item.attributes?.has_parking === true);
+      }
+      if (filters.hasBalcony) {
+        filteredData = filteredData.filter(item => item.attributes?.has_balcony === true);
+      }
+      if (filters.hasGarden) {
+        filteredData = filteredData.filter(item => item.attributes?.has_garden === true);
+      }
+      if (filters.hasPool) {
+        filteredData = filteredData.filter(item => item.attributes?.has_pool === true);
+      }
+      if (filters.hasAirConditioning) {
+        filteredData = filteredData.filter(item => item.attributes?.has_air_conditioning === true);
+      }
+      if (filters.hasHeating) {
+        filteredData = filteredData.filter(item => item.attributes?.has_heating === true);
       }
 
       // Filtres Électronique
@@ -462,6 +564,63 @@ export default function CategoriesAndFilters({
         filteredData = filteredData.filter(item =>
           item.condition === filters.condition
         );
+      }
+
+      if (filters.storage) {
+        console.log('[applyFilters] Filtering by storage:', filters.storage);
+        filteredData = filteredData.filter(item =>
+          item.attributes?.storage === filters.storage
+        );
+      }
+
+      if (filters.hasWarranty) {
+        filteredData = filteredData.filter(item => item.attributes?.has_warranty === true);
+      }
+      if (filters.hasBox) {
+        filteredData = filteredData.filter(item => item.attributes?.has_box === true);
+      }
+      if (filters.hasAccessories) {
+        filteredData = filteredData.filter(item => item.attributes?.has_accessories === true);
+      }
+
+      // Filtres Location Immobilière
+      if (filters.furnished) {
+        console.log('[applyFilters] Filtering by furnished:', filters.furnished);
+        filteredData = filteredData.filter(item =>
+          item.attributes?.furnished === filters.furnished
+        );
+      }
+
+      if (filters.monthlyRentMin) {
+        const rentMin = parseFloat(filters.monthlyRentMin);
+        console.log('[applyFilters] Filtering by monthlyRentMin:', rentMin);
+        filteredData = filteredData.filter(item => {
+          const rent = parseFloat(item.attributes?.monthly_rent || '0');
+          return rent >= rentMin;
+        });
+      }
+
+      if (filters.monthlyRentMax) {
+        const rentMax = parseFloat(filters.monthlyRentMax);
+        console.log('[applyFilters] Filtering by monthlyRentMax:', rentMax);
+        filteredData = filteredData.filter(item => {
+          const rent = parseFloat(item.attributes?.monthly_rent || '999999999');
+          return rent <= rentMax;
+        });
+      }
+
+      // Amenities Location
+      if (filters.hasWifi) {
+        filteredData = filteredData.filter(item => item.attributes?.has_wifi === true);
+      }
+      if (filters.hasTV) {
+        filteredData = filteredData.filter(item => item.attributes?.has_tv === true);
+      }
+      if (filters.hasKitchen) {
+        filteredData = filteredData.filter(item => item.attributes?.has_kitchen === true);
+      }
+      if (filters.hasWashingMachine) {
+        filteredData = filteredData.filter(item => item.attributes?.has_washing_machine === true);
       }
 
       // Filtres Emploi
@@ -621,8 +780,11 @@ export default function CategoriesAndFilters({
     // Véhicules et locations de véhicules
     if (slug.includes('vehicule') || slug.includes('auto') || slug.includes('moto') || slug.includes('voiture')) return 'vehicle';
 
-    // Immobilier et locations immobilières/vacances
-    if (slug.includes('immobilier') || slug.includes('appartement') || slug.includes('maison') || slug.includes('terrain') || slug.includes('bureau') || slug.includes('location-vacances')) return 'realestate';
+    // Location immobilière (avant immobilier général)
+    if (slug.includes('location-immobiliere') || slug.includes('location-vacances')) return 'rental';
+
+    // Immobilier (vente)
+    if (slug.includes('immobilier') || slug.includes('appartement') || slug.includes('maison') || slug.includes('terrain') || slug.includes('bureau')) return 'realestate';
 
     // Électronique
     if (slug.includes('electronique') || slug.includes('telephone') || slug.includes('ordinateur') || slug.includes('tablette')) return 'electronics';
@@ -1043,6 +1205,43 @@ export default function CategoriesAndFilters({
         </View>
       </View>
 
+      {/* Kilométrage */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'المسافة المقطوعة' : language === 'en' ? 'Mileage (km)' : 'Kilométrage (km)'}
+        </Text>
+        <View style={styles.rangeInputs}>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            value={filters.mileageMin || ''}
+            onChangeText={(val) => updateFilter('mileageMin', val)}
+            keyboardType="numeric"
+          />
+          <Text style={styles.rangeSeparator}>-</Text>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            value={filters.mileageMax || ''}
+            onChangeText={(val) => updateFilter('mileageMax', val)}
+            keyboardType="numeric"
+          />
+        </View>
+      </View>
+
+      {/* Couleur */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'اللون' : language === 'en' ? 'Color' : 'Couleur'}
+        </Text>
+        <TextInput
+          style={styles.input}
+          placeholder={language === 'ar' ? 'مثال: أسود، أبيض' : language === 'en' ? 'E.g.: Black, White' : 'Ex: Noir, Blanc'}
+          value={filters.color || ''}
+          onChangeText={(val) => updateFilter('color', val)}
+        />
+      </View>
+
       {/* Localisation (Wilaya + Commune) */}
       {renderLocationFilters()}
     </View>
@@ -1105,13 +1304,23 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'المساحة (م²)' : language === 'en' ? 'Surface (m²)' : 'Surface (m²)'}
         </Text>
-        <TextInput
-          style={styles.input}
-          placeholder={language === 'ar' ? 'الحد الأدنى' : language === 'en' ? 'Min' : 'Min'}
-          value={filters.surface || ''}
-          onChangeText={(val) => updateFilter('surface', val)}
-          keyboardType="numeric"
-        />
+        <View style={styles.rangeInputs}>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            value={filters.surfaceMin || ''}
+            onChangeText={(val) => updateFilter('surfaceMin', val)}
+            keyboardType="numeric"
+          />
+          <Text style={styles.rangeSeparator}>-</Text>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            value={filters.surfaceMax || ''}
+            onChangeText={(val) => updateFilter('surfaceMax', val)}
+            keyboardType="numeric"
+          />
+        </View>
       </View>
 
       {/* Pièces */}
@@ -1128,6 +1337,73 @@ export default function CategoriesAndFilters({
             >
               <Text style={[styles.chipText, filters.rooms === room && styles.chipTextActive]}>
                 {room}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Chambres */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'غرف النوم' : language === 'en' ? 'Bedrooms' : 'Chambres'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {['1', '2', '3', '4', '5+'].map((bedroom) => (
+            <TouchableOpacity
+              key={bedroom}
+              style={[styles.chip, filters.bedrooms === bedroom && styles.chipActive]}
+              onPress={() => updateFilter('bedrooms', filters.bedrooms === bedroom ? '' : bedroom)}
+            >
+              <Text style={[styles.chipText, filters.bedrooms === bedroom && styles.chipTextActive]}>
+                {bedroom}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Salles de bain */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'الحمامات' : language === 'en' ? 'Bathrooms' : 'Salles de bain'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {['1', '2', '3+'].map((bathroom) => (
+            <TouchableOpacity
+              key={bathroom}
+              style={[styles.chip, filters.bathrooms === bathroom && styles.chipActive]}
+              onPress={() => updateFilter('bathrooms', filters.bathrooms === bathroom ? '' : bathroom)}
+            >
+              <Text style={[styles.chipText, filters.bathrooms === bathroom && styles.chipTextActive]}>
+                {bathroom}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Équipements */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'المرافق' : language === 'en' ? 'Amenities' : 'Équipements'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {[
+            { key: 'hasElevator', label: language === 'ar' ? 'مصعد' : language === 'en' ? 'Elevator' : 'Ascenseur' },
+            { key: 'hasParking', label: language === 'ar' ? 'موقف سيارات' : language === 'en' ? 'Parking' : 'Parking' },
+            { key: 'hasBalcony', label: language === 'ar' ? 'شرفة' : language === 'en' ? 'Balcony' : 'Balcon' },
+            { key: 'hasGarden', label: language === 'ar' ? 'حديقة' : language === 'en' ? 'Garden' : 'Jardin' },
+            { key: 'hasPool', label: language === 'ar' ? 'مسبح' : language === 'en' ? 'Pool' : 'Piscine' },
+            { key: 'hasAirConditioning', label: language === 'ar' ? 'تكييف' : language === 'en' ? 'A/C' : 'Climatisation' }
+          ].map((amenity) => (
+            <TouchableOpacity
+              key={amenity.key}
+              style={[styles.chip, filters[amenity.key] && styles.chipActive]}
+              onPress={() => updateFilter(amenity.key, !filters[amenity.key])}
+            >
+              <Text style={[styles.chipText, filters[amenity.key] && styles.chipTextActive]}>
+                {amenity.label}
               </Text>
             </TouchableOpacity>
           ))}
@@ -1170,6 +1446,8 @@ export default function CategoriesAndFilters({
                 style={styles.dropdownItem}
                 onPress={() => {
                   updateFilter('brand_id', '');
+                  updateFilter('model_id', '');
+                  setModels([]);
                   setShowBrandDropdown(false);
                 }}
               >
@@ -1183,6 +1461,7 @@ export default function CategoriesAndFilters({
                   style={[styles.dropdownItem, filters.brand_id === brand.id && styles.dropdownItemActive]}
                   onPress={() => {
                     updateFilter('brand_id', brand.id);
+                    updateFilter('model_id', '');
                     setShowBrandDropdown(false);
                   }}
                 >
@@ -1196,25 +1475,54 @@ export default function CategoriesAndFilters({
         </View>
       )}
 
-      {/* Type d'appareil */}
-      <View style={styles.filterGroup}>
-        <Text style={styles.filterLabel}>
-          {language === 'ar' ? 'نوع الجهاز' : language === 'en' ? 'Device Type' : 'Type d\'appareil'}
-        </Text>
-        <View style={styles.chipContainer}>
-          {['Téléphone', 'Tablette', 'Ordinateur', 'TV', 'Console'].map((device) => (
-            <TouchableOpacity
-              key={device}
-              style={[styles.chip, filters.deviceType === device && styles.chipActive]}
-              onPress={() => updateFilter('deviceType', filters.deviceType === device ? '' : device)}
-            >
-              <Text style={[styles.chipText, filters.deviceType === device && styles.chipTextActive]}>
-                {device}
-              </Text>
-            </TouchableOpacity>
-          ))}
+      {/* Modèle */}
+      {filters.brand_id && models.length > 0 && (
+        <View style={styles.filterGroup}>
+          <Text style={styles.filterLabel}>
+            {language === 'ar' ? 'الطراز' : language === 'en' ? 'Model' : 'Modèle'}
+          </Text>
+          <TouchableOpacity
+            style={styles.dropdown}
+            onPress={() => setShowModelDropdown(!showModelDropdown)}
+          >
+            <Text style={[styles.dropdownText, !filters.model_id && styles.dropdownPlaceholder]}>
+              {models.find(m => m.id === filters.model_id)?.name ||
+               (language === 'ar' ? 'اختر الطراز' : language === 'en' ? 'Select model' : 'Sélectionner un modèle')}
+            </Text>
+            <ChevronDown size={20} color="#64748B" />
+          </TouchableOpacity>
+
+          {showModelDropdown && (
+            <ScrollView style={styles.dropdownMenu} nestedScrollEnabled>
+              <TouchableOpacity
+                style={styles.dropdownItem}
+                onPress={() => {
+                  updateFilter('model_id', '');
+                  setShowModelDropdown(false);
+                }}
+              >
+                <Text style={styles.dropdownItemText}>
+                  {language === 'ar' ? 'الكل' : language === 'en' ? 'All' : 'Tous'}
+                </Text>
+              </TouchableOpacity>
+              {models.map((model) => (
+                <TouchableOpacity
+                  key={model.id}
+                  style={[styles.dropdownItem, filters.model_id === model.id && styles.dropdownItemActive]}
+                  onPress={() => {
+                    updateFilter('model_id', model.id);
+                    setShowModelDropdown(false);
+                  }}
+                >
+                  <Text style={[styles.dropdownItemText, filters.model_id === model.id && styles.dropdownItemTextActive]}>
+                    {model.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
         </View>
-      </View>
+      )}
 
       {/* État */}
       <View style={styles.filterGroup}>
@@ -1230,6 +1538,50 @@ export default function CategoriesAndFilters({
             >
               <Text style={[styles.chipText, filters.condition === cond && styles.chipTextActive]}>
                 {cond}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Stockage */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'التخزين' : language === 'en' ? 'Storage' : 'Stockage'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {['16 GB', '32 GB', '64 GB', '128 GB', '256 GB', '512 GB', '1 TB'].map((storage) => (
+            <TouchableOpacity
+              key={storage}
+              style={[styles.chip, filters.storage === storage && styles.chipActive]}
+              onPress={() => updateFilter('storage', filters.storage === storage ? '' : storage)}
+            >
+              <Text style={[styles.chipText, filters.storage === storage && styles.chipTextActive]}>
+                {storage}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Garantie et Accessoires */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'ميزات إضافية' : language === 'en' ? 'Additional Features' : 'Options'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {[
+            { key: 'hasWarranty', label: language === 'ar' ? 'ضمان' : language === 'en' ? 'Warranty' : 'Garantie' },
+            { key: 'hasBox', label: language === 'ar' ? 'الصندوق الأصلي' : language === 'en' ? 'Original Box' : 'Boîte d\'origine' },
+            { key: 'hasAccessories', label: language === 'ar' ? 'إكسسوارات' : language === 'en' ? 'Accessories' : 'Accessoires' }
+          ].map((option) => (
+            <TouchableOpacity
+              key={option.key}
+              style={[styles.chip, filters[option.key] && styles.chipActive]}
+              onPress={() => updateFilter(option.key, !filters[option.key])}
+            >
+              <Text style={[styles.chipText, filters[option.key] && styles.chipTextActive]}>
+                {option.label}
               </Text>
             </TouchableOpacity>
           ))}
@@ -1257,6 +1609,180 @@ export default function CategoriesAndFilters({
             onChangeText={(val) => updateFilter('priceMax', val)}
             keyboardType="numeric"
           />
+        </View>
+      </View>
+
+      {/* Localisation (Wilaya + Commune) */}
+      {renderLocationFilters()}
+    </View>
+  );
+
+  const renderRentalFilters = () => (
+    <View style={styles.filtersContainer}>
+      {/* Type d'annonce */}
+      {renderListingTypeFilter()}
+
+      {/* Sous-catégorie */}
+      {renderSubcategoryFilter()}
+
+      {/* Type de bien */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'نوع العقار' : language === 'en' ? 'Property Type' : 'Type de bien'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {['Appartement', 'Maison', 'Villa', 'Studio', 'Chambre', 'Colocation'].map((type) => (
+            <TouchableOpacity
+              key={type}
+              style={[styles.chip, filters.propertyType === type && styles.chipActive]}
+              onPress={() => updateFilter('propertyType', filters.propertyType === type ? '' : type)}
+            >
+              <Text style={[styles.chipText, filters.propertyType === type && styles.chipTextActive]}>
+                {type}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Meublé */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'الأثاث' : language === 'en' ? 'Furnished' : 'Meublé'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {[
+            { key: 'meuble', label: language === 'ar' ? 'مفروش' : language === 'en' ? 'Furnished' : 'Meublé' },
+            { key: 'non_meuble', label: language === 'ar' ? 'غير مفروش' : language === 'en' ? 'Unfurnished' : 'Non meublé' },
+            { key: 'semi_meuble', label: language === 'ar' ? 'شبه مفروش' : language === 'en' ? 'Semi-furnished' : 'Semi-meublé' }
+          ].map((option) => (
+            <TouchableOpacity
+              key={option.key}
+              style={[styles.chip, filters.furnished === option.key && styles.chipActive]}
+              onPress={() => updateFilter('furnished', filters.furnished === option.key ? '' : option.key)}
+            >
+              <Text style={[styles.chipText, filters.furnished === option.key && styles.chipTextActive]}>
+                {option.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Loyer mensuel */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'الإيجار الشهري (دج)' : language === 'en' ? 'Monthly Rent (DZD)' : 'Loyer mensuel (DA)'}
+        </Text>
+        <View style={styles.rangeInputs}>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            value={filters.monthlyRentMin || ''}
+            onChangeText={(val) => updateFilter('monthlyRentMin', val)}
+            keyboardType="numeric"
+          />
+          <Text style={styles.rangeSeparator}>-</Text>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            value={filters.monthlyRentMax || ''}
+            onChangeText={(val) => updateFilter('monthlyRentMax', val)}
+            keyboardType="numeric"
+          />
+        </View>
+      </View>
+
+      {/* Surface */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'المساحة (م²)' : language === 'en' ? 'Surface (m²)' : 'Surface (m²)'}
+        </Text>
+        <View style={styles.rangeInputs}>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            value={filters.surfaceMin || ''}
+            onChangeText={(val) => updateFilter('surfaceMin', val)}
+            keyboardType="numeric"
+          />
+          <Text style={styles.rangeSeparator}>-</Text>
+          <TextInput
+            style={[styles.input, styles.rangeInput]}
+            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            value={filters.surfaceMax || ''}
+            onChangeText={(val) => updateFilter('surfaceMax', val)}
+            keyboardType="numeric"
+          />
+        </View>
+      </View>
+
+      {/* Pièces */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'عدد الغرف' : language === 'en' ? 'Rooms' : 'Nombre de pièces'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {['1', '2', '3', '4', '5+'].map((room) => (
+            <TouchableOpacity
+              key={room}
+              style={[styles.chip, filters.rooms === room && styles.chipActive]}
+              onPress={() => updateFilter('rooms', filters.rooms === room ? '' : room)}
+            >
+              <Text style={[styles.chipText, filters.rooms === room && styles.chipTextActive]}>
+                {room}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Chambres */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'غرف النوم' : language === 'en' ? 'Bedrooms' : 'Chambres'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {['1', '2', '3', '4', '5+'].map((bedroom) => (
+            <TouchableOpacity
+              key={bedroom}
+              style={[styles.chip, filters.bedrooms === bedroom && styles.chipActive]}
+              onPress={() => updateFilter('bedrooms', filters.bedrooms === bedroom ? '' : bedroom)}
+            >
+              <Text style={[styles.chipText, filters.bedrooms === bedroom && styles.chipTextActive]}>
+                {bedroom}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Équipements */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'المرافق' : language === 'en' ? 'Amenities' : 'Équipements'}
+        </Text>
+        <View style={styles.chipContainer}>
+          {[
+            { key: 'hasWifi', label: language === 'ar' ? 'واي فاي' : language === 'en' ? 'WiFi' : 'WiFi' },
+            { key: 'hasTV', label: language === 'ar' ? 'تلفاز' : language === 'en' ? 'TV' : 'TV' },
+            { key: 'hasAirConditioning', label: language === 'ar' ? 'تكييف' : language === 'en' ? 'A/C' : 'Climatisation' },
+            { key: 'hasHeating', label: language === 'ar' ? 'تدفئة' : language === 'en' ? 'Heating' : 'Chauffage' },
+            { key: 'hasKitchen', label: language === 'ar' ? 'مطبخ' : language === 'en' ? 'Kitchen' : 'Cuisine' },
+            { key: 'hasWashingMachine', label: language === 'ar' ? 'غسالة' : language === 'en' ? 'Washing Machine' : 'Lave-linge' },
+            { key: 'hasElevator', label: language === 'ar' ? 'مصعد' : language === 'en' ? 'Elevator' : 'Ascenseur' },
+            { key: 'hasParking', label: language === 'ar' ? 'موقف سيارات' : language === 'en' ? 'Parking' : 'Parking' }
+          ].map((amenity) => (
+            <TouchableOpacity
+              key={amenity.key}
+              style={[styles.chip, filters[amenity.key] && styles.chipActive]}
+              onPress={() => updateFilter(amenity.key, !filters[amenity.key])}
+            >
+              <Text style={[styles.chipText, filters[amenity.key] && styles.chipTextActive]}>
+                {amenity.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
 
@@ -1548,6 +2074,8 @@ export default function CategoriesAndFilters({
         return renderVehicleFilters();
       case 'realestate':
         return renderRealEstateFilters();
+      case 'rental':
+        return renderRentalFilters();
       case 'electronics':
         return renderElectronicsFilters();
       case 'employment':
