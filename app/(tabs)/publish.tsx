@@ -3287,9 +3287,11 @@ const styles = StyleSheet.create({
   },
   accountCardsContainer: {
     width: '100%',
+    flexDirection: 'row',
     gap: 16,
   },
   accountCard: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 20,
@@ -3362,6 +3364,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   proAccountCard: {
+    flex: 1,
     backgroundColor: '#FFF7ED',
     borderRadius: 16,
     padding: 20,
