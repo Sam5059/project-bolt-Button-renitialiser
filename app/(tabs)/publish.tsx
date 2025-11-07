@@ -3144,23 +3144,26 @@ export default function PublishScreen() {
             </>
           )}
 
-          <View style={styles.inputGroup}>
-            <Text style={[styles.label, isRTL && styles.textRTL]}>{t('publish.condition')}</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={condition}
-                onValueChange={(value) => setCondition(value)}
-                style={[styles.picker, !condition && styles.pickerPlaceholder]}
-              >
-                <Picker.Item label={t('publish.conditionQuestion')} value="" color="#94A3B8" />
-                <Picker.Item label={t('publish.conditionNew')} value="new" />
-                <Picker.Item label={t('publish.conditionLikeNew')} value="like_new" />
-                <Picker.Item label={t('publish.conditionGood')} value="good" />
-                <Picker.Item label={t('publish.conditionFair')} value="fair" />
-                <Picker.Item label={t('publish.conditionPoor')} value="poor" />
-              </Picker>
+          {/* État général - Masqué pour Animaux (a ses propres champs spécifiques) */}
+          {categories.find(c => c.id === parentCategoryId)?.slug !== 'animaux' && (
+            <View style={styles.inputGroup}>
+              <Text style={[styles.label, isRTL && styles.textRTL]}>{t('publish.condition')}</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={condition}
+                  onValueChange={(value) => setCondition(value)}
+                  style={[styles.picker, !condition && styles.pickerPlaceholder]}
+                >
+                  <Picker.Item label={t('publish.conditionQuestion')} value="" color="#94A3B8" />
+                  <Picker.Item label={t('publish.conditionNew')} value="new" />
+                  <Picker.Item label={t('publish.conditionLikeNew')} value="like_new" />
+                  <Picker.Item label={t('publish.conditionGood')} value="good" />
+                  <Picker.Item label={t('publish.conditionFair')} value="fair" />
+                  <Picker.Item label={t('publish.conditionPoor')} value="poor" />
+                </Picker>
+              </View>
             </View>
-          </View>
+          )}
         </View>
 
         {/* 3. PHOTOS - AVANT LOCALISATION */}
