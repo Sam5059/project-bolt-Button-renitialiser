@@ -1099,9 +1099,6 @@ export default function PublishScreen() {
         <Text style={[styles.title, isRTL && styles.textRTL]}>
           {isEditMode ? (t('publish.editTitle') || 'Modifier l\'annonce') : t('publish.title')}
         </Text>
-        <Text style={[styles.subtitle, isRTL && styles.textRTL]}>
-          {isEditMode ? (t('publish.editSubtitle') || 'Modifiez les informations de votre annonce') : t('publish.subtitle')}
-        </Text>
       </View>
 
       {!isEditMode && listingsQuota && !quotaLoading && (
@@ -1111,16 +1108,11 @@ export default function PublishScreen() {
       )}
 
       <View style={styles.form}>
-        {/* 1. TYPE D'ANNONCEUR - EN PREMIER */}
+        {/* 1. TYPE D'ANNONCEUR - COMPACT VERSION */}
         <View style={styles.section}>
-          <View style={styles.accountTypeHeader}>
-            <Text style={[styles.accountTypeTitle, isRTL && styles.textRTL]}>
-              {language === 'ar' ? 'نوع الحساب' : language === 'en' ? 'Account Type' : 'Type de compte'}
-            </Text>
-            <Text style={[styles.accountTypeSubtitle, isRTL && styles.textRTL]}>
-              {language === 'ar' ? 'اختر نوع الحساب المناسب لاحتياجاتك' : language === 'en' ? 'Select the account type that fits your needs' : 'Choisissez le type de compte adapté à vos besoins'}
-            </Text>
-          </View>
+          <Text style={[styles.sectionLabel, isRTL && styles.textRTL]}>
+            {language === 'ar' ? 'نوع الحساب' : language === 'en' ? 'Account Type' : 'Type de compte'}
+          </Text>
 
           <View style={styles.inputGroup}>
             {profileLoading ? (
@@ -1129,159 +1121,60 @@ export default function PublishScreen() {
                 <Text style={[styles.loadingText, isRTL && styles.textRTL]}>{t('common.loading')}</Text>
               </View>
             ) : userProfile?.has_active_pro_package === true ? (
-              <View style={styles.proBadgeContainer}>
-                <View style={styles.proBadge}>
-                  <Text style={styles.proBadgeIcon}>💼</Text>
-                  <View style={styles.proBadgeTextContainer}>
-                    <Text style={[styles.proBadgeTitle, isRTL && styles.textRTL]}>
-                      {language === 'ar' ? 'حساب PRO نشط' : language === 'en' ? 'Active PRO Account' : 'Compte PRO Actif'}
-                    </Text>
-                    <Text style={[styles.proBadgeSubtitle, isRTL && styles.textRTL]}>
-                      {language === 'ar' ? `تنتهي في ${userProfile.pro_package_expires_at ? new Date(userProfile.pro_package_expires_at).toLocaleDateString('ar-DZ') : 'N/A'}` : language === 'en' ? `Expires ${userProfile.pro_package_expires_at ? new Date(userProfile.pro_package_expires_at).toLocaleDateString('en-US') : 'N/A'}` : `Expire le ${userProfile.pro_package_expires_at ? new Date(userProfile.pro_package_expires_at).toLocaleDateString('fr-FR') : 'N/A'}`}
-                    </Text>
-                  </View>
+              <View style={styles.proStatusCompact}>
+                <View style={styles.proStatusBadge}>
+                  <Text style={styles.proStatusIcon}>💼</Text>
+                  <Text style={[styles.proStatusText, isRTL && styles.textRTL]}>
+                    {language === 'ar' ? 'حساب PRO نشط' : language === 'en' ? 'Active PRO Account' : 'Compte PRO Actif'}
+                  </Text>
                 </View>
                 <TouchableOpacity
-                  style={styles.upgradeButton}
+                  style={styles.proRenewButton}
                   onPress={() => router.push('/pro/packages')}
                 >
-                  <Text style={[styles.upgradeButtonText, isRTL && styles.textRTL]}>
-                    {language === 'ar' ? '⭐ تجديد' : language === 'en' ? '⭐ Renew' : '⭐ Renouveler'}
+                  <Text style={styles.proRenewButtonText}>
+                    {language === 'ar' ? 'تجديد' : language === 'en' ? 'Renew' : 'Renouveler'}
                   </Text>
                 </TouchableOpacity>
               </View>
             ) : (
-              <View style={styles.accountCardsContainer}>
-                {/* FREE ACCOUNT CARD */}
-                <View style={styles.accountCard}>
-                  <View style={styles.accountCardHeader}>
-                    <View style={styles.accountCardIconContainer}>
-                      <Text style={styles.accountCardIcon}>👤</Text>
+              <>
+                <View style={styles.accountOptionsRow}>
+                  <TouchableOpacity
+                    style={[styles.accountOption, userType === 'individual' && styles.accountOptionActive]}
+                    onPress={() => setUserType('individual')}
+                  >
+                    <View style={styles.radioOuter}>
+                      {userType === 'individual' && <View style={styles.radioInner} />}
                     </View>
-                    <View style={styles.freeBadge}>
-                      <Text style={styles.freeBadgeText}>
-                        {language === 'ar' ? 'مجاني' : language === 'en' ? 'FREE' : 'GRATUIT'}
+                    <View style={styles.accountOptionContent}>
+                      <Text style={[styles.accountOptionIcon]}>👤</Text>
+                      <Text style={[styles.accountOptionTitle, isRTL && styles.textRTL]}>
+                        {language === 'ar' ? 'حساب شخصي' : language === 'en' ? 'Individual' : 'Particulier'}
                       </Text>
                     </View>
-                  </View>
-                  
-                  <Text style={[styles.accountCardTitle, isRTL && styles.textRTL]}>
-                    {language === 'ar' ? 'حساب شخصي' : language === 'en' ? 'Personal Account' : 'Particulier'}
-                  </Text>
-                  
-                  <Text style={[styles.accountCardTagline, isRTL && styles.textRTL]}>
-                    {language === 'ar' ? 'مثالي لبيع أغراضك الشخصية' : language === 'en' ? 'Perfect for selling your personal items' : 'Parfait pour vendre vos articles personnels'}
-                  </Text>
+                  </TouchableOpacity>
 
-                  <View style={styles.featuresList}>
-                    <View style={styles.featureItem}>
-                      <Text style={styles.featureCheck}>✓</Text>
-                      <Text style={[styles.featureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'إيداع إعلان' : language === 'en' ? 'Post an ad' : 'Déposer une annonce'}
+                  <TouchableOpacity
+                    style={[styles.accountOption]}
+                    onPress={() => router.push('/pro/packages')}
+                  >
+                    <View style={styles.proOptionBadge}>
+                      <Text style={styles.proOptionBadgeText}>PRO</Text>
+                    </View>
+                    <View style={styles.accountOptionContent}>
+                      <Text style={[styles.accountOptionIcon]}>💼</Text>
+                      <Text style={[styles.accountOptionTitle, isRTL && styles.textRTL]}>
+                        {language === 'ar' ? 'حساب PRO' : language === 'en' ? 'Professional' : 'Professionnel'}
                       </Text>
                     </View>
-                    <View style={styles.featureItem}>
-                      <Text style={styles.featureCheck}>✓</Text>
-                      <Text style={[styles.featureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'إعلان واحد نشط لكل فئة' : language === 'en' ? '1 active listing per category' : '1 annonce active par catégorie'}
-                      </Text>
-                    </View>
-                    <View style={styles.featureItem}>
-                      <Text style={styles.featureCheck}>✓</Text>
-                      <Text style={[styles.featureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'صور ووصف كامل' : language === 'en' ? 'Photos and full description' : 'Photos et description complète'}
-                      </Text>
-                    </View>
-                    <View style={styles.featureItem}>
-                      <Text style={styles.featureCheck}>✓</Text>
-                      <Text style={[styles.featureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'ملف شخصي أساسي' : language === 'en' ? 'Basic seller profile' : 'Profil vendeur basique'}
-                      </Text>
-                    </View>
-                  </View>
+                    <Text style={styles.upgradeArrow}>→</Text>
+                  </TouchableOpacity>
                 </View>
-
-                {/* PRO ACCOUNT CARD */}
-                <TouchableOpacity
-                  style={styles.proAccountCard}
-                  activeOpacity={0.95}
-                  onPress={() => router.push('/pro/packages')}
-                >
-                  <View style={styles.recommendedBadge}>
-                    <Text style={styles.recommendedBadgeText}>
-                      {language === 'ar' ? '⭐ موصى به' : language === 'en' ? '⭐ RECOMMENDED' : '⭐ RECOMMANDÉ'}
-                    </Text>
-                  </View>
-
-                  <View style={styles.accountCardHeader}>
-                    <View style={styles.proCardIconContainer}>
-                      <Text style={styles.proCardIcon}>💼</Text>
-                    </View>
-                  </View>
-                  
-                  <Text style={[styles.proCardTitle, isRTL && styles.textRTL]}>
-                    {language === 'ar' ? 'حساب PRO' : language === 'en' ? 'PRO Account' : 'Compte PRO'}
-                  </Text>
-                  
-                  <Text style={[styles.proCardSubtitle, isRTL && styles.textRTL]}>
-                    {language === 'ar' ? 'عزز مبيعاتك' : language === 'en' ? 'Boost your sales' : 'Boostez vos ventes'}
-                  </Text>
-
-                  <Text style={[styles.proCardTagline, isRTL && styles.textRTL]}>
-                    {language === 'ar' ? 'للمحترفين والبائعين المنتظمين' : language === 'en' ? 'For professionals and regular sellers' : 'Pour les professionnels et vendeurs réguliers'}
-                  </Text>
-
-                  <View style={styles.proFeaturesList}>
-                    <View style={styles.proFeatureItem}>
-                      <Text style={styles.proFeatureIcon}>⭐</Text>
-                      <Text style={[styles.proFeatureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'إعلانات غير محدودة' : language === 'en' ? 'Unlimited listings' : 'Annonces illimitées'}
-                      </Text>
-                    </View>
-                    <View style={styles.proFeatureItem}>
-                      <Text style={styles.proFeatureIcon}>🚀</Text>
-                      <Text style={[styles.proFeatureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'أولوية الظهور في البحث' : language === 'en' ? 'Priority visibility in search' : 'Visibilité prioritaire'}
-                      </Text>
-                    </View>
-                    <View style={styles.proFeatureItem}>
-                      <Text style={styles.proFeatureIcon}>📊</Text>
-                      <Text style={[styles.proFeatureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'لوحة تحليلات مفصلة' : language === 'en' ? 'Detailed analytics' : 'Statistiques détaillées'}
-                      </Text>
-                    </View>
-                    <View style={styles.proFeatureItem}>
-                      <Text style={styles.proFeatureIcon}>🎯</Text>
-                      <Text style={[styles.proFeatureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'شارة PRO موثقة' : language === 'en' ? 'Verified PRO badge' : 'Badge PRO vérifié'}
-                      </Text>
-                    </View>
-                    <View style={styles.proFeatureItem}>
-                      <Text style={styles.proFeatureIcon}>📞</Text>
-                      <Text style={[styles.proFeatureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'دعم العملاء الأولوية' : language === 'en' ? 'Priority support' : 'Support prioritaire'}
-                      </Text>
-                    </View>
-                    <View style={styles.proFeatureItem}>
-                      <Text style={styles.proFeatureIcon}>🔄</Text>
-                      <Text style={[styles.proFeatureText, isRTL && styles.textRTL]}>
-                        {language === 'ar' ? 'ميزة إعادة النشر التلقائي' : language === 'en' ? 'Auto-repost feature' : 'Republication automatique'}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.proCardCTA}>
-                    <Text style={[styles.proCTAText, isRTL && styles.textRTL]}>
-                      {language === 'ar' ? 'عرض باقات PRO' : language === 'en' ? 'View PRO Plans' : 'Voir les forfaits PRO'}
-                    </Text>
-                    <Text style={styles.proCTAArrow}>→</Text>
-                  </View>
-
-                  <Text style={[styles.proCardPricing, isRTL && styles.textRTL]}>
-                    {language === 'ar' ? 'ابتداء من 5,000 دج/شهر' : language === 'en' ? 'Starting from 5,000 DZD/month' : 'À partir de 5 000 DZD/mois'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                <Text style={[styles.accountHint, isRTL && styles.textRTL]}>
+                  {language === 'ar' ? 'احصل على PRO للحصول على إعلانات غير محدودة وأولوية الظهور' : language === 'en' ? 'Get PRO for unlimited ads and priority visibility' : 'Passez PRO pour des annonces illimitées et une visibilité prioritaire'}
+                </Text>
+              </>
             )}
           </View>
         </View>
@@ -3441,27 +3334,22 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#FFFFFF',
-    padding: 24,
-    paddingBottom: 28,
+    padding: 16,
+    paddingBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '800',
+    fontSize: 22,
+    fontWeight: '700',
     color: '#1E293B',
-    marginBottom: 6,
-    letterSpacing: -0.5,
+    letterSpacing: -0.3,
   },
-  subtitle: {
-    fontSize: 15,
-    color: '#64748B',
-    lineHeight: 22,
+  sectionLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#475569',
+    marginBottom: 12,
   },
   quotaContainer: {
     paddingHorizontal: 16,
@@ -3999,111 +3887,112 @@ const styles = StyleSheet.create({
   typeButtonFullWidth: {
     marginBottom: 16,
   },
-  accountTypeHeader: {
-    marginBottom: 20,
-  },
-  accountTypeTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#1F2937',
-    marginBottom: 6,
-  },
-  accountTypeSubtitle: {
-    fontSize: 15,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-  accountCardsContainer: {
-    width: '100%',
+  proStatusCompact: {
     flexDirection: 'row',
-    gap: 16,
-  },
-  accountCard: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  accountCardHeader: {
-    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  accountCardIconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#ECFDF5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  accountCardIcon: {
-    fontSize: 28,
-  },
-  freeBadge: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#FFF7ED',
     borderRadius: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#FED7AA',
   },
-  freeBadgeText: {
+  proStatusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  proStatusIcon: {
+    fontSize: 20,
+  },
+  proStatusText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#92400E',
+  },
+  proRenewButton: {
+    backgroundColor: '#F59E0B',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  proRenewButtonText: {
     color: '#FFFFFF',
-    fontSize: 11,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  accountOptionsRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  accountOption: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  accountOptionActive: {
+    backgroundColor: '#EFF6FF',
+    borderColor: '#2563EB',
+  },
+  radioOuter: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#2563EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#2563EB',
+  },
+  accountOptionContent: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  accountOptionIcon: {
+    fontSize: 24,
+  },
+  accountOptionTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1E293B',
+  },
+  proOptionBadge: {
+    position: 'absolute',
+    top: -8,
+    right: 8,
+    backgroundColor: '#F59E0B',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  proOptionBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
     fontWeight: '800',
     letterSpacing: 0.5,
   },
-  accountCardTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#1F2937',
-    marginBottom: 6,
+  upgradeArrow: {
+    fontSize: 18,
+    color: '#64748B',
   },
-  accountCardTagline: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 20,
-    lineHeight: 20,
-  },
-  featuresList: {
-    gap: 12,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  featureCheck: {
-    fontSize: 16,
-    color: '#10B981',
-    fontWeight: '700',
-  },
-  featureText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#374151',
-    fontWeight: '500',
-  },
-  proAccountCard: {
-    flex: 1,
-    backgroundColor: '#FFF7ED',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: '#FED7AA',
-    shadowColor: '#F59E0B',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 4,
-    position: 'relative',
+  accountHint: {
+    fontSize: 13,
+    color: '#64748B',
+    marginTop: 8,
+    lineHeight: 18,
   },
   recommendedBadge: {
     position: 'absolute',
