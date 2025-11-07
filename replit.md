@@ -20,15 +20,18 @@ Preferred communication style: Simple, everyday language.
 - Platform-specific components (`.web.tsx` for web, `.tsx` for native)
 
 **Key Design Patterns:**
-- Context-based state management for authentication (`AuthContext`) and internationalization (`LanguageContext`)
+- Context-based state management for authentication (`AuthContext`), internationalization (`LanguageContext`), and global search (`SearchContext`)
 - Multi-language support (French, Arabic, English) with RTL support
 - Responsive design with platform-specific adaptations
 - Tab-based navigation with nested routes
+- Intelligent category auto-detection via multilingual keyword matching (`lib/categoryKeywords.ts`)
 
 **Core Features:**
 - User authentication and role management (user, admin, super_admin)
 - Multi-category listings with hierarchical categories and subcategories
 - Advanced search and filtering with geolocation-based distance calculation
+- **Smart global search synchronization** - Search query shared across TopBar and filters sidebar
+- **Automatic category detection** - Keywords in search queries auto-select relevant categories with visual highlighting
 - Real-time messaging and notifications
 - Pro subscription system with tiered packages
 - Admin dashboard for user and content moderation
@@ -103,3 +106,40 @@ Preferred communication style: Simple, everyday language.
 - PRO subscription system tied to specific categories with quota enforcement
 - Distance-based search using pre-calculated GPS coordinates for major Algerian communes
 - Multi-tier admin system (user → admin → super_admin) for moderation workflows
+
+## Recent Improvements (November 2025)
+
+### UX & Navigation Enhancements
+1. **Publish Form Redesign** (`app/(tabs)/publish.tsx`)
+   - Renamed "Publier une annonce" → "Déposer une annonce" (more natural French)
+   - Compact header: reduced title size from 28px to 22px
+   - Account type selector: transformed large vertical cards into horizontal radio buttons
+   - Result: Form content visible immediately without scrolling
+
+2. **Smart Category Detection** (`lib/categoryKeywords.ts`, `components/CategoriesAndFilters.tsx`)
+   - Multilingual keyword dictionary covering 9 major categories (Vehicles, Real Estate, Electronics, Furniture, Clothing, Animals, Services, Jobs, Rentals)
+   - Auto-detection: typing "voiture" or "toyota" automatically selects Vehicles category
+   - Visual feedback: auto-detected categories highlighted with yellow background + orange left border
+   - Supports French, English, and Arabic keywords
+
+3. **Global Search Synchronization**
+   - Removed duplicate search field from filters sidebar
+   - Single search bar in TopBar now controls entire app search state via `SearchContext`
+   - Search queries persist across navigation and automatically trigger category detection
+
+4. **Communes Loading Fix** (`components/CategoriesAndFilters.tsx`)
+   - Robust wilaya_code handling: tries both string and integer formats
+   - Fixes issue where commune dropdowns remained empty after wilaya selection
+   - Added detailed console logging for debugging
+
+### Filters Status
+**✅ Fully Functional:**
+- Vehicles: mileage range, fuel type, transmission, color, year range, brand/model
+- Real Estate: surface/bedrooms/bathrooms ranges, property type, amenities (elevator, parking, balcony, garden, pool, A/C, heating)
+- Electronics: device type, storage, warranty, condition, box/accessories
+- Rentals: furnished status, monthly rent range, amenities (WiFi, TV, kitchen, washing machine)
+
+**⚠️ Pending Enrichment:**
+- Animals: age, breed, gender, health_status filters need to be added
+- Services: hourly_rate, availability, service_type filters needed
+- Vacation/Vehicle/Equipment Rentals: specific rental-related filters incomplete
