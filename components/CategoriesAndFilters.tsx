@@ -17,6 +17,7 @@ import { SlidersHorizontal, Search, Car, Hop as Home, Smartphone, Briefcase, Che
 import { saveSearchHistory } from '@/lib/searchHistoryUtils';
 import { useSearch } from '@/contexts/SearchContext';
 import { uiToDbListingType, dbToUiListingType } from '@/lib/listingTypeMap';
+import { detectCategoryFromQuery } from '@/lib/categoryKeywords';
 
 interface CategoriesAndFiltersProps {
   onFiltersApply: (listings: any[]) => void;
@@ -111,6 +112,7 @@ export default function CategoriesAndFilters({
   const [showModelDropdown, setShowModelDropdown] = useState(false);
   const [showContractTypeDropdown, setShowContractTypeDropdown] = useState(false);
   const [showExperienceDropdown, setShowExperienceDropdown] = useState(false);
+  const [autoDetectedCategory, setAutoDetectedCategory] = useState<string | null>(null);
 
   // Effet de montage initial - se déclenche une seule fois
   useEffect(() => {
@@ -138,42 +140,55 @@ export default function CategoriesAndFilters({
     }
   }, [initialCategory]);
 
-  // Détecter si globalSearchQuery correspond à une catégorie et la sélectionner automatiquement
+  // Détecter automatiquement la catégorie depuis globalSearchQuery via mots-clés intelligents
   useEffect(() => {
-    if (globalSearchQuery && categories.length > 0 && !initialCategory && !selectedCategory) {
+    if (globalSearchQuery && categories.length > 0 && !initialCategory) {
       const normalizedQuery = globalSearchQuery.toLowerCase().trim();
 
-      // Chercher une correspondance dans les noms de catégories
-      const matchedCategory = categories.find(cat => {
+      // 1. Chercher correspondance exacte par nom de catégorie d'abord
+      const exactMatch = categories.find(cat => {
         const nameFr = cat.name?.toLowerCase();
         const nameEn = cat.name_en?.toLowerCase();
         const nameAr = cat.name_ar?.toLowerCase();
 
-        // Correspondance exacte d'abord
-        if (nameFr === normalizedQuery || nameEn === normalizedQuery || nameAr === normalizedQuery) {
-          return true;
-        }
-
-        // Correspondance au début du mot (startsWith) - plus précis qu'includes
-        if (nameFr?.startsWith(normalizedQuery) ||
-            nameEn?.startsWith(normalizedQuery) ||
-            nameAr?.startsWith(normalizedQuery)) {
-          return true;
-        }
-
-        return false;
+        return nameFr === normalizedQuery || nameEn === normalizedQuery || nameAr === normalizedQuery;
       });
 
-      if (matchedCategory) {
-        console.log('[CategoriesAndFilters] Auto-selecting category from globalSearchQuery:', matchedCategory.name);
-        setSelectedCategory(matchedCategory.id);
-        setExpandedCategory(matchedCategory.id);
+      if (exactMatch) {
+        console.log('[Auto-detect] Exact category match:', exactMatch.name);
+        setAutoDetectedCategory(exactMatch.id);
+        setSelectedCategory(exactMatch.id);
+        setExpandedCategory(exactMatch.id);
         if (onCategorySelect) {
-          onCategorySelect(matchedCategory.id);
+          onCategorySelect(exactMatch.id);
         }
+        return;
       }
+
+      // 2. Utiliser le système de détection par mots-clés
+      const detectedCategorySlug = detectCategoryFromQuery(globalSearchQuery, language as 'fr' | 'en' | 'ar');
+      
+      if (detectedCategorySlug) {
+        const matchedCategory = categories.find(cat => cat.slug === detectedCategorySlug);
+        
+        if (matchedCategory) {
+          console.log('[Auto-detect] Keyword-based category match:', matchedCategory.name, 'from query:', globalSearchQuery);
+          setAutoDetectedCategory(matchedCategory.id);
+          setSelectedCategory(matchedCategory.id);
+          setExpandedCategory(matchedCategory.id);
+          if (onCategorySelect) {
+            onCategorySelect(matchedCategory.id);
+          }
+        }
+      } else {
+        // Pas de détection = reset
+        setAutoDetectedCategory(null);
+      }
+    } else if (!globalSearchQuery) {
+      // Recherche vide = reset auto-detect
+      setAutoDetectedCategory(null);
     }
-  }, [globalSearchQuery, categories, initialCategory, selectedCategory]);
+  }, [globalSearchQuery, categories, initialCategory, language]);
 
   useEffect(() => {
     if (filters.wilaya) {
@@ -269,14 +284,36 @@ export default function CategoriesAndFilters({
       return;
     }
 
-    const { data } = await supabase
+    console.log('[loadCommunes] Loading communes for wilaya:', wilayaCode, 'type:', typeof wilayaCode);
+
+    // Essayer d'abord avec la valeur string directe
+    let { data, error } = await supabase
       .from('communes')
       .select('id, name_fr, name_ar, name_en, wilaya_code')
-      .eq('wilaya_code', parseInt(wilayaCode))
+      .eq('wilaya_code', wilayaCode)
       .order('name_fr', { ascending: true });
 
+    // Si pas de résultats avec string, essayer avec integer
+    if ((!data || data.length === 0) && !error) {
+      console.log('[loadCommunes] No results with string, trying with integer');
+      const result = await supabase
+        .from('communes')
+        .select('id, name_fr, name_ar, name_en, wilaya_code')
+        .eq('wilaya_code', parseInt(wilayaCode))
+        .order('name_fr', { ascending: true });
+      data = result.data;
+      error = result.error;
+    }
+
+    if (error) {
+      console.error('[loadCommunes] Error loading communes:', error);
+    }
+
     if (data) {
+      console.log('[loadCommunes] Loaded', data.length, 'communes');
       setCommunes(data);
+    } else {
+      setCommunes([]);
     }
   }
 
@@ -2152,6 +2189,7 @@ export default function CategoriesAndFilters({
         <View style={styles.categoriesContainer}>
           {categories.map((category) => {
             const isExpanded = expandedCategory === category.id;
+            const isAutoDetected = autoDetectedCategory === category.id;
 
             return (
               <View key={category.id} style={styles.categoryWrapper}>
@@ -2160,6 +2198,7 @@ export default function CategoriesAndFilters({
                   style={[
                     styles.categoryItem,
                     isExpanded && styles.categoryItemActive,
+                    isAutoDetected && styles.categoryItemAutoDetected,
                   ]}
                   onPress={() => handleCategoryToggle(category.id)}
                   activeOpacity={0.7}
@@ -2425,6 +2464,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFF6FF',
     borderBottomWidth: 1,
     borderBottomColor: '#BFDBFE',
+  },
+  categoryItemAutoDetected: {
+    backgroundColor: '#FEF3C7',
+    borderLeftWidth: 3,
+    borderLeftColor: '#F59E0B',
   },
   categoryLeft: {
     flexDirection: 'row',
