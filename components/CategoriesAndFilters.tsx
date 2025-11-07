@@ -2143,29 +2143,6 @@ export default function CategoriesAndFilters({
         {/* Zone de contenu scrollable avec animation */}
         {isSidebarOpen && (
           <>
-            {/* Search Input */}
-            <View style={styles.searchContainer}>
-              <View style={styles.searchInputWrapper}>
-                <Search size={18} color="#64748B" style={styles.searchInputIcon} />
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder={language === 'ar' ? 'ابحث...' : language === 'en' ? 'Search...' : 'Rechercher...'}
-                  placeholderTextColor="#94A3B8"
-                  value={globalSearchQuery}
-                  onChangeText={setGlobalSearchQuery}
-                  returnKeyType="search"
-                />
-                {globalSearchQuery.length > 0 && (
-                  <TouchableOpacity
-                    onPress={() => setGlobalSearchQuery('')}
-                    style={styles.clearSearchIconButton}
-                  >
-                    <X size={16} color="#94A3B8" />
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-
             {/* Categories List - Scrollable */}
             <ScrollView
               style={styles.scrollView}
@@ -2418,36 +2395,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#0F172A',
     letterSpacing: 0.3,
-  },
-  searchContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    backgroundColor: '#FFFFFF',
-  },
-  searchInputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  searchInputIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    color: '#0F172A',
-    paddingVertical: 4,
-  },
-  clearSearchIconButton: {
-    padding: 4,
-    marginLeft: 4,
   },
   scrollView: {
     flex: 1,
