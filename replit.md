@@ -162,3 +162,15 @@ Preferred communication style: Simple, everyday language.
    - **Bug**: Store Pro category excluded from TopBar categories dropdown
    - **Fix**: Removed `.neq('slug', 'stores-pro')` exclusion filter
    - **Result**: Store Pro now visible in TopBar category selector
+
+4. **Animals Category Publication Error** (`app/(tabs)/publish.tsx`)
+   - **Bug**: Publishing listings in Animals category failed with "[23514] violates check constraint listings_condition_check"
+   - **Root Cause**: The `condition` field was hidden for Animals but sent as empty string to database, violating constraint
+   - **Fix**: Conditionally include `condition` field in insert/update payloads only when non-empty
+   - **Result**: Animals listings now publish successfully without condition field
+
+5. **Search Query Deletion Synchronization** (`app/(tabs)/search.tsx`)
+   - **Bug**: Deleting search keywords in TopBar didn't propagate deletion across all pages
+   - **Root Cause**: Inconsistent handling of empty values (undefined vs "" vs null) in URL↔Context synchronization
+   - **Fix**: Added normalization with `.trim()` for both URL params and context values, treating empty/undefined/null as equivalent
+   - **Result**: Clearing search text now properly synchronizes across entire app, removing `q=` from URL when empty
