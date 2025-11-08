@@ -143,3 +143,22 @@ Preferred communication style: Simple, everyday language.
 - Animals: age, breed, gender, health_status filters need to be added
 - Services: hourly_rate, availability, service_type filters needed
 - Vacation/Vehicle/Equipment Rentals: specific rental-related filters incomplete
+
+### Recent Bug Fixes (November 2025)
+
+1. **Global Search Query Persistence** (`app/(tabs)/search.tsx`)
+   - **Bug**: Changing categories in sidebar cleared the search query from TopBar
+   - **Root Cause**: search.tsx used local `searchText` state instead of global `SearchContext`
+   - **Fix**: Removed local state, implemented bidirectional URL ↔ Context synchronization
+   - **Result**: Search query persists across category changes and navigation
+
+2. **Rental Listing Filters** (`components/CategoriesAndFilters.tsx`)
+   - **Bug**: "Offres/Demandes" filters didn't show rental listings
+   - **Root Cause**: Rental listings have `listing_type='rent'` but filters only searched for `sale`/`purchase`
+   - **Fix**: Category-aware filter rendering - rental categories show "À louer" (rent), classic categories show "Offres/Demandes" (sale/purchase)
+   - **Result**: Location Immobilier, Location Véhicules, Location Équipements now display listings correctly
+
+3. **Store Pro Category Visibility** (`components/TopBar.tsx`)
+   - **Bug**: Store Pro category excluded from TopBar categories dropdown
+   - **Fix**: Removed `.neq('slug', 'stores-pro')` exclusion filter
+   - **Result**: Store Pro now visible in TopBar category selector

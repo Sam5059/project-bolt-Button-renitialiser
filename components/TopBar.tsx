@@ -104,7 +104,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
       .from('categories')
       .select('*')
       .is('parent_id', null)
-      .neq('slug', 'stores-pro') // Exclure Store PRO du menu catégories
       .order('display_order', { ascending: true, nullsFirst: false });
 
     if (mainCategories) {
