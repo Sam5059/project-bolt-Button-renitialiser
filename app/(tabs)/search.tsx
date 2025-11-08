@@ -42,14 +42,42 @@ export default function SearchPage() {
     globalSearchQuery
   });
 
-  // Synchroniser globalSearchQuery avec le paramètre URL q au montage
+  // Synchronisation bidirectionnelle entre URL (q) et contexte (globalSearchQuery)
+  
+  // 1. URL → Contexte : Quand le paramètre URL q change
   React.useEffect(() => {
     const queryParam = typeof q === 'string' ? q : '';
-    console.log('[SearchPage] Query param changed:', queryParam);
-    if (queryParam && queryParam !== globalSearchQuery) {
+    console.log('[SearchPage] URL param q changed:', queryParam);
+    
+    // Mettre à jour globalSearchQuery pour correspondre à l'URL (même si vide)
+    if (queryParam !== globalSearchQuery) {
       setGlobalSearchQuery(queryParam);
     }
   }, [q]);
+
+  // 2. Contexte → URL : Quand globalSearchQuery change (via TopBar ou autres)
+  React.useEffect(() => {
+    const currentUrlQuery = typeof q === 'string' ? q : '';
+    
+    // Si globalSearchQuery a changé et ne correspond plus à l'URL, mettre à jour l'URL
+    if (globalSearchQuery !== currentUrlQuery) {
+      console.log('[SearchPage] Syncing context to URL:', globalSearchQuery);
+      
+      const params = new URLSearchParams();
+      if (globalSearchQuery) {
+        params.set('q', globalSearchQuery);
+      }
+      if (selectedCategory) {
+        params.set('category_id', selectedCategory);
+      }
+      if (initialListingType) {
+        params.set('type', initialListingType);
+      }
+      
+      const newPath = params.toString() ? `/(tabs)/search?${params.toString()}` : '/(tabs)/search';
+      router.replace(newPath);
+    }
+  }, [globalSearchQuery]);
 
   // Mettre à jour selectedCategory quand category_id change
   React.useEffect(() => {
@@ -173,12 +201,12 @@ export default function SearchPage() {
               ) : (
                 <View>
                   <Text style={styles.resultsTitle}>
-                    {searchText
+                    {globalSearchQuery
                       ? language === 'ar'
-                        ? `نتائج البحث عن "${searchText}"`
+                        ? `نتائج البحث عن "${globalSearchQuery}"`
                         : language === 'en'
-                        ? `Search results for "${searchText}"`
-                        : `Résultats pour "${searchText}"`
+                        ? `Search results for "${globalSearchQuery}"`
+                        : `Résultats pour "${globalSearchQuery}"`
                       : language === 'ar'
                       ? 'كل الإعلانات'
                       : language === 'en'
