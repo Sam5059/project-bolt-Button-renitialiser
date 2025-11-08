@@ -174,3 +174,14 @@ Preferred communication style: Simple, everyday language.
    - **Root Cause**: Inconsistent handling of empty values (undefined vs "" vs null) in URL↔Context synchronization
    - **Fix**: Added normalization with `.trim()` for both URL params and context values, treating empty/undefined/null as equivalent
    - **Result**: Clearing search text now properly synchronizes across entire app, removing `q=` from URL when empty
+
+6. **Homepage TopBar Simplification** (`components/TopBar.tsx`, `locales/translations.ts`) - November 8, 2025
+   - **Change**: Removed search bar and location selector from homepage to streamline first impression
+   - **Implementation**: Wrapped desktop and mobile search/location UI blocks in `!isHomePage` conditional
+   - **Navigation Updates**:
+     - Renamed "Déposer Gratuitement" → "Déposer une annonce" (FR)
+     - Renamed "POST FOR FREE" → "Post a listing" (EN)
+     - Renamed "انشر مجانا" → "نشر إعلان" (AR)
+     - Updated "Buy PRO plan" → "Buy Pro package" across all languages
+     - Added "Offres" and "Demandes" buttons to mobile navigation for consistency with desktop
+   - **Result**: Homepage shows clean header with logo, language selector, account button, and action buttons (Pro package, Post listing, Offers, Requests) without search clutter
