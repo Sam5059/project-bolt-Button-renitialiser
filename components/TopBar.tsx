@@ -322,47 +322,47 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.mobileNavButton, styles.mobileNavButtonHighlight]}
-                onPress={() => router.push('/pro/packages')}
-              >
-                <View style={styles.mobileNavIcon}>
-                  <Text style={styles.mobileNavEmoji}>💎</Text>
-                </View>
-                <Text style={[styles.mobileNavText, styles.mobileNavTextHighlight]}>
-                  {t('topBar.buyPro')}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.mobileNavButton, styles.mobileNavButtonHighlight]}
+                style={[styles.mobileNavButton, styles.mobileNavButtonBlue]}
                 onPress={() => router.push('/(tabs)/publish')}
               >
                 <View style={styles.mobileNavIcon}>
                   <Text style={styles.mobileNavEmoji}>📝</Text>
                 </View>
-                <Text style={[styles.mobileNavText, styles.mobileNavTextHighlight]}>
+                <Text style={[styles.mobileNavText, styles.mobileNavTextWhite]}>
                   {t('topBar.publishFree')}
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.mobileNavButton}
+                style={[styles.mobileNavButton, styles.mobileNavButtonPurple]}
+                onPress={() => router.push('/pro/packages')}
+              >
+                <View style={styles.mobileNavIcon}>
+                  <Text style={styles.mobileNavEmoji}>💎</Text>
+                </View>
+                <Text style={[styles.mobileNavText, styles.mobileNavTextWhite]}>
+                  {t('topBar.buyPro')}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.mobileNavButton, styles.mobileNavButtonGreen]}
                 onPress={() => router.push('/(tabs)/search?listing_type=sale')}
               >
                 <View style={styles.mobileNavIcon}>
                   <Text style={styles.mobileNavEmoji}>🛍️</Text>
                 </View>
-                <Text style={styles.mobileNavText}>Offres</Text>
+                <Text style={[styles.mobileNavText, styles.mobileNavTextWhite]}>Offres</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.mobileNavButton}
+                style={[styles.mobileNavButton, styles.mobileNavButtonOrange]}
                 onPress={() => router.push('/(tabs)/search?listing_type=purchase')}
               >
                 <View style={styles.mobileNavIcon}>
                   <Text style={styles.mobileNavEmoji}>🔍</Text>
                 </View>
-                <Text style={styles.mobileNavText}>Demandes</Text>
+                <Text style={[styles.mobileNavText, styles.mobileNavTextWhite]}>Demandes</Text>
               </TouchableOpacity>
             </ScrollView>
           </View>
@@ -445,9 +445,19 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
         {/* Navigation principale au centre */}
         <View style={styles.topBarCenter}>
+          <TouchableOpacity
+            style={[styles.navButtonCompact, styles.navButtonBlue]}
+            onPress={() => router.push('/(tabs)/publish')}
+          >
+            <PlusCircle size={16} color="#FFFFFF" />
+            <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+              {t('topBar.publishFree')}
+            </Text>
+          </TouchableOpacity>
+
           {profile?.user_type === 'professional' ? (
             <TouchableOpacity
-              style={[styles.navButtonCompact, styles.navButtonOrange]}
+              style={[styles.navButtonCompact, styles.navButtonPurple]}
               onPress={() => setShowProMenu(!showProMenu)}
             >
               <Gem size={16} color="#FFFFFF" />
@@ -457,7 +467,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              style={[styles.navButtonCompact, styles.navButtonOrange]}
+              style={[styles.navButtonCompact, styles.navButtonPurple]}
               onPress={() => router.push('/pro/packages')}
             >
               <Gem size={16} color="#FFFFFF" />
@@ -469,30 +479,20 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
           <TouchableOpacity
             style={[styles.navButtonCompact, styles.navButtonGreen]}
-            onPress={() => router.push('/(tabs)/publish')}
-          >
-            <PlusCircle size={16} color="#FFFFFF" />
-            <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
-              {t('topBar.publishFree')}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.navButtonCompact}
             onPress={() => router.push('/(tabs)/search?listing_type=sale')}
           >
-            <ShoppingBag size={15} color="#2563EB" />
-            <Text style={[styles.navButtonText, styles.navButtonTextBlue]}>
+            <ShoppingBag size={15} color="#FFFFFF" />
+            <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
               Offres
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.navButtonCompact}
+            style={[styles.navButtonCompact, styles.navButtonOrange]}
             onPress={() => router.push('/(tabs)/search?listing_type=purchase')}
           >
-            <Search size={15} color="#2563EB" />
-            <Text style={[styles.navButtonText, styles.navButtonTextBlue]}>
+            <Search size={15} color="#FFFFFF" />
+            <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
               Demandes
             </Text>
           </TouchableOpacity>
@@ -1300,6 +1300,26 @@ const styles = StyleSheet.create({
     borderColor: '#93C5FD',
     borderWidth: 2,
   },
+  mobileNavButtonBlue: {
+    backgroundColor: '#2563EB',
+    borderColor: '#2563EB',
+    borderWidth: 2,
+  },
+  mobileNavButtonPurple: {
+    backgroundColor: '#8B5CF6',
+    borderColor: '#8B5CF6',
+    borderWidth: 2,
+  },
+  mobileNavButtonGreen: {
+    backgroundColor: '#10B981',
+    borderColor: '#10B981',
+    borderWidth: 2,
+  },
+  mobileNavButtonOrange: {
+    backgroundColor: '#F97316',
+    borderColor: '#F97316',
+    borderWidth: 2,
+  },
   mobileNavIcon: {
     width: 36,
     height: 36,
@@ -1326,6 +1346,10 @@ const styles = StyleSheet.create({
   },
   mobileNavTextHighlight: {
     color: '#2563EB',
+    fontWeight: '800',
+  },
+  mobileNavTextWhite: {
+    color: '#FFFFFF',
     fontWeight: '800',
   },
   hamburgerButton: {
@@ -1539,6 +1563,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
     borderWidth: 1,
     borderColor: '#E2E8F0',
+  },
+  navButtonBlue: {
+    backgroundColor: '#2563EB',
+    borderColor: '#2563EB',
+  },
+  navButtonPurple: {
+    backgroundColor: '#8B5CF6',
+    borderColor: '#8B5CF6',
   },
   navButtonOrange: {
     backgroundColor: '#F97316',
