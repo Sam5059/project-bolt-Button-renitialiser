@@ -46,26 +46,36 @@ export default function SearchPage() {
   
   // 1. URL → Contexte : Quand le paramètre URL q change
   React.useEffect(() => {
-    const queryParam = typeof q === 'string' ? q : '';
+    const queryParam = typeof q === 'string' ? q.trim() : '';
     console.log('[SearchPage] URL param q changed:', queryParam);
     
+    // Normaliser les valeurs pour comparer (traiter undefined, null, et "" comme équivalents)
+    const normalizedQuery = queryParam || '';
+    const normalizedContext = globalSearchQuery?.trim() || '';
+    
     // Mettre à jour globalSearchQuery pour correspondre à l'URL (même si vide)
-    if (queryParam !== globalSearchQuery) {
-      setGlobalSearchQuery(queryParam);
+    if (normalizedQuery !== normalizedContext) {
+      console.log('[SearchPage] Updating context from URL:', normalizedQuery);
+      setGlobalSearchQuery(normalizedQuery);
     }
   }, [q]);
 
   // 2. Contexte → URL : Quand globalSearchQuery change (via TopBar ou autres)
   React.useEffect(() => {
-    const currentUrlQuery = typeof q === 'string' ? q : '';
+    const currentUrlQuery = typeof q === 'string' ? q.trim() : '';
+    
+    // Normaliser les valeurs pour comparer
+    const normalizedContext = globalSearchQuery?.trim() || '';
+    const normalizedUrl = currentUrlQuery || '';
     
     // Si globalSearchQuery a changé et ne correspond plus à l'URL, mettre à jour l'URL
-    if (globalSearchQuery !== currentUrlQuery) {
-      console.log('[SearchPage] Syncing context to URL:', globalSearchQuery);
+    if (normalizedContext !== normalizedUrl) {
+      console.log('[SearchPage] Syncing context to URL:', normalizedContext);
       
       const params = new URLSearchParams();
-      if (globalSearchQuery) {
-        params.set('q', globalSearchQuery);
+      // Ne pas ajouter le paramètre 'q' s'il est vide
+      if (normalizedContext) {
+        params.set('q', normalizedContext);
       }
       if (selectedCategory) {
         params.set('category_id', selectedCategory);

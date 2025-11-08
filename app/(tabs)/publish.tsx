@@ -942,26 +942,31 @@ export default function PublishScreen() {
           dbListingType = listingType === 'offre' ? 'sale' : 'purchase';
         }
 
+        const updateData: any = {
+          title,
+          description,
+          price: priceNum || 0, // 0 pour emploi et services
+          category_id: finalCategoryId,
+          wilaya,
+          commune,
+          is_negotiable: isNegotiable,
+          listing_type: dbListingType,
+          images,
+          attributes: categoryAttributes,
+          available_from: availableFrom ? availableFrom.toISOString().split('T')[0] : null,
+          available_to: availableTo ? availableTo.toISOString().split('T')[0] : null,
+          is_date_flexible: isDateFlexible,
+          offer_type: offerType,
+          updated_at: new Date().toISOString(),
+        };
+
+        if (condition && condition.trim() !== '') {
+          updateData.condition = condition;
+        }
+
         const { data, error: updateError } = await supabase
           .from('listings')
-          .update({
-            title,
-            description,
-            price: priceNum || 0, // 0 pour emploi et services
-            category_id: finalCategoryId,
-            wilaya,
-            commune,
-            condition,
-            is_negotiable: isNegotiable,
-            listing_type: dbListingType,
-            images,
-            attributes: categoryAttributes,
-            available_from: availableFrom ? availableFrom.toISOString().split('T')[0] : null,
-            available_to: availableTo ? availableTo.toISOString().split('T')[0] : null,
-            is_date_flexible: isDateFlexible,
-            offer_type: offerType,
-            updated_at: new Date().toISOString(),
-          })
+          .update(updateData)
           .eq('id', editId)
           .eq('user_id', user!.id)
           .select();
@@ -975,28 +980,33 @@ export default function PublishScreen() {
           dbListingType = listingType === 'offre' ? 'sale' : 'purchase';
         }
 
+        const insertData: any = {
+          user_id: user!.id,
+          title,
+          description,
+          price: priceType === 'quote' ? null : (priceNum || 0),
+          price_type: priceType,
+          category_id: finalCategoryId,
+          wilaya,
+          commune,
+          is_negotiable: isNegotiable,
+          listing_type: dbListingType,
+          images,
+          status: listingStatus,
+          attributes: categoryAttributes,
+          available_from: availableFrom ? availableFrom.toISOString().split('T')[0] : null,
+          available_to: availableTo ? availableTo.toISOString().split('T')[0] : null,
+          is_date_flexible: isDateFlexible,
+          offer_type: offerType,
+        };
+
+        if (condition && condition.trim() !== '') {
+          insertData.condition = condition;
+        }
+
         const { data, error: insertError } = await supabase
           .from('listings')
-          .insert({
-            user_id: user!.id,
-            title,
-            description,
-            price: priceType === 'quote' ? null : (priceNum || 0),
-            price_type: priceType,
-            category_id: finalCategoryId,
-            wilaya,
-            commune,
-            condition,
-            is_negotiable: isNegotiable,
-            listing_type: dbListingType,
-            images,
-            status: listingStatus,
-            attributes: categoryAttributes,
-            available_from: availableFrom ? availableFrom.toISOString().split('T')[0] : null,
-            available_to: availableTo ? availableTo.toISOString().split('T')[0] : null,
-            is_date_flexible: isDateFlexible,
-            offer_type: offerType,
-          })
+          .insert(insertData)
           .select();
 
         insertedData = data;
