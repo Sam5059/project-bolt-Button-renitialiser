@@ -269,38 +269,40 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
           </View>
 
           {/* Barre de recherche mobile élégante */}
-          <View style={styles.mobileSearchBar}>
-            {user && (
+          {!isHomePage && (
+            <View style={styles.mobileSearchBar}>
+              {user && (
+                <TouchableOpacity
+                  style={styles.searchHistoryButton}
+                  onPress={() => setShowSearchHistory(true)}
+                >
+                  <Clock size={20} color="#2563EB" />
+                </TouchableOpacity>
+              )}
+              <View style={styles.mobileSearchInputContainer}>
+                <Search size={20} color="#64748B" strokeWidth={2.5} />
+                <TextInput
+                  style={styles.mobileSearchInput}
+                  placeholder={language === 'ar' ? 'ماذا تبحث؟' : language === 'en' ? 'What are you looking for?' : 'Que cherchez-vous ?'}
+                  placeholderTextColor="#94A3B8"
+                  value={searchQuery}
+                  onChangeText={handleSearchQueryChange}
+                  onSubmitEditing={handleSearch}
+                  returnKeyType="search"
+                />
+              </View>
               <TouchableOpacity
-                style={styles.searchHistoryButton}
-                onPress={() => setShowSearchHistory(true)}
+                style={styles.mobileLocationButton}
+                onPress={() => setShowLocationMenu(true)}
               >
-                <Clock size={20} color="#2563EB" />
+                <MapPin size={15} color="#2563EB" strokeWidth={2.5} />
+                <Text style={styles.mobileLocationText} numberOfLines={1}>
+                  {currentLocation ? currentLocation.split('-')[1]?.trim() || currentLocation : 'Alger'}
+                </Text>
+                <ChevronDown size={13} color="#2563EB" strokeWidth={2.5} />
               </TouchableOpacity>
-            )}
-            <View style={styles.mobileSearchInputContainer}>
-              <Search size={20} color="#64748B" strokeWidth={2.5} />
-              <TextInput
-                style={styles.mobileSearchInput}
-                placeholder={language === 'ar' ? 'ماذا تبحث؟' : language === 'en' ? 'What are you looking for?' : 'Que cherchez-vous ?'}
-                placeholderTextColor="#94A3B8"
-                value={searchQuery}
-                onChangeText={handleSearchQueryChange}
-                onSubmitEditing={handleSearch}
-                returnKeyType="search"
-              />
             </View>
-            <TouchableOpacity
-              style={styles.mobileLocationButton}
-              onPress={() => setShowLocationMenu(true)}
-            >
-              <MapPin size={15} color="#2563EB" strokeWidth={2.5} />
-              <Text style={styles.mobileLocationText} numberOfLines={1}>
-                {currentLocation ? currentLocation.split('-')[1]?.trim() || currentLocation : 'Alger'}
-              </Text>
-              <ChevronDown size={13} color="#2563EB" strokeWidth={2.5} />
-            </TouchableOpacity>
-          </View>
+          )}
 
           {/* Navigation horizontale scrollable */}
           <View style={styles.mobileNavBar}>
@@ -342,6 +344,26 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   {t('topBar.publishFree')}
                 </Text>
               </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.mobileNavButton}
+                onPress={() => router.push('/(tabs)/search?listing_type=sale')}
+              >
+                <View style={styles.mobileNavIcon}>
+                  <Text style={styles.mobileNavEmoji}>🛍️</Text>
+                </View>
+                <Text style={styles.mobileNavText}>Offres</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.mobileNavButton}
+                onPress={() => router.push('/(tabs)/search?listing_type=purchase')}
+              >
+                <View style={styles.mobileNavIcon}>
+                  <Text style={styles.mobileNavEmoji}>🔍</Text>
+                </View>
+                <Text style={styles.mobileNavText}>Demandes</Text>
+              </TouchableOpacity>
             </ScrollView>
           </View>
         </>
@@ -364,57 +386,61 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
             </TouchableOpacity>
           </View>
 
-          <View style={styles.dividerVertical} />
+          {!isHomePage && (
+            <>
+              <View style={styles.dividerVertical} />
 
-          {/* Barre de recherche avec sélecteur de catégorie */}
-          <View style={styles.searchContainerTop}>
-            <View style={styles.searchBarWithCategory}>
-              <Search size={20} color="#64748B" style={styles.searchIcon} />
-              <TextInput
-                style={[styles.searchInputWithCategory, isRTL && styles.searchInputRTL]}
-                placeholder={t('home.searchPlaceholder')}
-                placeholderTextColor="#94A3B8"
-                value={searchQuery}
-                onChangeText={handleSearchQueryChange}
-                onSubmitEditing={handleSearch}
-                returnKeyType="search"
-              />
-              {searchQuery.length > 0 && (
+              {/* Barre de recherche avec sélecteur de catégorie */}
+              <View style={styles.searchContainerTop}>
+                <View style={styles.searchBarWithCategory}>
+                  <Search size={20} color="#64748B" style={styles.searchIcon} />
+                  <TextInput
+                    style={[styles.searchInputWithCategory, isRTL && styles.searchInputRTL]}
+                    placeholder={t('home.searchPlaceholder')}
+                    placeholderTextColor="#94A3B8"
+                    value={searchQuery}
+                    onChangeText={handleSearchQueryChange}
+                    onSubmitEditing={handleSearch}
+                    returnKeyType="search"
+                  />
+                  {searchQuery.length > 0 && (
+                    <TouchableOpacity
+                      onPress={() => handleSearchQueryChange('')}
+                      style={styles.clearSearchButton}
+                    >
+                      <X size={18} color="#94A3B8" />
+                    </TouchableOpacity>
+                  )}
+                  <View style={styles.categoryDivider} />
+                  <TouchableOpacity
+                    style={styles.categoryDropdownButton}
+                    onPress={() => setShowCategoryDropdown(true)}
+                  >
+                    <Text style={styles.categoryDropdownText} numberOfLines={1}>
+                      {selectedCategoryId
+                        ? getCategoryName(categories.find(c => c.id === selectedCategoryId)!)
+                        : (language === 'ar' ? 'جميع الفئات' : language === 'en' ? 'All Categories' : 'Toutes Catégories')}
+                    </Text>
+                    <ChevronDown size={16} color="#64748B" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.dividerVertical} />
+
+              {/* Sélecteur de localisation */}
+              <Tooltip text="Changer la localisation">
                 <TouchableOpacity
-                  onPress={() => handleSearchQueryChange('')}
-                  style={styles.clearSearchButton}
+                  style={styles.locationSelector}
+                  onPress={() => setShowLocationMenu(true)}
                 >
-                  <X size={18} color="#94A3B8" />
+                  <MapPin size={16} color="#2563EB" />
+                  <Text style={styles.locationValue}>{currentLocation}</Text>
+                  <ChevronDown size={14} color="#2563EB" />
                 </TouchableOpacity>
-              )}
-              <View style={styles.categoryDivider} />
-              <TouchableOpacity
-                style={styles.categoryDropdownButton}
-                onPress={() => setShowCategoryDropdown(true)}
-              >
-                <Text style={styles.categoryDropdownText} numberOfLines={1}>
-                  {selectedCategoryId
-                    ? getCategoryName(categories.find(c => c.id === selectedCategoryId)!)
-                    : (language === 'ar' ? 'جميع الفئات' : language === 'en' ? 'All Categories' : 'Toutes Catégories')}
-                </Text>
-                <ChevronDown size={16} color="#64748B" />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.dividerVertical} />
-
-          {/* Sélecteur de localisation */}
-          <Tooltip text="Changer la localisation">
-            <TouchableOpacity
-              style={styles.locationSelector}
-              onPress={() => setShowLocationMenu(true)}
-            >
-              <MapPin size={16} color="#2563EB" />
-              <Text style={styles.locationValue}>{currentLocation}</Text>
-              <ChevronDown size={14} color="#2563EB" />
-            </TouchableOpacity>
-          </Tooltip>
+              </Tooltip>
+            </>
+          )}
         </View>
 
         <View style={styles.topBarRight}>
