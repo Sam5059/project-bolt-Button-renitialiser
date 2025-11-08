@@ -1,0 +1,70 @@
+Problème Identifié
+Incohérence dans la logique des filtres entre catégories
+Catégories classiques (Véhicules, Immobilier, etc.)
+
+Offres = "À vendre"
+Demandes = "Je cherche"
+
+Catégories Location (problématique)
+
+À louer = Le propriétaire propose en location
+Je loue = Je cherche à louer
+
+Le filtre "Offres/Demandes" ne correspond pas à "À louer/Je loue" ❌
+
+🛠️ Solutions Possibles
+Solution 1 : Harmoniser la terminologie (RECOMMANDÉE)
+Unifier tous les types d'annonces :
+javascript// Dans votre base de données et interface
+TOUTES LES CATÉGORIES :
+- "Offres" (je propose/je vends/je loue)
+- "Demandes" (je cherche/je cherche à acheter/je cherche à louer)
+Avantages :
+
+✅ Cohérence totale
+✅ Filtres fonctionnent partout
+✅ Plus simple pour l'utilisateur
+
+
+Solution 2 : Adapter le filtre selon la catégorie
+javascript// Pseudo-code
+if (category.includes('Location')) {
+  showFilters(['À louer', 'Je loue'])
+} else {
+  showFilters(['Offres', 'Demandes'])
+}
+Avantages :
+
+✅ Terminologie spécifique par contexte
+❌ Plus complexe à maintenir
+
+
+📋 Actions Requises
+Pour corriger le problème actuel :
+
+Dans votre schéma Supabase - Vérifiez le champ announcement_type :
+
+sql   -- Devrait être standardisé
+   announcement_type: 'offer' | 'demand'
+
+Dans votre composant Sidebar - Mapper correctement :
+
+javascript   const getAnnouncementTypeLabel = (category, type) => {
+     if (category.includes('Location')) {
+       return type === 'offer' ? 'À louer' : 'Je loue'
+     }
+     return type === 'offer' ? 'Offres' : 'Demandes'
+   }
+
+Requête filtrée - S'assurer que le filtre SQL fonctionne :
+
+javascript   .eq('announcement_type', selectedType) // 'offer' ou 'demand'
+
+❓ Questions pour vous aider
+Avant de vous proposer le code exact, j'ai besoin de savoir :
+
+Dans votre table Supabase listings, quel est le nom exact du champ pour le type d'annonce ?
+Quelles sont les valeurs stockées actuellement ? (offer/demand, à_vendre/je_cherche, autre ?)
+Préférez-vous la Solution 1 (harmoniser) ou Solution 2 (adapter) ?
+
+Partagez-moi ces informations pour que je vous donne le code de correction exact ! 🚀RéessayerClaude peut faire des erreurs. Assurez-vous de vérifier ses réponses.
