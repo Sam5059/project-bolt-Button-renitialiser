@@ -185,3 +185,12 @@ Preferred communication style: Simple, everyday language.
      - Updated "Buy PRO plan" → "Buy Pro package" across all languages
      - Added "Offres" and "Demandes" buttons to mobile navigation for consistency with desktop
    - **Result**: Homepage shows clean header with logo, language selector, account button, and action buttons (Pro package, Post listing, Offers, Requests) without search clutter
+
+7. **TopBar Navigation Consolidation** (`components/TopBar.tsx`) - November 8, 2025
+   - **Change**: Moved all navigation buttons (Buy Pro package, Post listing, Offers, Requests) inline with logo in the main TopBar
+   - **Implementation**: 
+     - Created new `topBarCenter` section with flex layout between logo and user icons
+     - Moved Pro, Publish, Offers, and Requests buttons from separate horizontal ScrollView into inline position
+     - Removed redundant desktop horizontal navigation bar completely
+     - Added compact button styles (`navButtonCompact`, `navButtonOrange`, `navButtonGreen`) for visual consistency
+   - **Result**: Single-line header with all controls accessible without scrolling, cleaner layout, better use of horizontal space
