@@ -14,6 +14,7 @@ import CategoriesAndFilters from '@/components/CategoriesAndFilters';
 import ListingCard from '@/components/ListingCard';
 import { supabase } from '@/lib/supabase';
 import { Tag, TrendingUp } from 'lucide-react-native';
+import { dbToUiListingType } from '@/lib/listingTypeMap';
 
 const isWeb = Platform.OS === 'web';
 
@@ -26,7 +27,9 @@ export default function SearchPage() {
   const [listings, setListings] = useState<any[]>([]);
   const [searchText, setSearchText] = useState(typeof q === 'string' ? q : '');
   const initialCategoryId = typeof category_id === 'string' ? category_id : null;
-  const initialListingType = typeof type === 'string' ? type : typeof listing_type === 'string' ? listing_type : null;
+  
+  const rawListingType = typeof type === 'string' ? type : typeof listing_type === 'string' ? listing_type : null;
+  const initialListingType = rawListingType ? dbToUiListingType(rawListingType as any) : null;
   const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategoryId);
   const [categoryData, setCategoryData] = useState<any>(null);
 

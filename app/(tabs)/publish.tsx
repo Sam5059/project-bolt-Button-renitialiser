@@ -2809,67 +2809,73 @@ export default function PublishScreen() {
           )}
 
           {/* Prix: Affiché seulement pour vente et location, PAS pour emploi et services, et PAS si gratuit */}
-          {getFormType() !== 'job' && getFormType() !== 'service' && offerType !== 'free' && (
-            <>
-              {priceType === 'quote' ? (
-                <View style={styles.quotePriceContainer}>
-                  <View style={styles.quotePriceHeader}>
-                    <View style={styles.quotePriceIconContainer}>
-                      <Text style={styles.quotePriceIcon}>💼</Text>
-                    </View>
-                    <View style={styles.quotePriceTextContainer}>
-                      <Text style={[styles.quotePriceTitle, isRTL && styles.textRTL]}>
-                        Tarification sur devis
-                      </Text>
-                      <Text style={[styles.quotePriceDescription, isRTL && styles.textRTL]}>
-                        Les clients vous contacteront pour demander un devis personnalisé
-                      </Text>
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.quotePriceToggle}
-                    onPress={() => {
-                      setPriceType('fixed');
-                    }}
-                  >
-                    <Text style={styles.quotePriceToggleText}>Mettre un prix fixe</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <>
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.label, isRTL && styles.textRTL]}>
-                      {getFormType() === 'rent' ? 'Prix de location (DA)' : 'Prix (DA)'} <Text style={styles.required}>*</Text>
-                    </Text>
-                    <TextInput
-                      style={[styles.input, isRTL && styles.textRTL, fieldErrors.price && styles.inputError, !price && styles.inputPlaceholder]}
-                      placeholder={getFormType() === 'rent' ? 'Prix par jour/semaine/mois' : 'Quel est le prix ?'}
-                      placeholderTextColor="#94A3B8"
-                      value={formatNumberWithSpaces(price)}
-                      onChangeText={(text) => {
-                        const numericValue = parseFormattedNumber(text);
-                        setPrice(numericValue);
-                        if (fieldErrors.price) setFieldErrors({ ...fieldErrors, price: false });
-                      }}
-                      keyboardType="numeric"
-                    />
-                  </View>
-
-                  <View style={styles.checkboxContainer}>
-                    <TouchableOpacity
-                      style={styles.checkbox}
-                      onPress={() => setIsNegotiable(!isNegotiable)}
-                    >
-                      <View style={[styles.checkboxBox, isNegotiable && styles.checkboxBoxChecked]}>
-                        {isNegotiable && <Text style={styles.checkboxCheck}>✓</Text>}
+          {/* MAIS PAS pour les catégories de location qui ont déjà leurs propres champs de tarification détaillés */}
+          {(() => {
+            const selectedCategorySlug = categories.find(c => c.id === parentCategoryId)?.slug || '';
+            const hasDetailedPricing = ['location-immobilier', 'location-vehicules', 'location-equipements'].includes(selectedCategorySlug);
+            
+            return getFormType() !== 'job' && getFormType() !== 'service' && offerType !== 'free' && !hasDetailedPricing && (
+              <>
+                {priceType === 'quote' ? (
+                  <View style={styles.quotePriceContainer}>
+                    <View style={styles.quotePriceHeader}>
+                      <View style={styles.quotePriceIconContainer}>
+                        <Text style={styles.quotePriceIcon}>💼</Text>
                       </View>
-                      <Text style={[styles.checkboxLabel, isRTL && styles.textRTL]}>{t('publish.priceNegotiable')}</Text>
+                      <View style={styles.quotePriceTextContainer}>
+                        <Text style={[styles.quotePriceTitle, isRTL && styles.textRTL]}>
+                          Tarification sur devis
+                        </Text>
+                        <Text style={[styles.quotePriceDescription, isRTL && styles.textRTL]}>
+                          Les clients vous contacteront pour demander un devis personnalisé
+                        </Text>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.quotePriceToggle}
+                      onPress={() => {
+                        setPriceType('fixed');
+                      }}
+                    >
+                      <Text style={styles.quotePriceToggleText}>Mettre un prix fixe</Text>
                     </TouchableOpacity>
                   </View>
-                </>
-              )}
-            </>
-          )}
+                ) : (
+                  <>
+                    <View style={styles.inputGroup}>
+                      <Text style={[styles.label, isRTL && styles.textRTL]}>
+                        {getFormType() === 'rent' ? 'Prix de location (DA)' : 'Prix (DA)'} <Text style={styles.required}>*</Text>
+                      </Text>
+                      <TextInput
+                        style={[styles.input, isRTL && styles.textRTL, fieldErrors.price && styles.inputError, !price && styles.inputPlaceholder]}
+                        placeholder={getFormType() === 'rent' ? 'Prix par jour/semaine/mois' : 'Quel est le prix ?'}
+                        placeholderTextColor="#94A3B8"
+                        value={formatNumberWithSpaces(price)}
+                        onChangeText={(text) => {
+                          const numericValue = parseFormattedNumber(text);
+                          setPrice(numericValue);
+                          if (fieldErrors.price) setFieldErrors({ ...fieldErrors, price: false });
+                        }}
+                        keyboardType="numeric"
+                      />
+                    </View>
+
+                    <View style={styles.checkboxContainer}>
+                      <TouchableOpacity
+                        style={styles.checkbox}
+                        onPress={() => setIsNegotiable(!isNegotiable)}
+                      >
+                        <View style={[styles.checkboxBox, isNegotiable && styles.checkboxBoxChecked]}>
+                          {isNegotiable && <Text style={styles.checkboxCheck}>✓</Text>}
+                        </View>
+                        <Text style={[styles.checkboxLabel, isRTL && styles.textRTL]}>{t('publish.priceNegotiable')}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                )}
+              </>
+            );
+          })()}
 
           {/* Champs spécifiques pour EMPLOI */}
           {getFormType() === 'job' && (
