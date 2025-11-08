@@ -921,31 +921,59 @@ export default function CategoriesAndFilters({
     );
   };
 
-  const renderListingTypeFilter = () => (
-    <View style={styles.filterGroup}>
-      <Text style={styles.filterLabel}>
-        {language === 'ar' ? 'نوع الإعلان' : language === 'en' ? 'Listing Type' : 'Type d\'annonce'}
-      </Text>
-      <View style={styles.chipContainer}>
-        <TouchableOpacity
-          style={[styles.chip, filters.listing_type === 'offre' && styles.chipActive]}
-          onPress={() => updateFilter('listing_type', filters.listing_type === 'offre' ? '' : 'offre')}
-        >
-          <Text style={[styles.chipText, filters.listing_type === 'offre' && styles.chipTextActive]}>
-            {language === 'ar' ? 'عروض' : language === 'en' ? 'Offers' : 'Offres'}
+  const renderListingTypeFilter = () => {
+    // Détecter si la catégorie sélectionnée est de type location
+    const currentCategory = categories.find(cat => cat.id === selectedCategory);
+    const isRentalCategory = currentCategory?.slug?.includes('location') || false;
+
+    if (isRentalCategory) {
+      // Pour les catégories de location : afficher uniquement "À louer" qui filtre par 'rent'
+      return (
+        <View style={styles.filterGroup}>
+          <Text style={styles.filterLabel}>
+            {language === 'ar' ? 'نوع الإعلان' : language === 'en' ? 'Listing Type' : 'Type d\'annonce'}
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.chip, filters.listing_type === 'je_cherche' && styles.chipActive]}
-          onPress={() => updateFilter('listing_type', filters.listing_type === 'je_cherche' ? '' : 'je_cherche')}
-        >
-          <Text style={[styles.chipText, filters.listing_type === 'je_cherche' && styles.chipTextActive]}>
-            {language === 'ar' ? 'طلبات' : language === 'en' ? 'Requests' : 'Demandes'}
-          </Text>
-        </TouchableOpacity>
+          <View style={styles.chipContainer}>
+            <TouchableOpacity
+              style={[styles.chip, filters.listing_type === 'rent' && styles.chipActive]}
+              onPress={() => updateFilter('listing_type', filters.listing_type === 'rent' ? '' : 'rent')}
+            >
+              <Text style={[styles.chipText, filters.listing_type === 'rent' && styles.chipTextActive]}>
+                {language === 'ar' ? 'للإيجار' : language === 'en' ? 'For Rent' : 'À louer'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+
+    // Pour les catégories classiques : afficher "Offres" et "Demandes"
+    return (
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'نوع الإعلان' : language === 'en' ? 'Listing Type' : 'Type d\'annonce'}
+        </Text>
+        <View style={styles.chipContainer}>
+          <TouchableOpacity
+            style={[styles.chip, filters.listing_type === 'offre' && styles.chipActive]}
+            onPress={() => updateFilter('listing_type', filters.listing_type === 'offre' ? '' : 'offre')}
+          >
+            <Text style={[styles.chipText, filters.listing_type === 'offre' && styles.chipTextActive]}>
+              {language === 'ar' ? 'عروض' : language === 'en' ? 'Offers' : 'Offres'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.chip, filters.listing_type === 'je_cherche' && styles.chipActive]}
+            onPress={() => updateFilter('listing_type', filters.listing_type === 'je_cherche' ? '' : 'je_cherche')}
+          >
+            <Text style={[styles.chipText, filters.listing_type === 'je_cherche' && styles.chipTextActive]}>
+              {language === 'ar' ? 'طلبات' : language === 'en' ? 'Requests' : 'Demandes'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const renderLocationFilters = () => (
     <>
