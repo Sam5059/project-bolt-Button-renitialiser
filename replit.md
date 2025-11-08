@@ -194,3 +194,18 @@ Preferred communication style: Simple, everyday language.
      - Removed redundant desktop horizontal navigation bar completely
      - Added compact button styles (`navButtonCompact`, `navButtonOrange`, `navButtonGreen`) for visual consistency
    - **Result**: Single-line header with all controls accessible without scrolling, cleaner layout, better use of horizontal space
+
+8. **TopBar Navigation Color Coding & Reordering** (`components/TopBar.tsx`) - November 8, 2025
+   - **Change**: Applied color-coded buttons to match user intent and reordered for better UX
+   - **Color Scheme**:
+     - "Offres" (Offers): Green (#10B981) - matches "À vendre" (For Sale)
+     - "Demandes" (Requests): Orange (#F97316) - matches "Recherché" (Wanted)
+     - "Déposer une annonce" (Post listing): Blue (#2563EB) - primary action
+     - "Acheter un forfait Pro" (Buy Pro package): Purple (#8B5CF6) - premium feature
+   - **Button Order**: Déposer une annonce → Acheter un forfait Pro → Offres → Demandes
+   - **Implementation**: 
+     - Added `navButtonBlue` and `navButtonPurple` styles for desktop
+     - Added `mobileNavButtonBlue`, `mobileNavButtonPurple`, `mobileNavButtonGreen`, `mobileNavButtonOrange` for mobile
+     - Applied white text color to all colored buttons for better contrast
+     - Maintained consistent styling between desktop and mobile navigation
+   - **Result**: Clear visual distinction between action types, intuitive color association with listing types
