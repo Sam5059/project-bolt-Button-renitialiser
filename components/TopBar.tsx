@@ -443,6 +443,61 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
           )}
         </View>
 
+        {/* Navigation principale au centre */}
+        <View style={styles.topBarCenter}>
+          {profile?.user_type === 'professional' ? (
+            <TouchableOpacity
+              style={[styles.navButtonCompact, styles.navButtonOrange]}
+              onPress={() => setShowProMenu(!showProMenu)}
+            >
+              <Gem size={16} color="#FFFFFF" />
+              <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                {t('topBar.proSpace')}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[styles.navButtonCompact, styles.navButtonOrange]}
+              onPress={() => router.push('/pro/packages')}
+            >
+              <Gem size={16} color="#FFFFFF" />
+              <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                {t('topBar.buyPro')}
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity
+            style={[styles.navButtonCompact, styles.navButtonGreen]}
+            onPress={() => router.push('/(tabs)/publish')}
+          >
+            <PlusCircle size={16} color="#FFFFFF" />
+            <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+              {t('topBar.publishFree')}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navButtonCompact}
+            onPress={() => router.push('/(tabs)/search?listing_type=sale')}
+          >
+            <ShoppingBag size={15} color="#2563EB" />
+            <Text style={[styles.navButtonText, styles.navButtonTextBlue]}>
+              Offres
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navButtonCompact}
+            onPress={() => router.push('/(tabs)/search?listing_type=purchase')}
+          >
+            <Search size={15} color="#2563EB" />
+            <Text style={[styles.navButtonText, styles.navButtonTextBlue]}>
+              Demandes
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.topBarRight}>
           {/* Icônes rapides */}
           {!isMobile && (
@@ -529,89 +584,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
             </TouchableOpacity>
           )}
         </View>
-      </View>
-      )}
-
-
-      {/* Navigation horizontale scrollable - Desktop */}
-      {!isMobile && (
-      <View style={styles.desktopNavBar}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.desktopNavContent}
-        >
-          {profile?.user_type === 'professional' ? (
-            <Tooltip text="Accéder à votre espace professionnel">
-              <TouchableOpacity
-                style={[styles.desktopNavButton, styles.desktopNavButtonOrange]}
-                onPress={() => setShowProMenu(!showProMenu)}
-              >
-                <Store size={18} color="#FFFFFF" />
-                <Text style={[styles.desktopNavText, styles.desktopNavTextOrange, isRTL && styles.textRTL]}>
-                  {t('topBar.proSpace')}
-                </Text>
-                <ChevronDown size={16} color="#FFFFFF" />
-              </TouchableOpacity>
-            </Tooltip>
-          ) : (
-            <Tooltip text="Devenez professionnel et publiez sans limite">
-              <TouchableOpacity
-                style={[styles.desktopNavButton, styles.desktopNavButtonOrange]}
-                onPress={() => router.push('/pro/packages')}
-              >
-                <Gem size={18} color="#FFFFFF" />
-                <Text style={[styles.desktopNavText, styles.desktopNavTextOrange, isRTL && styles.textRTL]}>
-                  {t('topBar.buyPro')}
-                </Text>
-              </TouchableOpacity>
-            </Tooltip>
-          )}
-
-          <Tooltip text="Publier une annonce gratuitement">
-            <TouchableOpacity
-              style={[styles.desktopNavButton, styles.desktopNavButtonGreen]}
-              onPress={() => router.push('/(tabs)/publish')}
-            >
-              <PlusCircle size={18} color="#FFFFFF" />
-              <Text style={[styles.desktopNavText, styles.desktopNavTextGreen, isRTL && styles.textRTL]}>
-                {t('topBar.publishFree')}
-              </Text>
-            </TouchableOpacity>
-          </Tooltip>
-
-          <Tooltip text="Voir toutes les offres de vente">
-            <TouchableOpacity
-              style={styles.desktopNavButton}
-              onPress={() => {
-                router.push('/(tabs)/search?listing_type=sale');
-              }}
-            >
-              <View style={styles.desktopNavIconContainer}>
-                <ShoppingBag size={16} color="#2563EB" />
-              </View>
-              <Text style={[styles.desktopNavText, isRTL && styles.textRTL]}>
-                Offres
-              </Text>
-            </TouchableOpacity>
-          </Tooltip>
-
-          <Tooltip text="Voir toutes les demandes d'achat">
-            <TouchableOpacity
-              style={styles.desktopNavButton}
-              onPress={() => {
-                router.push('/(tabs)/search?listing_type=purchase');
-              }}
-            >
-              <View style={styles.desktopNavIconContainer}>
-                <Search size={16} color="#2563EB" />
-              </View>
-              <Text style={[styles.desktopNavText, isRTL && styles.textRTL]}>
-                Demandes
-              </Text>
-            </TouchableOpacity>
-          </Tooltip>
-        </ScrollView>
       </View>
       )}
 
@@ -1548,6 +1520,43 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
+  },
+  topBarCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  navButtonCompact: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  navButtonOrange: {
+    backgroundColor: '#F97316',
+    borderColor: '#F97316',
+  },
+  navButtonGreen: {
+    backgroundColor: '#10B981',
+    borderColor: '#10B981',
+  },
+  navButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  navButtonTextWhite: {
+    color: '#FFFFFF',
+  },
+  navButtonTextBlue: {
+    color: '#2563EB',
   },
   logoContainerDesktop: {
     flexDirection: 'row',
