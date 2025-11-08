@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSearch } from '@/contexts/SearchContext';
 import TopBar from '@/components/TopBar';
 import CategoriesAndFilters from '@/components/CategoriesAndFilters';
 import ListingCard from '@/components/ListingCard';
@@ -23,9 +24,9 @@ export default function SearchPage() {
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const { language } = useLanguage();
+  const { globalSearchQuery, setGlobalSearchQuery } = useSearch();
 
   const [listings, setListings] = useState<any[]>([]);
-  const [searchText, setSearchText] = useState(typeof q === 'string' ? q : '');
   const initialCategoryId = typeof category_id === 'string' ? category_id : null;
   
   const rawListingType = typeof type === 'string' ? type : typeof listing_type === 'string' ? listing_type : null;
@@ -37,14 +38,17 @@ export default function SearchPage() {
     category_id,
     initialCategoryId,
     q,
-    initialListingType
+    initialListingType,
+    globalSearchQuery
   });
 
-  // Mettre à jour searchText quand le paramètre q change
+  // Synchroniser globalSearchQuery avec le paramètre URL q au montage
   React.useEffect(() => {
     const queryParam = typeof q === 'string' ? q : '';
     console.log('[SearchPage] Query param changed:', queryParam);
-    setSearchText(queryParam);
+    if (queryParam && queryParam !== globalSearchQuery) {
+      setGlobalSearchQuery(queryParam);
+    }
   }, [q]);
 
   // Mettre à jour selectedCategory quand category_id change
@@ -108,21 +112,18 @@ export default function SearchPage() {
 
   return (
     <View style={styles.container}>
-      <TopBar
-        searchQuery={searchText}
-        onSearchChange={setSearchText}
-        onSearch={handleSearch}
-      />
+      {/* TopBar utilise directement globalSearchQuery du contexte */}
+      <TopBar onSearch={handleSearch} />
 
       <View style={styles.mainContainer}>
         {/* Sidebar Desktop & Mobile */}
         <CategoriesAndFilters
-          key={`${searchText}-${initialCategoryId}-${initialListingType}`}
+          key={`${globalSearchQuery}-${initialCategoryId}-${initialListingType}`}
           onFiltersApply={handleFiltersApply}
           onCategorySelect={handleCategorySelect}
           initialCategory={selectedCategory || undefined}
           initialListingType={initialListingType || undefined}
-          searchQuery={searchText}
+          searchQuery={globalSearchQuery}
         />
 
         {/* Contenu principal */}
