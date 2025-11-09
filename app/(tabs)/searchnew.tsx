@@ -318,11 +318,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#0F172A',
     marginBottom: 4,
+    textAlign: 'center',
   },
   resultsCount: {
     fontSize: 14,
     color: '#64748B',
     fontWeight: '500',
+    textAlign: 'center',
   },
   mobileFiltersButton: {
     backgroundColor: '#2563EB',

@@ -36,6 +36,8 @@ BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) a
   - Examples EN: "Which brand are you looking for?", "Minimum price in DA? e.g. 500000"
   - Examples AR: "أي علامة تجارية تبحث عنها؟", "السعر الأدنى بالدينار؟ مثال: 500000"
 - **Visual Empty Field Feedback**: Empty inputs display in italic gray style for better UX clarity
+- **Clean UI**: Removed bottom CTA button "Afficher les annonces" for cleaner sidebar interface
+- **Centered Results Header**: Search results title and count are now centered for better visual balance
 
 ### Smart Category Detection
 - **Intelligent Category Detection System**: Implemented automatic category detection based on search keywords with visual highlighting in sidebar

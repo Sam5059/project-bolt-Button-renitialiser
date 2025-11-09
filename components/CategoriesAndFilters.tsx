@@ -2440,30 +2440,6 @@ export default function CategoriesAndFilters({
             </View>
             </ScrollView>
 
-            {/* Bouton CTA Afficher les annonces - En bas du sidebar */}
-            {selectedCategory && (
-              <View style={styles.ctaContainer}>
-                <TouchableOpacity
-                  style={styles.ctaButton}
-                  onPress={() => {
-                    applyFilters();
-                    if (!isWeb && !isPinned) {
-                      setIsSidebarOpen(false);
-                    }
-                  }}
-                  activeOpacity={0.9}
-                  disabled={loading}
-                >
-                  <Text style={styles.ctaButtonText}>
-                    {loading
-                      ? (language === 'ar' ? '⏳ جاري التحميل...' : language === 'en' ? '⏳ Loading...' : '⏳ Chargement...')
-                      : (language === 'ar' ? '🔍 عرض النتائج' : language === 'en' ? '🔍 Show Results' : '🔍 Afficher les annonces')
-                    }
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
             {/* Loading Indicator */}
             {loading && (
               <View style={styles.loadingOverlay}>
