@@ -1282,10 +1282,14 @@ export default function PublishScreen() {
                       type === 'je_cherche' && listingType === type && styles.typeButtonDemandeActive,
                     ]}
                     onPress={() => {
+                      console.log('[PUBLISH - LISTING TYPE CLICK] Button clicked:', type);
+                      console.log('[PUBLISH - LISTING TYPE CLICK] Current listingType:', listingType);
+                      console.log('[PUBLISH - LISTING TYPE CLICK] Setting to:', type);
                       setListingType(type as 'offre' | 'je_cherche');
                       if (type === 'je_cherche') {
                         setOfferType('sale');
                       }
+                      console.log('[PUBLISH - LISTING TYPE CLICK] After setState - should re-render with:', type);
                     }}
                   >
                     <View style={styles.typeButtonContent}>
