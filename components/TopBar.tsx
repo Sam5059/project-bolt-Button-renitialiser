@@ -67,7 +67,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   
   // Détermine si on est sur la page de recherche
   const isSearchPage =
-    segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'search';
+    segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'searchnew';
   
   // Détermine si on doit afficher les contrôles de recherche (catégories et localisation)
   const showSearchControls = !isHomePage && !isSearchPage;
@@ -99,7 +99,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
     // Sinon, naviguer automatiquement vers la page de recherche après un délai
     const timer = setTimeout(() => {
       if (globalSearchQuery && globalSearchQuery.trim()) {
-        router.push(`/(tabs)/search?q=${encodeURIComponent(globalSearchQuery)}`);
+        router.push(`/(tabs)/searchnew?q=${encodeURIComponent(globalSearchQuery)}`);
       }
     }, 800);
 
@@ -199,7 +199,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
     // Si le texte devient vide et qu'on est sur la page search, nettoyer l'URL
     if (query.trim() === '' && segments.includes('search')) {
-      router.push('/(tabs)/search');
+      router.push('/(tabs)/searchnew');
     }
   };
 
@@ -218,10 +218,10 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
       if (selectedListingType !== 'all') {
         params.set('type', selectedListingType);
       }
-      router.push(`/(tabs)/search?${params.toString()}`);
+      router.push(`/(tabs)/searchnew?${params.toString()}`);
     } else {
       // Si la recherche est vide, rediriger vers /search sans paramètres
-      router.push('/(tabs)/search');
+      router.push('/(tabs)/searchnew');
     }
   };
 
@@ -355,7 +355,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
               <TouchableOpacity
                 style={[styles.mobileNavButton, styles.mobileNavButtonGreen]}
-                onPress={() => router.push('/(tabs)/search?listing_type=sale')}
+                onPress={() => router.push('/(tabs)/searchnew?listing_type=sale')}
               >
                 <View style={styles.mobileNavIcon}>
                   <Text style={styles.mobileNavEmoji}>🛍️</Text>
@@ -365,7 +365,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
               <TouchableOpacity
                 style={[styles.mobileNavButton, styles.mobileNavButtonOrange]}
-                onPress={() => router.push('/(tabs)/search?listing_type=purchase')}
+                onPress={() => router.push('/(tabs)/searchnew?listing_type=purchase')}
               >
                 <View style={styles.mobileNavIcon}>
                   <Text style={styles.mobileNavEmoji}>🔍</Text>
@@ -487,7 +487,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
           <TouchableOpacity
             style={[styles.navButtonCompact, styles.navButtonGreen]}
-            onPress={() => router.push('/(tabs)/search?listing_type=sale')}
+            onPress={() => router.push('/(tabs)/searchnew?listing_type=sale')}
           >
             <ShoppingBag size={15} color="#FFFFFF" />
             <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
@@ -497,7 +497,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
           <TouchableOpacity
             style={[styles.navButtonCompact, styles.navButtonOrange]}
-            onPress={() => router.push('/(tabs)/search?listing_type=purchase')}
+            onPress={() => router.push('/(tabs)/searchnew?listing_type=purchase')}
           >
             <Search size={15} color="#FFFFFF" />
             <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
@@ -818,7 +818,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   onPress={() => {
                     setShowCategoriesMenu(false);
                     setSelectedCategoryId(null);
-                    router.push('/(tabs)/search');
+                    router.push('/(tabs)/searchnew');
                   }}
                 >
                   <Text style={[styles.categoryMenuText, isRTL && styles.textRTL]}>
@@ -839,7 +839,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                         onPress={() => {
                           setShowCategoriesMenu(false);
                           router.push({
-                            pathname: '/(tabs)/search',
+                            pathname: '/(tabs)/searchnew',
                             params: { category_id: category.id }
                           });
                         }}
@@ -875,7 +875,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                             onPress={() => {
                               setShowCategoriesMenu(false);
                               router.push({
-                                pathname: '/(tabs)/search',
+                                pathname: '/(tabs)/searchnew',
                                 params: { categoryId: sub.id }
                               });
                             }}
@@ -927,9 +927,9 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   setShowCategoryDropdown(false);
                   // Naviguer vers la page de recherche avec toutes les annonces
                   if (searchQuery.trim()) {
-                    router.push(`/(tabs)/search?q=${encodeURIComponent(searchQuery)}`);
+                    router.push(`/(tabs)/searchnew?q=${encodeURIComponent(searchQuery)}`);
                   } else {
-                    router.push('/(tabs)/search');
+                    router.push('/(tabs)/searchnew');
                   }
                 }}
               >
@@ -958,7 +958,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                       params.set('q', searchQuery);
                     }
                     params.set('category_id', category.id);
-                    router.push(`/(tabs)/search?${params.toString()}`);
+                    router.push(`/(tabs)/searchnew?${params.toString()}`);
                   }}
                 >
                   <Text style={[

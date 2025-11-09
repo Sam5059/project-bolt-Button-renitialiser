@@ -151,7 +151,7 @@ export default function CategoryCarousel({ categories, onCategoryPress, isSticky
     } else if (category.slug === 'stores-pro') {
       router.push('/stores');
     } else {
-      router.push(`/(tabs)/search?category=${category.id}`);
+      router.push(`/(tabs)/searchnew?category=${category.id}`);
     }
   };
 

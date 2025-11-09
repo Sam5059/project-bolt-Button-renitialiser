@@ -53,7 +53,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="search-new"
+        name="searchnew"
         options={{
           title: language === 'ar' ? 'بحث' : language === 'en' ? 'Search' : 'Recherche',
           tabBarIcon: ({ color, size, focused }) => (
