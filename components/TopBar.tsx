@@ -14,7 +14,7 @@ import {
   Image,
 } from 'react-native';
 import { router, useSegments } from 'expo-router';
-import { Search, Bell, MessageCircle, User, X, MapPin, ChevronDown, Check, LogOut, Settings, Store, ArrowLeft, Clock, Menu, Package, Heart, Hop as Home, ShoppingBag, Gem, CirclePlus as PlusCircle, HelpCircle } from 'lucide-react-native';
+import { Search, Bell, MessageCircle, User, X, MapPin, ChevronDown, Check, LogOut, Settings, Store, ArrowLeft, Clock, Menu, Package, Heart, Hop as Home, ShoppingBag, Gem, CirclePlus as PlusCircle, HelpCircle, Crown } from 'lucide-react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from '@/contexts/LocationContext';
@@ -351,7 +351,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                 onPress={() => router.push('/pro/packages')}
               >
                 <View style={styles.mobileNavIcon}>
-                  <Text style={styles.mobileNavEmoji}>💎</Text>
+                  <Text style={styles.mobileNavEmoji}>👑</Text>
                 </View>
                 <Text style={[styles.mobileNavText, styles.mobileNavTextBlack]}>
                   {t('topBar.buyPro')}
@@ -474,7 +474,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                     style={[styles.navButtonCompact, styles.navButtonYellow]}
                     onPress={() => router.push('/pro/packages')}
                   >
-                    <Gem size={16} color="#1E293B" />
+                    <Crown size={16} color="#1E293B" />
                     <Text style={[styles.navButtonText, styles.navButtonTextBlack]}>
                       {t('topBar.buyPro')}
                     </Text>
