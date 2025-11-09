@@ -179,7 +179,7 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
               ? language === 'ar' ? 'للبيع' : language === 'en' ? 'FOR SALE' : 'À VENDRE'
               : listing.listing_type === 'rent'
               ? language === 'ar' ? 'للإيجار' : language === 'en' ? 'FOR RENT' : 'À LOUER'
-              : language === 'ar' ? 'مطلوب' : language === 'en' ? 'WANTED' : 'RECHERCHÉ'
+              : language === 'ar' ? 'مطلوب' : language === 'en' ? 'WANTED' : 'DEMANDE'
             }
           </Text>
         </View>
