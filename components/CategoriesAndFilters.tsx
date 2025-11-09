@@ -740,7 +740,13 @@ export default function CategoriesAndFilters({
   }
 
   function updateFilter(key: keyof FilterState, value: string) {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    console.log('[updateFilter] Key:', key, 'Value:', value);
+    console.log('[updateFilter] Previous filters:', filters);
+    setFilters((prev) => {
+      const newFilters = { ...prev, [key]: value };
+      console.log('[updateFilter] New filters:', newFilters);
+      return newFilters;
+    });
 
     // Fermer la sidebar sur mobile après modification d'un filtre
     if (!isWeb && !isPinned) {
@@ -989,7 +995,12 @@ export default function CategoriesAndFilters({
         <View style={styles.chipContainer}>
           <TouchableOpacity
             style={[styles.chip, filters.listing_type === 'offre' && styles.chipActive]}
-            onPress={() => updateFilter('listing_type', filters.listing_type === 'offre' ? '' : 'offre')}
+            onPress={() => {
+              console.log('[OFFRES CLICK] Current listing_type:', filters.listing_type);
+              const newValue = filters.listing_type === 'offre' ? '' : 'offre';
+              console.log('[OFFRES CLICK] Setting new value:', newValue);
+              updateFilter('listing_type', newValue);
+            }}
           >
             <Text style={[styles.chipText, filters.listing_type === 'offre' && styles.chipTextActive]}>
               {language === 'ar' ? 'عروض' : language === 'en' ? 'Offers' : 'Offres'}
@@ -997,7 +1008,12 @@ export default function CategoriesAndFilters({
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.chip, filters.listing_type === 'je_cherche' && styles.chipActive]}
-            onPress={() => updateFilter('listing_type', filters.listing_type === 'je_cherche' ? '' : 'je_cherche')}
+            onPress={() => {
+              console.log('[DEMANDES CLICK] Current listing_type:', filters.listing_type);
+              const newValue = filters.listing_type === 'je_cherche' ? '' : 'je_cherche';
+              console.log('[DEMANDES CLICK] Setting new value:', newValue);
+              updateFilter('listing_type', newValue);
+            }}
           >
             <Text style={[styles.chipText, filters.listing_type === 'je_cherche' && styles.chipTextActive]}>
               {language === 'ar' ? 'طلبات' : language === 'en' ? 'Requests' : 'Demandes'}
