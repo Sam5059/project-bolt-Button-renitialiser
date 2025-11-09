@@ -198,7 +198,7 @@ export default function CheckoutScreen() {
             <Text style={styles.emptyTitle}>{t('cart.empty')}</Text>
             <TouchableOpacity
               style={styles.shopButton}
-              onPress={() => router.push('/(tabs)/search')}
+              onPress={() => router.push('/(tabs)/search-new')}
             >
               <Text style={styles.shopButtonText}>{t('cart.startShopping')}</Text>
             </TouchableOpacity>

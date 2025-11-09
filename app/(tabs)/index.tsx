@@ -108,7 +108,7 @@ export default function HomePage() {
         name: category.name,
         slug: category.slug
       });
-      router.push(`/(tabs)/search?category_id=${category.id}`);
+      router.push(`/(tabs)/search-new?category_id=${category.id}`);
     }
   };
 
@@ -170,9 +170,9 @@ export default function HomePage() {
 
   const handleSearch = () => {
     if (searchText.trim()) {
-      router.push(`/(tabs)/search?q=${encodeURIComponent(searchText)}`);
+      router.push(`/(tabs)/search-new?q=${encodeURIComponent(searchText)}`);
     } else {
-      router.push('/(tabs)/search');
+      router.push('/(tabs)/search-new');
     }
   };
 

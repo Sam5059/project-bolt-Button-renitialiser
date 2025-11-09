@@ -25,7 +25,7 @@ export default function QuickAccessMenu({ activeTab }: QuickAccessMenuProps) {
         en: 'Categories',
         ar: 'الفئات',
       },
-      route: '/(tabs)/search',
+      route: '/(tabs)/search-new',
     },
     {
       id: 'my-listings',
@@ -55,7 +55,7 @@ export default function QuickAccessMenu({ activeTab }: QuickAccessMenuProps) {
         en: 'Offers',
         ar: 'العروض',
       },
-      route: '/(tabs)/search?listing_type=sale',
+      route: '/(tabs)/search-new?listing_type=sale',
       highlight: true,
     },
     {
@@ -66,7 +66,7 @@ export default function QuickAccessMenu({ activeTab }: QuickAccessMenuProps) {
         en: 'Requests',
         ar: 'الطلبات',
       },
-      route: '/(tabs)/search?listing_type=purchase',
+      route: '/(tabs)/search-new?listing_type=purchase',
       highlight: true,
     },
   ];
