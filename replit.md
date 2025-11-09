@@ -5,6 +5,18 @@ BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) a
 
 ## Recent Changes (November 9, 2025)
 
+### Publish Form Optimization
+- **Smart Offer Type Selection**: Implemented intelligent auto-selection based on category (location → rent, immobilier-vente → sale, default → sale)
+  - New function `getSmartOfferType()` automatically detects appropriate offer type
+  - Pre-selects offer type when category changes while preserving manual user overrides
+  - Considers both category slug and listing type for accurate determination
+- **Streamlined Layout**: Redesigned "Type d'offre" section for better UX
+  - Moved between Category and Subcategory for logical flow
+  - Changed from 2x2 grid to single horizontal row (4 buttons side-by-side)
+  - Optimized button sizing: reduced padding (12px), icons (24px), font (13px)
+  - Equal-width distribution with `flex: 1` for responsive balance
+  - New `offerTypeRow` style: `flexDirection: 'row', gap: 8, justifyContent: 'space-between'`
+
 ### Sidebar UX Enhancements
 - **Resizable/Collapsible Sidebar**: Implemented fully functional sidebar with mouse-drag resize (240-460px) and toggle collapse button
   - localStorage persistence for width and collapsed state
