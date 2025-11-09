@@ -1316,8 +1316,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   mobileNavButtonYellow: {
-    backgroundColor: '#F59E0B',
-    borderColor: '#F59E0B',
+    backgroundColor: '#FDB913',
+    borderColor: '#FDB913',
     borderWidth: 2,
   },
   mobileNavButtonGreen: {
@@ -1620,8 +1620,8 @@ const styles = StyleSheet.create({
     borderColor: '#8B5CF6',
   },
   navButtonYellow: {
-    backgroundColor: '#F59E0B',
-    borderColor: '#F59E0B',
+    backgroundColor: '#FDB913',
+    borderColor: '#FDB913',
   },
   navButtonOrange: {
     backgroundColor: '#F97316',
