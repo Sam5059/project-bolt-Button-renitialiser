@@ -1223,7 +1223,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
@@ -1232,7 +1232,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
@@ -1249,7 +1249,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.yearMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('yearMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('yearMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.yearMin || ''}
             onChangeText={(val) => updateFilter('yearMin', val)}
@@ -1258,7 +1258,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.yearMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('yearMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('yearMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.yearMax || ''}
             onChangeText={(val) => updateFilter('yearMax', val)}
@@ -1315,7 +1315,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.mileageMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('mileageMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('mileageMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.mileageMin || ''}
             onChangeText={(val) => updateFilter('mileageMin', val)}
@@ -1324,7 +1324,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.mileageMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('mileageMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('mileageMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.mileageMax || ''}
             onChangeText={(val) => updateFilter('mileageMax', val)}
@@ -1340,7 +1340,7 @@ export default function CategoriesAndFilters({
         </Text>
         <TextInput
           style={[styles.input, !filters.color && styles.inputEmpty]}
-          placeholder={getPlaceholder('color', language as 'fr' | 'en' | 'ar')}
+          placeholder={getResponsivePlaceholder('color', language as 'fr' | 'en' | 'ar')}
           placeholderTextColor="#9CA3AF"
           value={filters.color || ''}
           onChangeText={(val) => updateFilter('color', val)}
@@ -1388,7 +1388,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
@@ -1397,7 +1397,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
@@ -1414,7 +1414,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.surfaceMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('surfaceMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('surfaceMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.surfaceMin || ''}
             onChangeText={(val) => updateFilter('surfaceMin', val)}
@@ -1423,7 +1423,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.surfaceMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('surfaceMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('surfaceMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.surfaceMax || ''}
             onChangeText={(val) => updateFilter('surfaceMax', val)}
@@ -1786,7 +1786,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.monthlyRentMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('monthlyRentMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('monthlyRentMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.monthlyRentMin || ''}
             onChangeText={(val) => updateFilter('monthlyRentMin', val)}
@@ -1795,7 +1795,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.monthlyRentMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('monthlyRentMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('monthlyRentMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.monthlyRentMax || ''}
             onChangeText={(val) => updateFilter('monthlyRentMax', val)}
@@ -1812,7 +1812,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.surfaceMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('surfaceMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('surfaceMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.surfaceMin || ''}
             onChangeText={(val) => updateFilter('surfaceMin', val)}
@@ -1821,7 +1821,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.surfaceMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('surfaceMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('surfaceMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.surfaceMax || ''}
             onChangeText={(val) => updateFilter('surfaceMax', val)}
@@ -1920,7 +1920,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
@@ -1929,7 +1929,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
@@ -2005,7 +2005,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
@@ -2014,7 +2014,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
@@ -2076,7 +2076,7 @@ export default function CategoriesAndFilters({
         </Text>
         <TextInput
           style={[styles.input, !filters.sector && styles.inputEmpty]}
-          placeholder={getPlaceholder('sector', language as 'fr' | 'en' | 'ar')}
+          placeholder={getResponsivePlaceholder('sector', language as 'fr' | 'en' | 'ar')}
           placeholderTextColor="#9CA3AF"
           value={filters.sector || ''}
           onChangeText={(val) => updateFilter('sector', val)}
@@ -2104,7 +2104,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
@@ -2113,7 +2113,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
@@ -2145,7 +2145,7 @@ export default function CategoriesAndFilters({
         <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
@@ -2154,7 +2154,7 @@ export default function CategoriesAndFilters({
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
             style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
-            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholder={getResponsivePlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
             placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
@@ -2216,6 +2216,92 @@ export default function CategoriesAndFilters({
     }
   };
 
+  const getResponsivePlaceholder = (field: any, lang: 'fr' | 'en' | 'ar' = 'fr'): string => {
+    if (sidebarWidth < 280) {
+      const shortPlaceholders: any = {
+        fr: {
+          priceMin: 'Min DA?',
+          priceMax: 'Max DA?',
+          yearMin: 'Min?',
+          yearMax: 'Max?',
+          mileageMin: 'Min km?',
+          mileageMax: 'Max km?',
+          surfaceMin: 'Min m²?',
+          surfaceMax: 'Max m²?',
+          monthlyRentMin: 'Min/mois?',
+          monthlyRentMax: 'Max/mois?',
+        },
+        en: {
+          priceMin: 'Min DA?',
+          priceMax: 'Max DA?',
+          yearMin: 'Min?',
+          yearMax: 'Max?',
+          mileageMin: 'Min km?',
+          mileageMax: 'Max km?',
+          surfaceMin: 'Min m²?',
+          surfaceMax: 'Max m²?',
+          monthlyRentMin: 'Min/mo?',
+          monthlyRentMax: 'Max/mo?',
+        },
+        ar: {
+          priceMin: 'أدنى؟',
+          priceMax: 'أقصى؟',
+          yearMin: 'أدنى؟',
+          yearMax: 'أقصى؟',
+          mileageMin: 'أدنى كم؟',
+          mileageMax: 'أقصى كم؟',
+          surfaceMin: 'أدنى م²؟',
+          surfaceMax: 'أقصى م²؟',
+          monthlyRentMin: 'أدنى/شهر؟',
+          monthlyRentMax: 'أقصى/شهر؟',
+        },
+      };
+      return shortPlaceholders[lang]?.[field] || getPlaceholder(field, lang);
+    } else if (sidebarWidth < 340) {
+      const mediumPlaceholders: any = {
+        fr: {
+          priceMin: 'Prix min ?',
+          priceMax: 'Prix max ?',
+          yearMin: 'Année min ?',
+          yearMax: 'Année max ?',
+          mileageMin: 'Km min ?',
+          mileageMax: 'Km max ?',
+          surfaceMin: 'Surface min ?',
+          surfaceMax: 'Surface max ?',
+          monthlyRentMin: 'Loyer min ?',
+          monthlyRentMax: 'Loyer max ?',
+        },
+        en: {
+          priceMin: 'Min price?',
+          priceMax: 'Max price?',
+          yearMin: 'Min year?',
+          yearMax: 'Max year?',
+          mileageMin: 'Min km?',
+          mileageMax: 'Max km?',
+          surfaceMin: 'Min area?',
+          surfaceMax: 'Max area?',
+          monthlyRentMin: 'Min rent?',
+          monthlyRentMax: 'Max rent?',
+        },
+        ar: {
+          priceMin: 'السعر الأدنى؟',
+          priceMax: 'السعر الأقصى؟',
+          yearMin: 'السنة الدنيا؟',
+          yearMax: 'السنة القصوى؟',
+          mileageMin: 'المسافة الدنيا؟',
+          mileageMax: 'المسافة القصوى؟',
+          surfaceMin: 'المساحة الدنيا؟',
+          surfaceMax: 'المساحة القصوى؟',
+          monthlyRentMin: 'الإيجار الأدنى؟',
+          monthlyRentMax: 'الإيجار الأقصى؟',
+        },
+      };
+      return mediumPlaceholders[lang]?.[field] || getPlaceholder(field, lang);
+    } else {
+      return getPlaceholder(field, lang);
+    }
+  };
+
   const getResponsiveContainerStyle = () => {
     if (sidebarWidth < 320) {
       return { gap: 12, paddingTop: 10 };
@@ -2227,7 +2313,7 @@ export default function CategoriesAndFilters({
   };
 
   const getResponsiveRangeStyle = () => {
-    if (sidebarWidth < 320) {
+    if (sidebarWidth < 360) {
       return { flexDirection: 'column' as const, alignItems: 'stretch' as const, gap: 8 };
     } else {
       return { flexDirection: 'row' as const, alignItems: 'center' as const, gap: 8 };
@@ -2677,6 +2763,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 14,
     color: '#0F172A',
+    width: '100%',
+    ...(isWeb ? {
+      boxSizing: 'border-box',
+    } as any : {}),
   },
   inputEmpty: {
     fontStyle: 'italic',
@@ -2695,6 +2785,8 @@ const styles = StyleSheet.create({
   },
   rangeInput: {
     flex: 1,
+    minWidth: 0,
+    flexShrink: 1,
   },
   rangeSeparator: {
     fontSize: 16,
