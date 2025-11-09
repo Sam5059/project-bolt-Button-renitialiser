@@ -209,3 +209,18 @@ Preferred communication style: Simple, everyday language.
      - Applied white text color to all colored buttons for better contrast
      - Maintained consistent styling between desktop and mobile navigation
    - **Result**: Clear visual distinction between action types, intuitive color association with listing types
+
+9. **Search Page Consolidation & TopBar Search Visibility** (`app/(tabs)/searchnew.tsx`, `components/TopBar.tsx`) - November 9, 2025
+   - **Change**: Unified all search functionality to single `searchnew` page, added search bar to search page TopBar
+   - **File Renaming**: `search-new.tsx` → `searchnew.tsx` (Expo Router hyphen compatibility)
+   - **Navigation Updates**:
+     - Deleted obsolete `search.tsx` and `search copy.tsx` files
+     - Updated all navigation references: TopBar, CategoryCarousel, QuickAccessMenu, Footer, checkout, cart, index
+     - All links now redirect to `/(tabs)/searchnew`
+   - **TopBar Search Visibility Enhancement**:
+     - Search bar now visible on searchnew page (45% width) between logo and "Déposer une annonce"
+     - Replaced `showSearchControls` with granular flags:
+       - `showSearchBar = !isHomePage` - displays search everywhere except homepage
+       - `showLocationSelector = !isHomePage && !isSearchPage` - hides location on search page
+     - Category dropdown hidden on searchnew (categories already in sidebar)
+   - **Result**: Single unified search experience, persistent search bar across app, category highlighting functional from homepage
