@@ -18,6 +18,7 @@ import { saveSearchHistory } from '@/lib/searchHistoryUtils';
 import { useSearch } from '@/contexts/SearchContext';
 import { uiToDbListingType, dbToUiListingType } from '@/lib/listingTypeMap';
 import { detectCategoryFromQuery } from '@/lib/categoryKeywords';
+import { SLUG_TO_CATEGORY_TYPE, SLUG_TO_BRAND_CATEGORY_TYPE } from '@/lib/categoryFiltersConfig';
 
 interface CategoriesAndFiltersProps {
   onFiltersApply: (listings: any[]) => void;
@@ -258,10 +259,11 @@ export default function CategoriesAndFilters({
   }, [filters, selectedCategory, globalSearchQuery]);
 
   async function loadCategories() {
+    // Charger TOUTES les catégories (principales + sous-catégories)
+    // pour que getCategoryType() puisse trouver les sous-catégories
     const { data } = await supabase
       .from('categories')
       .select('*')
-      .is('parent_id', null)
       .order('display_order', { ascending: true });
     if (data) {
       setCategories(data);
@@ -805,44 +807,41 @@ export default function CategoriesAndFilters({
 
   const getCategoryType = (categoryId: string) => {
     const cat = categories.find(c => c.id === categoryId);
-    let slug = cat?.slug?.toLowerCase() || '';
+    if (!cat) return 'generic';
 
-    // Si c'est une sous-catégorie, combiner avec le parent
-    if (cat?.parent_id) {
-      const parent = categories.find(c => c.id === cat.parent_id);
-      const parentSlug = parent?.slug?.toLowerCase() || '';
-      slug = `${parentSlug} ${slug}`;
+    // Normaliser le slug
+    const slug = cat.slug?.toLowerCase() || '';
+
+    // 1. Essayer d'abord le mapping exact du slug enfant
+    if (SLUG_TO_CATEGORY_TYPE[slug]) {
+      return SLUG_TO_CATEGORY_TYPE[slug];
     }
 
-    // Véhicules et locations de véhicules
-    if (slug.includes('vehicule') || slug.includes('auto') || slug.includes('moto') || slug.includes('voiture')) return 'vehicle';
+    // 2. Si c'est une sous-catégorie, essayer le slug parent
+    let parentSlug = '';
+    if (cat.parent_id) {
+      const parent = categories.find(c => c.id === cat.parent_id);
+      parentSlug = parent?.slug?.toLowerCase() || '';
+      
+      if (SLUG_TO_CATEGORY_TYPE[parentSlug]) {
+        return SLUG_TO_CATEGORY_TYPE[parentSlug];
+      }
+    }
 
-    // Location immobilière (avant immobilier général)
-    if (slug.includes('location-immobiliere') || slug.includes('location-vacances')) return 'rental';
-
-    // Immobilier (vente)
-    if (slug.includes('immobilier') || slug.includes('appartement') || slug.includes('maison') || slug.includes('terrain') || slug.includes('bureau')) return 'realestate';
-
-    // Électronique
-    if (slug.includes('electronique') || slug.includes('telephone') || slug.includes('ordinateur') || slug.includes('tablette')) return 'electronics';
-
-    // Animaux
-    if (slug.includes('animaux') || slug.includes('chien') || slug.includes('chat')) return 'animals';
-
-    // Mode & Beauté
-    if (slug.includes('mode') || slug.includes('beaute') || slug.includes('vetement') || slug.includes('chaussure')) return 'fashion';
-
-    // Maison & Jardin
-    if (slug.includes('maison-jardin') || slug.includes('meuble') || slug.includes('decoration')) return 'home';
-
-    // Emploi
-    if (slug.includes('emploi') || slug.includes('demandes-emploi') || slug.includes('offres-emploi')) return 'employment';
-
-    // Services
-    if (slug.includes('service') || slug.includes('plomberie') || slug.includes('electricite') || slug.includes('nettoyage')) return 'service';
-
-    // Location d'équipements
-    if (slug.includes('location-equipement')) return 'equipment_rental';
+    // 3. Fallback: chercher par mots-clés pour compatibilité rétrograde
+    // Combiner parent + enfant pour les sous-catégories non mappées
+    const combinedSlug = parentSlug ? `${parentSlug} ${slug}` : slug;
+    
+    if (combinedSlug.includes('vehicule') || combinedSlug.includes('auto') || combinedSlug.includes('moto') || combinedSlug.includes('voiture')) return 'vehicle';
+    if (combinedSlug.includes('location-immobiliere') || combinedSlug.includes('location-vacances')) return 'rental';
+    if (combinedSlug.includes('immobilier') || combinedSlug.includes('appartement') || combinedSlug.includes('maison') || combinedSlug.includes('terrain') || combinedSlug.includes('bureau')) return 'realestate';
+    if (combinedSlug.includes('electronique') || combinedSlug.includes('telephone') || combinedSlug.includes('ordinateur') || combinedSlug.includes('tablette')) return 'electronics';
+    if (combinedSlug.includes('animaux') || combinedSlug.includes('chien') || combinedSlug.includes('chat')) return 'animals';
+    if (combinedSlug.includes('mode') || combinedSlug.includes('beaute') || combinedSlug.includes('vetement') || combinedSlug.includes('chaussure')) return 'fashion';
+    if (combinedSlug.includes('maison-jardin') || combinedSlug.includes('meuble') || combinedSlug.includes('decoration')) return 'home';
+    if (combinedSlug.includes('emploi') || combinedSlug.includes('demandes-emploi') || combinedSlug.includes('offres-emploi')) return 'employment';
+    if (combinedSlug.includes('service') || combinedSlug.includes('plomberie') || combinedSlug.includes('electricite') || combinedSlug.includes('nettoyage')) return 'service';
+    if (combinedSlug.includes('location-equipement')) return 'equipment_rental';
 
     // Par défaut: filtres génériques
     return 'generic';
@@ -850,22 +849,37 @@ export default function CategoriesAndFilters({
 
   const getCategoryTypeForBrands = (categoryId: string) => {
     const cat = categories.find(c => c.id === categoryId);
-    let slug = cat?.slug?.toLowerCase() || '';
+    if (!cat) return null;
 
-    // Si c'est une sous-catégorie, chercher aussi le slug du parent
-    if (cat?.parent_id) {
-      const parent = categories.find(c => c.id === cat.parent_id);
-      const parentSlug = parent?.slug?.toLowerCase() || '';
-      slug = `${parentSlug} ${slug}`; // Combiner parent + enfant pour la recherche
+    // Normaliser le slug
+    const slug = cat.slug?.toLowerCase() || '';
+
+    // 1. Essayer d'abord le mapping exact du slug enfant
+    if (SLUG_TO_BRAND_CATEGORY_TYPE[slug]) {
+      return SLUG_TO_BRAND_CATEGORY_TYPE[slug];
     }
 
-    // Retourne le type exact pour la table brands.category_type
-    if (slug.includes('vehicule') || slug.includes('auto') || slug.includes('moto') || slug.includes('voiture')) return 'vehicles';
-    if (slug.includes('electronique') || slug.includes('telephone') || slug.includes('informatique') || slug.includes('ordinateur')) return 'electronics';
-    if (slug.includes('mode') || slug.includes('fashion') || slug.includes('vetement') || slug.includes('beaute')) return 'fashion';
-    if (slug.includes('maison') || slug.includes('jardin') || slug.includes('decoration')) return 'home_garden';
-    if (slug.includes('sport') || slug.includes('loisir')) return 'sports_leisure';
-    if (slug.includes('emploi') || slug.includes('service')) return 'services';
+    // 2. Si c'est une sous-catégorie, essayer le slug parent
+    let parentSlug = '';
+    if (cat.parent_id) {
+      const parent = categories.find(c => c.id === cat.parent_id);
+      parentSlug = parent?.slug?.toLowerCase() || '';
+      
+      if (SLUG_TO_BRAND_CATEGORY_TYPE[parentSlug]) {
+        return SLUG_TO_BRAND_CATEGORY_TYPE[parentSlug];
+      }
+    }
+
+    // 3. Fallback: chercher par mots-clés pour compatibilité rétrograde
+    // Combiner parent + enfant pour les sous-catégories non mappées
+    const combinedSlug = parentSlug ? `${parentSlug} ${slug}` : slug;
+    
+    if (combinedSlug.includes('vehicule') || combinedSlug.includes('auto') || combinedSlug.includes('moto') || combinedSlug.includes('voiture')) return 'vehicles';
+    if (combinedSlug.includes('electronique') || combinedSlug.includes('telephone') || combinedSlug.includes('informatique') || combinedSlug.includes('ordinateur')) return 'electronics';
+    if (combinedSlug.includes('mode') || combinedSlug.includes('fashion') || combinedSlug.includes('vetement') || combinedSlug.includes('beaute')) return 'fashion';
+    if (combinedSlug.includes('maison') || combinedSlug.includes('jardin') || combinedSlug.includes('decoration')) return 'home_garden';
+    if (combinedSlug.includes('sport') || combinedSlug.includes('loisir')) return 'sports_leisure';
+    if (combinedSlug.includes('emploi') || combinedSlug.includes('service')) return 'services';
 
     return null; // Pas de marques pour cette catégorie
   };
@@ -2215,7 +2229,9 @@ export default function CategoriesAndFilters({
               showsVerticalScrollIndicator={true}
             >
         <View style={styles.categoriesContainer}>
-          {categories.map((category) => {
+          {categories
+            .filter(category => !category.parent_id) // Afficher uniquement les catégories principales
+            .map((category) => {
             const isExpanded = expandedCategory === category.id;
             const isAutoDetected = autoDetectedCategory === category.id;
 
