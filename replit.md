@@ -4,6 +4,23 @@
 BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) and Supabase. It allows users to buy, sell, and rent items across various categories, featuring specialized "PRO Stores" for professional sellers. The platform aims to be the go-to destination for classifieds in Algeria.
 
 ## Recent Changes (November 9, 2025)
+
+### Sidebar UX Enhancements
+- **Resizable/Collapsible Sidebar**: Implemented fully functional sidebar with mouse-drag resize (240-460px) and toggle collapse button
+  - localStorage persistence for width and collapsed state
+  - Smooth toggle animation with chevron icons
+  - Drag handle with visual feedback (GripVertical icon)
+- **Responsive Filter Layout**: Dynamic field sizing based on sidebar width with 3 breakpoints
+  - <320px: single-column stacked layout
+  - 320-400px: 2-column layout with reduced spacing
+  - ≥400px: standard layout with optimal spacing
+- **Engaging Multilingual Placeholders**: All filter inputs now display guiding questions instead of generic "Min/Max"
+  - Examples FR: "Quelle marque recherchez-vous ?", "Prix minimum en DA ? Ex: 500000"
+  - Examples EN: "Which brand are you looking for?", "Minimum price in DA? e.g. 500000"
+  - Examples AR: "أي علامة تجارية تبحث عنها؟", "السعر الأدنى بالدينار؟ مثال: 500000"
+- **Visual Empty Field Feedback**: Empty inputs display in italic gray style for better UX clarity
+
+### Smart Category Detection
 - **Intelligent Category Detection System**: Implemented automatic category detection based on search keywords with visual highlighting in sidebar
 - **Enhanced Keyword Dictionary**: Added comprehensive multilingual keywords (montre, maçonnerie, informatique, plomberie, électricité, etc.)
 - **Category Filter Bug Fix**: Fixed critical bug where all categories defaulted to vehicle filters; created centralized filter configuration system
@@ -27,6 +44,9 @@ Preferred communication style: Simple, everyday language.
 - **Data Architecture Decisions**: Separated categories and subcategories, migrated critical searchable fields from JSONB to dedicated columns, implemented GIN indexes, automatic triggers for timestamps and analytics.
 
 ### UI/UX Decisions
+- **Resizable Sidebar**: Users can resize filter sidebar (240-460px) and collapse/expand with toggle button; state persists across sessions
+- **Responsive Filters**: Filter layout adapts dynamically to sidebar width with 3 responsive breakpoints
+- **Engaging Placeholders**: All filter inputs use contextual questions in 3 languages (FR/EN/AR) instead of generic labels
 - Streamlined publish form, smart category detection with visual feedback, global search synchronization via TopBar, adaptive TopBar layout based on page context (e.g., search bar appears only on search page), color-coded navigation buttons for intuitive action types.
 - Listing card badges updated for clarity (e.g., "RECHERCHÉ" to "DEMANDE").
 
