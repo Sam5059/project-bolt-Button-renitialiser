@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  useWindowDimensions,
 } from 'react-native';
 import { X, MapPin, Grid, ShoppingBag } from 'lucide-react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -53,6 +54,8 @@ export default function FiltersModal({
 }: FiltersModalProps) {
   const { language, t } = useLanguage();
   const { currentLocation, setCurrentLocation } = useLocation();
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
   const [categories, setCategories] = useState<Category[]>([]);
   
   // États locaux temporaires pour les sélections
@@ -118,11 +121,14 @@ export default function FiltersModal({
     <Modal
       visible={visible}
       transparent
-      animationType="fade"
+      animationType={isMobile ? "slide" : "fade"}
       onRequestClose={handleCancel}
     >
-      <Pressable style={styles.overlay} onPress={handleCancel}>
-        <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+      <Pressable style={[styles.overlay, isMobile && styles.overlayMobile]} onPress={handleCancel}>
+        <Pressable 
+          style={[styles.modalContent, isMobile && styles.modalContentMobile]} 
+          onPress={(e) => e.stopPropagation()}
+        >
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>Filtres de recherche</Text>
@@ -297,6 +303,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  overlayMobile: {
+    justifyContent: 'flex-end',
+    padding: 0,
+  },
   modalContent: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
@@ -308,6 +318,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 20,
     elevation: 10,
+  },
+  modalContentMobile: {
+    borderRadius: 0,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxWidth: '100%',
+    height: '88%',
+    maxHeight: '88%',
   },
   header: {
     flexDirection: 'row',
@@ -346,6 +364,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
+    justifyContent: 'flex-start',
   },
   optionButton: {
     flexDirection: 'row',
@@ -357,6 +376,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
+    minHeight: 44, // Better tap target for mobile
   },
   optionButtonActive: {
     backgroundColor: '#EFF6FF',

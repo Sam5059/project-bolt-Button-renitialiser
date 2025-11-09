@@ -301,15 +301,20 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   returnKeyType="search"
                 />
               </View>
+              
+              {/* Bouton Filtres mobile */}
               <TouchableOpacity
-                style={styles.mobileLocationButton}
-                onPress={() => setShowLocationMenu(true)}
+                style={styles.filtersButtonMobile}
+                onPress={() => setShowFiltersModal(true)}
               >
-                <MapPin size={15} color="#2563EB" strokeWidth={2.5} />
-                <Text style={styles.mobileLocationText} numberOfLines={1}>
-                  {currentLocation ? currentLocation.split('-')[1]?.trim() || currentLocation : 'Alger'}
-                </Text>
-                <ChevronDown size={13} color="#2563EB" strokeWidth={2.5} />
+                <SlidersHorizontal size={16} color="#2563EB" />
+                {(selectedCategoryId || currentLocation !== '16-Alger' || selectedListingType !== 'all') && (
+                  <View style={styles.filtersBadgeMobile}>
+                    <Text style={styles.filtersBadgeText}>
+                      {(selectedCategoryId ? 1 : 0) + (currentLocation !== '16-Alger' ? 1 : 0) + (selectedListingType !== 'all' ? 1 : 0)}
+                    </Text>
+                  </View>
+                )}
               </TouchableOpacity>
             </View>
           )}
@@ -1455,7 +1460,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12, // Increased from 10 to 12 for ~44px height
     gap: 10,
     borderWidth: 2,
     borderColor: '#E2E8F0',
@@ -1464,6 +1469,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
+    minHeight: 44,
   },
   mobileSearchInput: {
     flex: 1,
@@ -2599,7 +2605,13 @@ const styles = StyleSheet.create({
     gap: 12,
     flex: 1,
     maxWidth: '45%',
-    minWidth: 400,
+    minWidth: 400, // Desktop only
+  },
+  searchContainerMobile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flex: 1,
   },
   searchBarExpanded: {
     flexDirection: 'row',
@@ -2607,7 +2619,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     paddingLeft: 16,
-    paddingVertical: 14,
+    paddingVertical: 14, // Desktop: 48px height
     borderWidth: 2,
     borderColor: '#CBD5E1',
     height: 48,
@@ -2635,6 +2647,19 @@ const styles = StyleSheet.create({
     height: 48,
     position: 'relative',
   },
+  filtersButtonMobile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: '#EFF6FF',
+    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: '#BFDBFE',
+    height: 44,
+    position: 'relative',
+  },
   filtersButtonText: {
     fontSize: 14,
     fontWeight: '600',
@@ -2656,6 +2681,18 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 11,
     fontWeight: '700',
+  },
+  filtersBadgeMobile: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: '#EF4444',
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
   },
   searchIcon: {
     marginRight: 8,
