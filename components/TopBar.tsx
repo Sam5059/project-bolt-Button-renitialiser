@@ -70,8 +70,8 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
     segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'searchnew';
   
   // Détermine si on doit afficher les contrôles de recherche
-  // Barre de recherche visible partout sauf sur l'accueil
-  const showSearchBar = !isHomePage;
+  // Barre de recherche visible UNIQUEMENT sur la page de recherche
+  const showSearchBar = isSearchPage;
   // Localisation visible seulement en dehors de l'accueil et de la page de recherche
   const showLocationSelector = !isHomePage && !isSearchPage;
   
