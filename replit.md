@@ -26,8 +26,13 @@ BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) a
   - <320px: single-column stacked layout
   - 320-400px: 2-column layout with reduced spacing
   - ≥400px: standard layout with optimal spacing
+- **Input Overflow Fix**: Resolved critical issue where input fields exceeded sidebar boundaries
+  - Added CSS constraints: `width: 100%`, `box-sizing: border-box`, `minWidth: 0`, `flexShrink: 1`
+  - Improved responsive breakpoint: range inputs switch to column layout at <360px (was <320px)
+  - Created `getResponsivePlaceholder()` function with adaptive placeholder lengths based on sidebar width
 - **Engaging Multilingual Placeholders**: All filter inputs now display guiding questions instead of generic "Min/Max"
   - Examples FR: "Quelle marque recherchez-vous ?", "Prix minimum en DA ? Ex: 500000"
+  - Adaptive shortening: Full version (≥340px) → Medium ("Prix min ?") → Short ("Min DA?") for narrow sidebars
   - Examples EN: "Which brand are you looking for?", "Minimum price in DA? e.g. 500000"
   - Examples AR: "أي علامة تجارية تبحث عنها؟", "السعر الأدنى بالدينار؟ مثال: 500000"
 - **Visual Empty Field Feedback**: Empty inputs display in italic gray style for better UX clarity
