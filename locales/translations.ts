@@ -40,7 +40,7 @@ export const translations = {
     },
     topBar: {
       language: 'Langue',
-      buyPro: 'Acheter un forfait Pro',
+      buyPro: 'Devenir Pro',
       myAccount: 'Mon compte',
       publishFree: 'Déposer une annonce',
       signIn: 'Me connecter',
@@ -500,7 +500,7 @@ export const translations = {
     },
     topBar: {
       language: 'Language',
-      buyPro: 'Buy Pro package',
+      buyPro: 'Become Pro',
       myAccount: 'My Account',
       publishFree: 'Post a listing',
       signIn: 'Sign in',
@@ -960,7 +960,7 @@ export const translations = {
     },
     topBar: {
       language: 'اللغة',
-      buyPro: 'اشتر باقة Pro',
+      buyPro: 'أصبح محترفًا',
       myAccount: 'حسابي',
       publishFree: 'نشر إعلان',
       signIn: 'تسجيل الدخول',

@@ -347,13 +347,13 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.mobileNavButton, styles.mobileNavButtonPurple]}
+                style={[styles.mobileNavButton, styles.mobileNavButtonYellow]}
                 onPress={() => router.push('/pro/packages')}
               >
                 <View style={styles.mobileNavIcon}>
                   <Text style={styles.mobileNavEmoji}>💎</Text>
                 </View>
-                <Text style={[styles.mobileNavText, styles.mobileNavTextWhite]}>
+                <Text style={[styles.mobileNavText, styles.mobileNavTextBlack]}>
                   {t('topBar.buyPro')}
                 </Text>
               </TouchableOpacity>
@@ -471,11 +471,11 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity
-                    style={[styles.navButtonCompact, styles.navButtonPurple]}
+                    style={[styles.navButtonCompact, styles.navButtonYellow]}
                     onPress={() => router.push('/pro/packages')}
                   >
-                    <Gem size={16} color="#FFFFFF" />
-                    <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                    <Gem size={16} color="#1E293B" />
+                    <Text style={[styles.navButtonText, styles.navButtonTextBlack]}>
                       {t('topBar.buyPro')}
                     </Text>
                   </TouchableOpacity>
@@ -1315,6 +1315,11 @@ const styles = StyleSheet.create({
     borderColor: '#8B5CF6',
     borderWidth: 2,
   },
+  mobileNavButtonYellow: {
+    backgroundColor: '#F59E0B',
+    borderColor: '#F59E0B',
+    borderWidth: 2,
+  },
   mobileNavButtonGreen: {
     backgroundColor: '#10B981',
     borderColor: '#10B981',
@@ -1355,6 +1360,10 @@ const styles = StyleSheet.create({
   },
   mobileNavTextWhite: {
     color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  mobileNavTextBlack: {
+    color: '#1E293B',
     fontWeight: '800',
   },
   hamburgerButton: {
@@ -1610,6 +1619,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#8B5CF6',
     borderColor: '#8B5CF6',
   },
+  navButtonYellow: {
+    backgroundColor: '#F59E0B',
+    borderColor: '#F59E0B',
+  },
   navButtonOrange: {
     backgroundColor: '#F97316',
     borderColor: '#F97316',
@@ -1624,6 +1637,9 @@ const styles = StyleSheet.create({
   },
   navButtonTextWhite: {
     color: '#FFFFFF',
+  },
+  navButtonTextBlack: {
+    color: '#1E293B',
   },
   navButtonTextBlue: {
     color: '#2563EB',
