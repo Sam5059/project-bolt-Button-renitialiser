@@ -130,7 +130,7 @@ export default function Footer() {
           />
 
           <FooterLink
-            onPress={() => router.push('/(tabs)/search-new')}
+            onPress={() => router.push('/(tabs)/search')}
             text={language === 'fr' ? 'Rechercher des annonces' : language === 'en' ? 'Browse ads' : 'تصفح الإعلانات'}
             isRTL={isRTL}
           />

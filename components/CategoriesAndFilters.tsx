@@ -730,28 +730,14 @@ export default function CategoriesAndFilters({
   }
 
   function handleCategoryToggle(categoryId: string) {
-    const category = categories.find(c => c.id === categoryId);
-    
     // Vérifier si c'est la catégorie "Stores PRO"
+    const category = categories.find(c => c.id === categoryId);
     if (category && category.slug === 'stores-pro') {
       // Rediriger vers la page des boutiques PRO
       router.push('/(tabs)/stores');
       return;
     }
 
-    // Rediriger les catégories principales (parent_id null) vers la page new-search
-    if (category && !category.parent_id) {
-      // Naviguer vers la page search-new avec le category_id
-      router.push(`/(tabs)/search-new?category_id=${encodeURIComponent(categoryId)}`);
-      
-      // Notifier le parent pour compatibilité
-      if (onCategorySelect) {
-        onCategorySelect(categoryId);
-      }
-      return;
-    }
-
-    // Comportement par défaut pour les sous-catégories (si elles existent)
     // Fermer les dropdowns
     setShowBrandDropdown(false);
     setShowModelDropdown(false);

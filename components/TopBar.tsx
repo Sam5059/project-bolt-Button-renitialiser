@@ -67,7 +67,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   
   // Détermine si on est sur la page de recherche
   const isSearchPage =
-    segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'search-new';
+    segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'search';
   
   // Détermine si on doit afficher les contrôles de recherche (catégories et localisation)
   const showSearchControls = !isHomePage && !isSearchPage;
@@ -99,7 +99,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
     // Sinon, naviguer automatiquement vers la page de recherche après un délai
     const timer = setTimeout(() => {
       if (globalSearchQuery && globalSearchQuery.trim()) {
-        router.push(`/(tabs)/search-new?q=${encodeURIComponent(globalSearchQuery)}`);
+        router.push(`/(tabs)/search?q=${encodeURIComponent(globalSearchQuery)}`);
       }
     }, 800);
 
@@ -197,9 +197,9 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
       onSearchChange(query);
     }
 
-    // Si le texte devient vide et qu'on est sur la page search-new, nettoyer l'URL
-    if (query.trim() === '' && segments.includes('search-new')) {
-      router.push('/(tabs)/search-new');
+    // Si le texte devient vide et qu'on est sur la page search, nettoyer l'URL
+    if (query.trim() === '' && segments.includes('search')) {
+      router.push('/(tabs)/search');
     }
   };
 
@@ -218,10 +218,10 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
       if (selectedListingType !== 'all') {
         params.set('type', selectedListingType);
       }
-      router.push(`/(tabs)/search-new?${params.toString()}`);
+      router.push(`/(tabs)/search?${params.toString()}`);
     } else {
-      // Si la recherche est vide, rediriger vers /search-new sans paramètres
-      router.push('/(tabs)/search-new');
+      // Si la recherche est vide, rediriger vers /search sans paramètres
+      router.push('/(tabs)/search');
     }
   };
 
@@ -299,6 +299,16 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   returnKeyType="search"
                 />
               </View>
+              <TouchableOpacity
+                style={styles.mobileLocationButton}
+                onPress={() => setShowLocationMenu(true)}
+              >
+                <MapPin size={15} color="#2563EB" strokeWidth={2.5} />
+                <Text style={styles.mobileLocationText} numberOfLines={1}>
+                  {currentLocation ? currentLocation.split('-')[1]?.trim() || currentLocation : 'Alger'}
+                </Text>
+                <ChevronDown size={13} color="#2563EB" strokeWidth={2.5} />
+              </TouchableOpacity>
             </View>
           )}
 
@@ -345,7 +355,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
               <TouchableOpacity
                 style={[styles.mobileNavButton, styles.mobileNavButtonGreen]}
-                onPress={() => router.push('/(tabs)/search-new?listing_type=sale')}
+                onPress={() => router.push('/(tabs)/search?listing_type=sale')}
               >
                 <View style={styles.mobileNavIcon}>
                   <Text style={styles.mobileNavEmoji}>🛍️</Text>
@@ -355,7 +365,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
               <TouchableOpacity
                 style={[styles.mobileNavButton, styles.mobileNavButtonOrange]}
-                onPress={() => router.push('/(tabs)/search-new?listing_type=purchase')}
+                onPress={() => router.push('/(tabs)/search?listing_type=purchase')}
               >
                 <View style={styles.mobileNavIcon}>
                   <Text style={styles.mobileNavEmoji}>🔍</Text>
@@ -388,11 +398,12 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
             <>
               <View style={styles.dividerVertical} />
 
-              <View style={styles.searchContainerExpanded}>
-                <View style={styles.searchBarExpanded}>
+              {/* Barre de recherche avec sélecteur de catégorie */}
+              <View style={styles.searchContainerTop}>
+                <View style={styles.searchBarWithCategory}>
                   <Search size={20} color="#64748B" style={styles.searchIcon} />
                   <TextInput
-                    style={[styles.searchInputExpanded, isRTL && styles.searchInputRTL]}
+                    style={[styles.searchInputWithCategory, isRTL && styles.searchInputRTL]}
                     placeholder={t('home.searchPlaceholder')}
                     placeholderTextColor="#94A3B8"
                     value={searchQuery}
@@ -408,8 +419,34 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                       <X size={18} color="#94A3B8" />
                     </TouchableOpacity>
                   )}
+                  <View style={styles.categoryDivider} />
+                  <TouchableOpacity
+                    style={styles.categoryDropdownButton}
+                    onPress={() => setShowCategoryDropdown(true)}
+                  >
+                    <Text style={styles.categoryDropdownText} numberOfLines={1}>
+                      {selectedCategoryId
+                        ? getCategoryName(categories.find(c => c.id === selectedCategoryId)!)
+                        : (language === 'ar' ? 'جميع الفئات' : language === 'en' ? 'All Categories' : 'Toutes Catégories')}
+                    </Text>
+                    <ChevronDown size={16} color="#64748B" />
+                  </TouchableOpacity>
                 </View>
               </View>
+
+              <View style={styles.dividerVertical} />
+
+              {/* Sélecteur de localisation */}
+              <Tooltip text="Changer la localisation">
+                <TouchableOpacity
+                  style={styles.locationSelector}
+                  onPress={() => setShowLocationMenu(true)}
+                >
+                  <MapPin size={16} color="#2563EB" />
+                  <Text style={styles.locationValue}>{currentLocation}</Text>
+                  <ChevronDown size={14} color="#2563EB" />
+                </TouchableOpacity>
+              </Tooltip>
             </>
           )}
         </View>
@@ -450,7 +487,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
           <TouchableOpacity
             style={[styles.navButtonCompact, styles.navButtonGreen]}
-            onPress={() => router.push('/(tabs)/search-new?listing_type=sale')}
+            onPress={() => router.push('/(tabs)/search?listing_type=sale')}
           >
             <ShoppingBag size={15} color="#FFFFFF" />
             <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
@@ -460,7 +497,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
           <TouchableOpacity
             style={[styles.navButtonCompact, styles.navButtonOrange]}
-            onPress={() => router.push('/(tabs)/search-new?listing_type=purchase')}
+            onPress={() => router.push('/(tabs)/search?listing_type=purchase')}
           >
             <Search size={15} color="#FFFFFF" />
             <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
@@ -781,7 +818,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   onPress={() => {
                     setShowCategoriesMenu(false);
                     setSelectedCategoryId(null);
-                    router.push('/(tabs)/search-new');
+                    router.push('/(tabs)/search');
                   }}
                 >
                   <Text style={[styles.categoryMenuText, isRTL && styles.textRTL]}>
@@ -802,7 +839,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                         onPress={() => {
                           setShowCategoriesMenu(false);
                           router.push({
-                            pathname: '/(tabs)/search-new',
+                            pathname: '/(tabs)/search',
                             params: { category_id: category.id }
                           });
                         }}
@@ -838,7 +875,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                             onPress={() => {
                               setShowCategoriesMenu(false);
                               router.push({
-                                pathname: '/(tabs)/search-new',
+                                pathname: '/(tabs)/search',
                                 params: { categoryId: sub.id }
                               });
                             }}
@@ -890,9 +927,9 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   setShowCategoryDropdown(false);
                   // Naviguer vers la page de recherche avec toutes les annonces
                   if (searchQuery.trim()) {
-                    router.push(`/(tabs)/search-new?q=${encodeURIComponent(searchQuery)}`);
+                    router.push(`/(tabs)/search?q=${encodeURIComponent(searchQuery)}`);
                   } else {
-                    router.push('/(tabs)/search-new');
+                    router.push('/(tabs)/search');
                   }
                 }}
               >
@@ -921,7 +958,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                       params.set('q', searchQuery);
                     }
                     params.set('category_id', category.id);
-                    router.push(`/(tabs)/search-new?${params.toString()}`);
+                    router.push(`/(tabs)/search?${params.toString()}`);
                   }}
                 >
                   <Text style={[
@@ -1409,7 +1446,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
     paddingHorizontal: 14,
-    paddingVertical: 12, // Increased from 10 to 12 for ~44px height
+    paddingVertical: 10,
     gap: 10,
     borderWidth: 2,
     borderColor: '#E2E8F0',
@@ -1418,7 +1455,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
-    minHeight: 44,
   },
   mobileSearchInput: {
     flex: 1,
@@ -2547,35 +2583,6 @@ const styles = StyleSheet.create({
     minHeight: 48,
     height: 48,
     flex: 1,
-  },
-  searchContainerExpanded: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    flex: 1,
-    maxWidth: '45%',
-    minWidth: 400,
-  },
-  searchBarExpanded: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    paddingLeft: 16,
-    paddingVertical: 14,
-    borderWidth: 2,
-    borderColor: '#CBD5E1',
-    height: 48,
-    flex: 1,
-  },
-  searchInputExpanded: {
-    flex: 1,
-    fontSize: 15,
-    color: '#0F172A',
-    fontWeight: '500',
-    paddingVertical: 0,
-    paddingRight: 8,
-    outlineStyle: 'none',
   },
   searchIcon: {
     marginRight: 8,

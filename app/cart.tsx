@@ -133,7 +133,7 @@ export default function CartScreen() {
             <Text style={styles.emptyText}>{t('cart.emptyMessage')}</Text>
             <TouchableOpacity
               style={styles.shopButton}
-              onPress={() => router.push('/(tabs)/search-new')}
+              onPress={() => router.push('/(tabs)/search')}
             >
               <Text style={styles.shopButtonText}>{t('cart.startShopping')}</Text>
             </TouchableOpacity>
