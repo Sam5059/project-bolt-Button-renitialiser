@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,12 +11,17 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { X } from 'lucide-react-native';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import TopBar from '@/components/TopBar';
 import CategoriesAndFilters from '@/components/CategoriesAndFilters';
 import ListingCard from '@/components/ListingCard';
+import SidebarResizeHandle from '@/components/SidebarResizeHandle';
 
 const isWeb = Platform.OS === 'web';
+const SIDEBAR_DEFAULT_WIDTH = 320;
+const SIDEBAR_MIN_WIDTH = 240;
+const SIDEBAR_MAX_WIDTH = 460;
+const SIDEBAR_COLLAPSED_WIDTH = 0;
 
 export default function SearchPage() {
   const { category_id, q } = useLocalSearchParams();
@@ -29,6 +34,42 @@ export default function SearchPage() {
   const initialCategoryId = typeof category_id === 'string' ? category_id : null;
   const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategoryId);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  
+  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (isWeb && !isMobile) {
+      const savedWidth = localStorage.getItem('sidebarWidth');
+      const savedCollapsed = localStorage.getItem('sidebarCollapsed');
+      
+      if (savedWidth) {
+        const parsedWidth = parseInt(savedWidth, 10);
+        if (parsedWidth >= SIDEBAR_MIN_WIDTH && parsedWidth <= SIDEBAR_MAX_WIDTH) {
+          setSidebarWidth(parsedWidth);
+        }
+      }
+      
+      if (savedCollapsed === 'true') {
+        setSidebarCollapsed(true);
+      }
+    }
+  }, [isMobile]);
+
+  const handleSidebarResize = useCallback((newWidth: number) => {
+    setSidebarWidth(newWidth);
+    if (isWeb) {
+      localStorage.setItem('sidebarWidth', newWidth.toString());
+    }
+  }, []);
+
+  const toggleSidebar = useCallback(() => {
+    const newCollapsed = !sidebarCollapsed;
+    setSidebarCollapsed(newCollapsed);
+    if (isWeb) {
+      localStorage.setItem('sidebarCollapsed', newCollapsed.toString());
+    }
+  }, [sidebarCollapsed]);
 
   const handleSearch = () => {
     // La recherche sera gérée par le composant CategoriesAndFilters
@@ -53,14 +94,44 @@ export default function SearchPage() {
       </View>
 
       <View style={styles.mainContainer}>
-        {/* Sidebar Desktop */}
+        {/* Bouton Toggle Sidebar */}
         {isWeb && !isMobile && (
-          <CategoriesAndFilters
-            onFiltersApply={handleFiltersApply}
-            onCategorySelect={handleCategorySelect}
-            initialCategory={initialCategoryId || undefined}
-            searchQuery={searchText}
-          />
+          <TouchableOpacity
+            onPress={toggleSidebar}
+            style={[
+              styles.toggleSidebarButton,
+              sidebarCollapsed && styles.toggleSidebarButtonCollapsed,
+            ]}
+            activeOpacity={0.7}
+          >
+            {sidebarCollapsed ? (
+              <ChevronRight size={20} color="#64748B" />
+            ) : (
+              <ChevronLeft size={20} color="#64748B" />
+            )}
+          </TouchableOpacity>
+        )}
+
+        {/* Sidebar Desktop */}
+        {isWeb && !isMobile && !sidebarCollapsed && (
+          <View
+            style={[styles.sidebarContainer, { width: sidebarWidth }]}
+            // @ts-ignore
+            data-sidebar="true"
+          >
+            <CategoriesAndFilters
+              onFiltersApply={handleFiltersApply}
+              onCategorySelect={handleCategorySelect}
+              initialCategory={initialCategoryId || undefined}
+              searchQuery={searchText}
+              sidebarWidth={sidebarWidth}
+            />
+            <SidebarResizeHandle
+              onResize={handleSidebarResize}
+              minWidth={SIDEBAR_MIN_WIDTH}
+              maxWidth={SIDEBAR_MAX_WIDTH}
+            />
+          </View>
         )}
 
         {/* Contenu principal */}
@@ -189,6 +260,42 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'row',
+    position: 'relative' as any,
+  },
+  sidebarContainer: {
+    position: 'relative' as any,
+    flexShrink: 0,
+    backgroundColor: '#FFFFFF',
+    borderRightWidth: 1,
+    borderRightColor: '#E2E8F0',
+    overflow: 'hidden',
+  },
+  toggleSidebarButton: {
+    position: 'absolute' as any,
+    left: 0,
+    top: 20,
+    zIndex: 100,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderLeftWidth: 0,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    padding: 8,
+    ...(isWeb ? {
+      boxShadow: '2px 0 8px rgba(0, 0, 0, 0.08)',
+    } as any : {
+      shadowColor: '#000',
+      shadowOffset: { width: 2, height: 0 },
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      elevation: 4,
+    }),
+    cursor: 'pointer' as any,
+    transition: 'left 0.3s ease' as any,
+  },
+  toggleSidebarButtonCollapsed: {
+    left: 0,
   },
   content: {
     flex: 1,

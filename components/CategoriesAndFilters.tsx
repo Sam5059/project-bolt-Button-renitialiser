@@ -19,6 +19,7 @@ import { useSearch } from '@/contexts/SearchContext';
 import { uiToDbListingType, dbToUiListingType } from '@/lib/listingTypeMap';
 import { detectCategoryFromQuery, CATEGORY_KEYWORD_TO_SLUG } from '@/lib/categoryKeywords';
 import { SLUG_TO_CATEGORY_TYPE, SLUG_TO_BRAND_CATEGORY_TYPE } from '@/lib/categoryFiltersConfig';
+import { getPlaceholder } from '@/lib/filterPlaceholders';
 
 interface CategoriesAndFiltersProps {
   onFiltersApply: (listings: any[]) => void;
@@ -26,6 +27,7 @@ interface CategoriesAndFiltersProps {
   initialCategory?: string;
   initialListingType?: string;
   searchQuery?: string;
+  sidebarWidth?: number;
 }
 
 interface FilterState {
@@ -87,6 +89,7 @@ export default function CategoriesAndFilters({
   initialCategory,
   initialListingType,
   searchQuery = '',
+  sidebarWidth = 320,
 }: CategoriesAndFiltersProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
@@ -1106,7 +1109,7 @@ export default function CategoriesAndFilters({
   );
 
   const renderVehicleFilters = () => (
-    <View style={styles.filtersContainer}>
+    <View style={[styles.filtersContainer, getResponsiveContainerStyle()]}>
       {/* Type d'annonce */}
       {renderListingTypeFilter()}
 
@@ -1217,18 +1220,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'السعر' : language === 'en' ? 'Price' : 'Prix'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
             keyboardType="numeric"
@@ -1241,18 +1246,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'السنة' : language === 'en' ? 'Year' : 'Année'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder="2010"
+            style={[styles.input, styles.rangeInput, !filters.yearMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('yearMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.yearMin || ''}
             onChangeText={(val) => updateFilter('yearMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder="2024"
+            style={[styles.input, styles.rangeInput, !filters.yearMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('yearMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.yearMax || ''}
             onChangeText={(val) => updateFilter('yearMax', val)}
             keyboardType="numeric"
@@ -1305,18 +1312,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'المسافة المقطوعة' : language === 'en' ? 'Mileage (km)' : 'Kilométrage (km)'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.mileageMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('mileageMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.mileageMin || ''}
             onChangeText={(val) => updateFilter('mileageMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.mileageMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('mileageMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.mileageMax || ''}
             onChangeText={(val) => updateFilter('mileageMax', val)}
             keyboardType="numeric"
@@ -1330,8 +1339,9 @@ export default function CategoriesAndFilters({
           {language === 'ar' ? 'اللون' : language === 'en' ? 'Color' : 'Couleur'}
         </Text>
         <TextInput
-          style={styles.input}
-          placeholder={language === 'ar' ? 'مثال: أسود، أبيض' : language === 'en' ? 'E.g.: Black, White' : 'Ex: Noir, Blanc'}
+          style={[styles.input, !filters.color && styles.inputEmpty]}
+          placeholder={getPlaceholder('color', language as 'fr' | 'en' | 'ar')}
+          placeholderTextColor="#9CA3AF"
           value={filters.color || ''}
           onChangeText={(val) => updateFilter('color', val)}
         />
@@ -1343,7 +1353,7 @@ export default function CategoriesAndFilters({
   );
 
   const renderRealEstateFilters = () => (
-    <View style={styles.filtersContainer}>
+    <View style={[styles.filtersContainer, getResponsiveContainerStyle()]}>
       {/* Type d'annonce */}
       {renderListingTypeFilter()}
 
@@ -1375,18 +1385,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'السعر' : language === 'en' ? 'Price' : 'Prix'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
             keyboardType="numeric"
@@ -1399,18 +1411,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'المساحة (م²)' : language === 'en' ? 'Surface (m²)' : 'Surface (m²)'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.surfaceMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('surfaceMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.surfaceMin || ''}
             onChangeText={(val) => updateFilter('surfaceMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.surfaceMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('surfaceMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.surfaceMax || ''}
             onChangeText={(val) => updateFilter('surfaceMax', val)}
             keyboardType="numeric"
@@ -1511,7 +1525,7 @@ export default function CategoriesAndFilters({
   );
 
   const renderElectronicsFilters = () => (
-    <View style={styles.filtersContainer}>
+    <View style={[styles.filtersContainer, getResponsiveContainerStyle()]}>
       {/* Type d'annonce */}
       {renderListingTypeFilter()}
 
@@ -1688,7 +1702,7 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'السعر' : language === 'en' ? 'Price' : 'Prix'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
             style={[styles.input, styles.rangeInput]}
             placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
@@ -1713,7 +1727,7 @@ export default function CategoriesAndFilters({
   );
 
   const renderRentalFilters = () => (
-    <View style={styles.filtersContainer}>
+    <View style={[styles.filtersContainer, getResponsiveContainerStyle()]}>
       {/* Type d'annonce */}
       {renderListingTypeFilter()}
 
@@ -1769,18 +1783,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'الإيجار الشهري (دج)' : language === 'en' ? 'Monthly Rent (DZD)' : 'Loyer mensuel (DA)'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.monthlyRentMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('monthlyRentMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.monthlyRentMin || ''}
             onChangeText={(val) => updateFilter('monthlyRentMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.monthlyRentMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('monthlyRentMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.monthlyRentMax || ''}
             onChangeText={(val) => updateFilter('monthlyRentMax', val)}
             keyboardType="numeric"
@@ -1793,18 +1809,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'المساحة (م²)' : language === 'en' ? 'Surface (m²)' : 'Surface (m²)'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.surfaceMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('surfaceMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.surfaceMin || ''}
             onChangeText={(val) => updateFilter('surfaceMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.surfaceMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('surfaceMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.surfaceMax || ''}
             onChangeText={(val) => updateFilter('surfaceMax', val)}
             keyboardType="numeric"
@@ -1887,7 +1905,7 @@ export default function CategoriesAndFilters({
   );
 
   const renderServiceFilters = () => (
-    <View style={styles.filtersContainer}>
+    <View style={[styles.filtersContainer, getResponsiveContainerStyle()]}>
       {/* Type d'annonce */}
       {renderListingTypeFilter()}
 
@@ -1899,18 +1917,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'التعريفة' : language === 'en' ? 'Rate' : 'Tarif horaire'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
             keyboardType="numeric"
@@ -1924,7 +1944,7 @@ export default function CategoriesAndFilters({
   );
 
   const renderEmploymentFilters = () => (
-    <View style={styles.filtersContainer}>
+    <View style={[styles.filtersContainer, getResponsiveContainerStyle()]}>
       {/* Type d'annonce */}
       {renderListingTypeFilter()}
 
@@ -1982,18 +2002,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'الراتب' : language === 'en' ? 'Salary' : 'Salaire (DA/mois)'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
             keyboardType="numeric"
@@ -2053,8 +2075,9 @@ export default function CategoriesAndFilters({
           {language === 'ar' ? 'قطاع النشاط' : language === 'en' ? 'Sector' : "Secteur d'activité"}
         </Text>
         <TextInput
-          style={styles.input}
-          placeholder={language === 'ar' ? 'مثال: معلوماتية، تجارة، صحة...' : language === 'en' ? 'Ex: IT, Commerce, Health...' : 'Ex: Informatique, Commerce, Santé...'}
+          style={[styles.input, !filters.sector && styles.inputEmpty]}
+          placeholder={getPlaceholder('sector', language as 'fr' | 'en' | 'ar')}
+          placeholderTextColor="#9CA3AF"
           value={filters.sector || ''}
           onChangeText={(val) => updateFilter('sector', val)}
         />
@@ -2066,7 +2089,7 @@ export default function CategoriesAndFilters({
   );
 
   const renderAnimalFilters = () => (
-    <View style={styles.filtersContainer}>
+    <View style={[styles.filtersContainer, getResponsiveContainerStyle()]}>
       {/* Type d'annonce */}
       {renderListingTypeFilter()}
 
@@ -2078,18 +2101,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'السعر' : language === 'en' ? 'Price' : 'Prix'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
             keyboardType="numeric"
@@ -2105,7 +2130,7 @@ export default function CategoriesAndFilters({
   );
 
   const renderGenericFilters = () => (
-    <View style={styles.filtersContainer}>
+    <View style={[styles.filtersContainer, getResponsiveContainerStyle()]}>
       {/* Type d'annonce */}
       {renderListingTypeFilter()}
 
@@ -2117,18 +2142,20 @@ export default function CategoriesAndFilters({
         <Text style={styles.filterLabel}>
           {language === 'ar' ? 'السعر' : language === 'en' ? 'Price' : 'Prix'}
         </Text>
-        <View style={styles.rangeInputs}>
+        <View style={[styles.rangeInputs, getResponsiveRangeStyle()]}>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'من' : language === 'en' ? 'Min' : 'Min'}
+            style={[styles.input, styles.rangeInput, !filters.priceMin && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMin', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMin || ''}
             onChangeText={(val) => updateFilter('priceMin', val)}
             keyboardType="numeric"
           />
           <Text style={styles.rangeSeparator}>-</Text>
           <TextInput
-            style={[styles.input, styles.rangeInput]}
-            placeholder={language === 'ar' ? 'إلى' : language === 'en' ? 'Max' : 'Max'}
+            style={[styles.input, styles.rangeInput, !filters.priceMax && styles.inputEmpty]}
+            placeholder={getPlaceholder('priceMax', language as 'fr' | 'en' | 'ar')}
+            placeholderTextColor="#9CA3AF"
             value={filters.priceMax || ''}
             onChangeText={(val) => updateFilter('priceMax', val)}
             keyboardType="numeric"
@@ -2186,6 +2213,32 @@ export default function CategoriesAndFilters({
         return renderGenericFilters();
       default:
         return renderGenericFilters();
+    }
+  };
+
+  const getResponsiveContainerStyle = () => {
+    if (sidebarWidth < 320) {
+      return { gap: 12, paddingTop: 10 };
+    } else if (sidebarWidth >= 320 && sidebarWidth < 400) {
+      return { gap: 14, paddingTop: 11 };
+    } else {
+      return { gap: 16, paddingTop: 12 };
+    }
+  };
+
+  const getResponsiveRangeStyle = () => {
+    if (sidebarWidth < 320) {
+      return { flexDirection: 'column' as const, alignItems: 'stretch' as const, gap: 8 };
+    } else {
+      return { flexDirection: 'row' as const, alignItems: 'center' as const, gap: 8 };
+    }
+  };
+
+  const getResponsiveFilterGroupStyle = () => {
+    if (sidebarWidth < 400) {
+      return { gap: 6 };
+    } else {
+      return { gap: 8 };
     }
   };
 
@@ -2624,6 +2677,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 14,
     color: '#0F172A',
+  },
+  inputEmpty: {
+    fontStyle: 'italic',
+    color: '#9CA3AF',
   },
   pickerContainer: {
     backgroundColor: '#FFFFFF',
