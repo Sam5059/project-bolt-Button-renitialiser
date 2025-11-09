@@ -302,7 +302,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                 />
               </View>
               
-              {/* Bouton Filtres mobile */}
               <TouchableOpacity
                 style={styles.filtersButtonMobile}
                 onPress={() => setShowFiltersModal(true)}
@@ -405,7 +404,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
             <>
               <View style={styles.dividerVertical} />
 
-              {/* Barre de recherche élargie */}
               <View style={styles.searchContainerExpanded}>
                 <View style={styles.searchBarExpanded}>
                   <Search size={20} color="#64748B" style={styles.searchIcon} />
@@ -428,7 +426,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   )}
                 </View>
                 
-                {/* Bouton Filtres avec badge */}
                 <TouchableOpacity
                   style={styles.filtersButton}
                   onPress={() => setShowFiltersModal(true)}
@@ -1254,13 +1251,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
         onCategoryChange={setSelectedCategoryId}
         selectedListingType={selectedListingType}
         onListingTypeChange={setSelectedListingType}
-        onApply={handleSearch}
-        onReset={() => {
-          handleSearchQueryChange('');
-          setSelectedCategoryId(null);
-          setCurrentLocation('16-Alger');
-          setSelectedListingType('all');
-        }}
       />
     </>
   );
@@ -2605,13 +2595,7 @@ const styles = StyleSheet.create({
     gap: 12,
     flex: 1,
     maxWidth: '45%',
-    minWidth: 400, // Desktop only
-  },
-  searchContainerMobile: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    flex: 1,
+    minWidth: 400,
   },
   searchBarExpanded: {
     flexDirection: 'row',
@@ -2619,7 +2603,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     paddingLeft: 16,
-    paddingVertical: 14, // Desktop: 48px height
+    paddingVertical: 14,
     borderWidth: 2,
     borderColor: '#CBD5E1',
     height: 48,

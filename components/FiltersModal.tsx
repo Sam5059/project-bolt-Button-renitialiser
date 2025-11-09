@@ -12,8 +12,10 @@ import {
 import { X, MapPin, Grid, ShoppingBag } from 'lucide-react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useLocation } from '@/contexts/LocationContext';
+import { useSearch } from '@/contexts/SearchContext';
 import { supabase } from '@/lib/supabase';
 import { Category } from '@/types/database';
+import { router } from 'expo-router';
 
 const wilayas = [
   '01-Adrar', '02-Chlef', '03-Laghouat', '04-Oum El Bouaghi', '05-Batna',
@@ -38,8 +40,6 @@ interface FiltersModalProps {
   onCategoryChange: (categoryId: string | null) => void;
   selectedListingType: 'all' | 'sale' | 'purchase' | 'rent';
   onListingTypeChange: (type: 'all' | 'sale' | 'purchase' | 'rent') => void;
-  onApply: () => void;
-  onReset: () => void;
 }
 
 export default function FiltersModal({
@@ -49,21 +49,18 @@ export default function FiltersModal({
   onCategoryChange,
   selectedListingType,
   onListingTypeChange,
-  onApply,
-  onReset,
 }: FiltersModalProps) {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const { currentLocation, setCurrentLocation } = useLocation();
+  const { setGlobalSearchQuery } = useSearch();
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const [categories, setCategories] = useState<Category[]>([]);
   
-  // États locaux temporaires pour les sélections
   const [tempCategoryId, setTempCategoryId] = useState<string | null>(null);
   const [tempLocation, setTempLocation] = useState<string>('16-Alger');
   const [tempListingType, setTempListingType] = useState<'all' | 'sale' | 'purchase' | 'rent'>('all');
 
-  // Initialiser les états temporaires quand le modal s'ouvre
   useEffect(() => {
     if (visible) {
       loadCategories();
@@ -78,13 +75,10 @@ export default function FiltersModal({
       .from('categories')
       .select('*')
       .is('parent_id', null)
-      .order('display_order', { ascending: true, nullsFirst: false });
+      .order('sort_order', { ascending: true });
 
     if (mainCategories) {
-      const uniqueCategories = mainCategories.filter((cat, index, self) =>
-        index === self.findIndex((c) => c.id === cat.id)
-      );
-      setCategories(uniqueCategories);
+      setCategories(mainCategories);
     }
   };
 
@@ -101,16 +95,24 @@ export default function FiltersModal({
   };
 
   const handleApply = () => {
-    // Appliquer les changements temporaires
     onCategoryChange(tempCategoryId);
     setCurrentLocation(tempLocation);
     onListingTypeChange(tempListingType);
-    onApply();
+    
+    const params: Record<string, string> = {};
+    if (tempCategoryId) params.category = tempCategoryId;
+    if (tempLocation !== '16-Alger') params.location = tempLocation;
+    if (tempListingType !== 'all') params.type = tempListingType;
+    
+    router.push({
+      pathname: '/(tabs)/search',
+      params
+    });
+    
     onClose();
   };
 
   const handleCancel = () => {
-    // Annuler les changements - réinitialiser aux valeurs originales
     setTempCategoryId(selectedCategoryId);
     setTempLocation(currentLocation);
     setTempListingType(selectedListingType);
@@ -129,7 +131,6 @@ export default function FiltersModal({
           style={[styles.modalContent, isMobile && styles.modalContentMobile]} 
           onPress={(e) => e.stopPropagation()}
         >
-          {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>Filtres de recherche</Text>
             <TouchableOpacity onPress={handleCancel} style={styles.closeButton}>
@@ -138,7 +139,6 @@ export default function FiltersModal({
           </View>
 
           <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
-            {/* Section Catégories */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
                 <Grid size={20} color="#2563EB" />
@@ -184,7 +184,6 @@ export default function FiltersModal({
               </View>
             </View>
 
-            {/* Section Localisation */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
                 <MapPin size={20} color="#2563EB" />
@@ -213,7 +212,6 @@ export default function FiltersModal({
               </View>
             </View>
 
-            {/* Section Type d'annonces */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
                 <ShoppingBag size={20} color="#2563EB" />
@@ -274,7 +272,6 @@ export default function FiltersModal({
             </View>
           </ScrollView>
 
-          {/* Footer Actions */}
           <View style={styles.footer}>
             <TouchableOpacity
               style={styles.resetButton}
@@ -331,23 +328,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
     borderBottomWidth: 1,
     borderBottomColor: '#E2E8F0',
   },
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#0F172A',
+    color: '#1E293B',
   },
   closeButton: {
     padding: 4,
   },
   scrollContent: {
-    padding: 20,
+    flex: 1,
+    paddingHorizontal: 20,
   },
   section: {
-    marginBottom: 28,
+    marginTop: 24,
+    marginBottom: 8,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -376,19 +376,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
-    minHeight: 44, // Better tap target for mobile
+    minHeight: 44,
   },
   optionButtonActive: {
     backgroundColor: '#EFF6FF',
     borderColor: '#2563EB',
   },
   optionEmoji: {
-    fontSize: 16,
+    fontSize: 18,
   },
   optionText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#64748B',
+    color: '#475569',
   },
   optionTextActive: {
     color: '#2563EB',
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   },
   optionsRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 10,
   },
   typeButton: {
     flex: 1,
@@ -407,38 +407,37 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
     alignItems: 'center',
   },
-  typeButtonGreen: {
-    backgroundColor: '#F0FDF4',
-    borderColor: '#BBF7D0',
-  },
-  typeButtonOrange: {
-    backgroundColor: '#FFF7ED',
-    borderColor: '#FED7AA',
-  },
   typeButtonActive: {
     backgroundColor: '#EFF6FF',
     borderColor: '#2563EB',
   },
+  typeButtonGreen: {
+    borderColor: '#D1FAE5',
+  },
   typeButtonActiveGreen: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#ECFDF5',
     borderColor: '#10B981',
   },
+  typeButtonOrange: {
+    borderColor: '#FED7AA',
+  },
   typeButtonActiveOrange: {
-    backgroundColor: '#F97316',
+    backgroundColor: '#FFF7ED',
     borderColor: '#F97316',
   },
   typeText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#64748B',
+    fontWeight: '500',
+    color: '#475569',
   },
   typeTextActive: {
-    color: '#FFFFFF',
+    fontWeight: '600',
   },
   footer: {
     flexDirection: 'row',
     gap: 12,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
   },
@@ -457,7 +456,7 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   applyButton: {
-    flex: 1,
+    flex: 2,
     paddingVertical: 14,
     borderRadius: 10,
     backgroundColor: '#2563EB',

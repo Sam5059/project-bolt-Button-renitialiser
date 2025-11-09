@@ -23,7 +23,7 @@ Preferred communication style: Simple, everyday language.
 ### UI/UX Decisions
 - **Smart Category Detection**: Multilingual keyword dictionary for auto-selecting categories in search, with visual highlighting.
 - **Global Search Synchronization**: Single search bar in TopBar controls app search state via `SearchContext`, queries persist across navigation.
-- **TopBar Filters Redesign**: Replaced inline filters with an expanded search bar and a dedicated "Filters" button opening a modal for category, location, and listing type selection. Includes a badge system for active filters and an apply/cancel pattern. Mobile adaptation uses a bottom sheet modal.
+- **TopBar Filters Redesign**: Replaced inline filters with an expanded search bar (45% width on desktop) and a dedicated "Filters" button opening a modal for category, location, and listing type selection. Features: badge system showing active filter count, apply/cancel pattern with local staging, mobile bottom-sheet adaptation. **Fixed**: Initial release didn't update search results - resolved by adding navigation with URL params in apply handler.
 - **Homepage Simplification**: Removed search bar and location selector from homepage for a cleaner look.
 - **Navigation Enhancements**: Renamed and reordered navigation buttons (e.g., "Post a listing", "Buy Pro package", "Offers", "Requests") in TopBar, with color-coding for intuitive user intent.
 
