@@ -57,7 +57,9 @@ export const categoryKeywords: CategoryKeywords = {
       'télévision', 'tv', 'écran', 'moniteur', 'console', 'playstation', 'xbox', 'nintendo',
       'appareil photo', 'caméra', 'drone', 'gopro', 'canon', 'nikon', 'sony',
       'électroménager', 'frigo', 'réfrigérateur', 'machine à laver', 'climatiseur', 'clim',
-      'casque', 'écouteurs', 'enceinte', 'speaker', 'bluetooth', 'wifi', 'smart'
+      'casque', 'écouteurs', 'enceinte', 'speaker', 'bluetooth', 'wifi', 'smart',
+      'montre', 'smartwatch', 'watch', 'apple watch', 'galaxy watch', 'garmin',
+      'accessoire', 'chargeur', 'batterie', 'câble', 'coque', 'protection'
     ],
     en: [
       'phone', 'smartphone', 'iphone', 'samsung', 'xiaomi', 'huawei', 'oppo', 'nokia',
@@ -65,7 +67,9 @@ export const categoryKeywords: CategoryKeywords = {
       'television', 'tv', 'screen', 'monitor', 'console', 'playstation', 'xbox', 'nintendo',
       'camera', 'drone', 'gopro', 'canon', 'nikon', 'sony',
       'appliance', 'fridge', 'refrigerator', 'washing machine', 'air conditioner', 'ac',
-      'headphones', 'earphones', 'speaker', 'bluetooth', 'wifi', 'smart'
+      'headphones', 'earphones', 'speaker', 'bluetooth', 'wifi', 'smart',
+      'watch', 'smartwatch', 'apple watch', 'galaxy watch', 'garmin',
+      'accessory', 'charger', 'battery', 'cable', 'case', 'protection'
     ],
     ar: [
       'هاتف', 'جوال', 'آيفون', 'سامسونج', 'شاومي', 'هواوي', 'أوبو', 'نوكيا',
@@ -73,7 +77,9 @@ export const categoryKeywords: CategoryKeywords = {
       'تلفزيون', 'شاشة', 'كونسول', 'بلايستيشن', 'إكسبوكس', 'نينتيندو',
       'كاميرا', 'طائرة', 'كانون', 'نيكون', 'سوني',
       'ثلاجة', 'غسالة', 'مكيف', 'تكييف',
-      'سماعات', 'بلوتوث', 'واي فاي', 'ذكي'
+      'سماعات', 'بلوتوث', 'واي فاي', 'ذكي',
+      'ساعة', 'ساعة ذكية', 'أبل ووتش', 'جالاكسي ووتش', 'جارمن',
+      'ملحقات', 'شاحن', 'بطارية', 'كابل', 'جراب', 'حماية'
     ]
   },
   furniture: {
@@ -163,36 +169,42 @@ export const categoryKeywords: CategoryKeywords = {
   services: {
     fr: [
       'service', 'prestation', 'travail', 'job', 'emploi',
-      'plombier', 'électricien', 'menuisier', 'peintre', 'maçon', 'carreleur',
+      'plombier', 'plomberie', 'électricien', 'électricité', 'menuisier', 'menuiserie', 
+      'peintre', 'peinture', 'maçon', 'maçonnerie', 'carreleur', 'carrelage',
       'réparation', 'dépannage', 'maintenance', 'installation', 'entretien',
       'nettoyage', 'ménage', 'jardinage', 'bricolage', 'déménagement', 'transport',
       'cours', 'formation', 'coaching', 'professeur', 'enseignant', 'tuteur',
       'informatique', 'web', 'design', 'graphisme', 'photographie', 'vidéo',
       'traduction', 'rédaction', 'comptabilité', 'juridique', 'avocat',
-      'beauté', 'coiffure', 'esthétique', 'maquillage', 'massage',
-      'heure', 'horaire', 'disponible', 'urgent', 'rapide', 'professionnel'
+      'beauté', 'coiffure', 'coiffeur', 'esthétique', 'maquillage', 'massage',
+      'heure', 'horaire', 'disponible', 'urgent', 'rapide', 'professionnel',
+      'développeur', 'programmeur', 'développement', 'programmation', 'codeur', 'code'
     ],
     en: [
       'service', 'work', 'job', 'employment',
-      'plumber', 'electrician', 'carpenter', 'painter', 'mason', 'tiler',
+      'plumber', 'plumbing', 'electrician', 'electricity', 'carpenter', 'carpentry',
+      'painter', 'painting', 'mason', 'masonry', 'tiler', 'tiling',
       'repair', 'fix', 'maintenance', 'installation', 'upkeep',
       'cleaning', 'housekeeping', 'gardening', 'handyman', 'moving', 'transport',
       'course', 'training', 'coaching', 'teacher', 'tutor', 'instructor',
       'it', 'web', 'design', 'graphics', 'photography', 'video',
       'translation', 'writing', 'accounting', 'legal', 'lawyer',
       'beauty', 'hairdresser', 'aesthetics', 'makeup', 'massage',
-      'hour', 'hourly', 'available', 'urgent', 'fast', 'professional'
+      'hour', 'hourly', 'available', 'urgent', 'fast', 'professional',
+      'developer', 'programmer', 'development', 'programming', 'coder', 'code'
     ],
     ar: [
       'خدمة', 'خدمات', 'عمل', 'وظيفة',
-      'سباك', 'كهربائي', 'نجار', 'دهان', 'بناء', 'بلاط',
+      'سباك', 'سباكة', 'كهربائي', 'كهرباء', 'نجار', 'نجارة',
+      'دهان', 'طلاء', 'بناء', 'بناية', 'بلاط', 'تبليط',
       'إصلاح', 'صيانة', 'تركيب', 'تثبيت',
       'تنظيف', 'نظافة', 'بستنة', 'نقل', 'شحن',
       'دروس', 'تدريب', 'تدريس', 'معلم', 'أستاذ',
-      'معلوماتية', 'ويب', 'تصميم', 'جرافيك', 'تصوير', 'فيديو',
+      'معلوماتية', 'برمجة', 'ويب', 'تصميم', 'جرافيك', 'تصوير', 'فيديو',
       'ترجمة', 'كتابة', 'محاسبة', 'قانوني', 'محامي',
       'تجميل', 'حلاقة', 'مكياج', 'تدليك',
-      'ساعة', 'متاح', 'عاجل', 'سريع', 'محترف'
+      'ساعة', 'متاح', 'عاجل', 'سريع', 'محترف',
+      'مبرمج', 'مطور', 'تطوير', 'كود'
     ]
   },
   jobs: {
@@ -255,6 +267,27 @@ export const categoryKeywords: CategoryKeywords = {
   }
 };
 
+/**
+ * Mapping des IDs du dictionnaire de mots-clés vers les slugs réels Supabase
+ * Ceci permet de connecter la détection de mots-clés aux vraies catégories de la DB
+ */
+export const CATEGORY_KEYWORD_TO_SLUG: Record<string, string> = {
+  'vehicles': 'vehicules',
+  'real_estate': 'immobilier',
+  'electronics': 'electronique',
+  'furniture': 'maison-jardin',  // Meubles -> Maison & Jardin
+  'clothing': 'mode-beaute',     // Vêtements -> Mode & Beauté
+  'animals': 'animaux',
+  'services': 'services',
+  'jobs': 'emploi',
+  'rentals': 'location-immobiliere'
+};
+
+/**
+ * Détecte la catégorie à partir d'une requête de recherche avec scoring intelligent
+ * Retourne l'ID logique de la catégorie (ex: 'vehicles', 'real_estate')
+ * Utiliser CATEGORY_KEYWORD_TO_SLUG pour obtenir le slug Supabase
+ */
 export function detectCategoryFromQuery(query: string, language: 'fr' | 'en' | 'ar' = 'fr'): string | null {
   if (!query || query.trim().length < 2) return null;
 
@@ -271,9 +304,11 @@ export function detectCategoryFromQuery(query: string, language: 'fr' | 'en' | '
       for (const keyword of categoryWords) {
         const normalizedKeyword = keyword.toLowerCase();
         
+        // Match exact = score élevé (priorité aux marques, modèles)
         if (normalizedKeyword === word) {
           score += 10;
         }
+        // Match partiel = score moyen
         else if (word.includes(normalizedKeyword) || normalizedKeyword.includes(word)) {
           score += 5;
         }
@@ -289,6 +324,7 @@ export function detectCategoryFromQuery(query: string, language: 'fr' | 'en' | '
     return null;
   }
 
+  // Retourner la catégorie avec le meilleur score
   const topCategory = Object.entries(categoryScores).reduce((a, b) => 
     a[1] > b[1] ? a : b
   );

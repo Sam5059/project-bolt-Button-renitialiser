@@ -17,7 +17,7 @@ import { SlidersHorizontal, Search, Car, Hop as Home, Smartphone, Briefcase, Che
 import { saveSearchHistory } from '@/lib/searchHistoryUtils';
 import { useSearch } from '@/contexts/SearchContext';
 import { uiToDbListingType, dbToUiListingType } from '@/lib/listingTypeMap';
-import { detectCategoryFromQuery } from '@/lib/categoryKeywords';
+import { detectCategoryFromQuery, CATEGORY_KEYWORD_TO_SLUG } from '@/lib/categoryKeywords';
 import { SLUG_TO_CATEGORY_TYPE, SLUG_TO_BRAND_CATEGORY_TYPE } from '@/lib/categoryFiltersConfig';
 
 interface CategoriesAndFiltersProps {
@@ -142,8 +142,15 @@ export default function CategoriesAndFilters({
   }, [initialCategory]);
 
   // Détecter automatiquement la catégorie depuis globalSearchQuery via mots-clés intelligents
+  // Avec debounce de 300ms pour éviter trop de calculs pendant la frappe
   useEffect(() => {
-    if (globalSearchQuery && categories.length > 0 && !initialCategory) {
+    if (!globalSearchQuery || !categories.length || initialCategory) {
+      // Recherche vide ou catégorie déjà sélectionnée = reset auto-detect
+      setAutoDetectedCategory(null);
+      return;
+    }
+
+    const debounceTimer = setTimeout(() => {
       const normalizedQuery = globalSearchQuery.toLowerCase().trim();
 
       // 1. Chercher correspondance exacte par nom de catégorie d'abord
@@ -156,7 +163,7 @@ export default function CategoriesAndFilters({
       });
 
       if (exactMatch) {
-        console.log('[Auto-detect] Exact category match:', exactMatch.name);
+        console.log('[Auto-detect] ✓ Exact category match:', exactMatch.name);
         setAutoDetectedCategory(exactMatch.id);
         setSelectedCategory(exactMatch.id);
         setExpandedCategory(exactMatch.id);
@@ -166,29 +173,38 @@ export default function CategoriesAndFilters({
         return;
       }
 
-      // 2. Utiliser le système de détection par mots-clés
-      const detectedCategorySlug = detectCategoryFromQuery(globalSearchQuery, language as 'fr' | 'en' | 'ar');
+      // 2. Utiliser le système de détection par mots-clés intelligents
+      const detectedLogicalId = detectCategoryFromQuery(globalSearchQuery, language as 'fr' | 'en' | 'ar');
       
-      if (detectedCategorySlug) {
-        const matchedCategory = categories.find(cat => cat.slug === detectedCategorySlug);
+      if (detectedLogicalId) {
+        // Convertir l'ID logique (ex: 'vehicles') vers le slug Supabase (ex: 'vehicules')
+        const supabaseSlug = CATEGORY_KEYWORD_TO_SLUG[detectedLogicalId];
         
-        if (matchedCategory) {
-          console.log('[Auto-detect] Keyword-based category match:', matchedCategory.name, 'from query:', globalSearchQuery);
-          setAutoDetectedCategory(matchedCategory.id);
-          setSelectedCategory(matchedCategory.id);
-          setExpandedCategory(matchedCategory.id);
-          if (onCategorySelect) {
-            onCategorySelect(matchedCategory.id);
+        if (supabaseSlug) {
+          // Chercher la catégorie par son slug
+          const matchedCategory = categories.find(cat => cat.slug === supabaseSlug);
+          
+          if (matchedCategory) {
+            console.log('[Auto-detect] ✓ Keyword-based match:', matchedCategory.name, '| Query:', globalSearchQuery, '| Logical ID:', detectedLogicalId);
+            setAutoDetectedCategory(matchedCategory.id);
+            setSelectedCategory(matchedCategory.id);
+            setExpandedCategory(matchedCategory.id);
+            if (onCategorySelect) {
+              onCategorySelect(matchedCategory.id);
+            }
+          } else {
+            setAutoDetectedCategory(null);
           }
+        } else {
+          setAutoDetectedCategory(null);
         }
       } else {
         // Pas de détection = reset
         setAutoDetectedCategory(null);
       }
-    } else if (!globalSearchQuery) {
-      // Recherche vide = reset auto-detect
-      setAutoDetectedCategory(null);
-    }
+    }, 300); // Debounce de 300ms
+
+    return () => clearTimeout(debounceTimer);
   }, [globalSearchQuery, categories, initialCategory, language]);
 
   useEffect(() => {
@@ -2249,14 +2265,21 @@ export default function CategoriesAndFilters({
                 >
                   <View style={styles.categoryLeft}>
                     {getCategoryIcon(category.slug)}
-                    <Text
-                      style={[
-                        styles.categoryText,
-                        isExpanded && styles.categoryTextActive,
-                      ]}
-                    >
-                      {getCategoryName(category)}
-                    </Text>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        style={[
+                          styles.categoryText,
+                          isExpanded && styles.categoryTextActive,
+                        ]}
+                      >
+                        {getCategoryName(category)}
+                      </Text>
+                      {isAutoDetected && !isExpanded && (
+                        <Text style={styles.autoDetectBadge}>
+                          🔍 {language === 'ar' ? 'مكتشفة' : language === 'en' ? 'Detected' : 'Détectée'}
+                        </Text>
+                      )}
+                    </View>
                   </View>
                   {isExpanded ? (
                     <ChevronDown size={20} color="#2563EB" />
@@ -2510,9 +2533,18 @@ const styles = StyleSheet.create({
     borderBottomColor: '#BFDBFE',
   },
   categoryItemAutoDetected: {
-    backgroundColor: '#FEF3C7',
-    borderLeftWidth: 3,
+    backgroundColor: '#FFFBEB',
+    borderLeftWidth: 4,
     borderLeftColor: '#F59E0B',
+    ...(isWeb ? {
+      boxShadow: '0 0 0 2px rgba(245, 158, 11, 0.2)',
+    } as any : {
+      shadowColor: '#F59E0B',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      elevation: 3,
+    }),
   },
   categoryLeft: {
     flexDirection: 'row',
@@ -2529,6 +2561,12 @@ const styles = StyleSheet.create({
   categoryTextActive: {
     color: '#2563EB',
     fontWeight: '700',
+  },
+  autoDetectBadge: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#D97706',
+    marginTop: 2,
   },
   filtersSection: {
     paddingHorizontal: 14,
