@@ -23,6 +23,7 @@ Preferred communication style: Simple, everyday language.
 ### UI/UX Decisions
 - **Smart Category Detection**: Multilingual keyword dictionary for auto-selecting categories in search, with visual highlighting.
 - **Global Search Synchronization**: Single search bar in TopBar controls app search state via `SearchContext`, queries persist across navigation.
+- **Search Page Consolidation** (November 9, 2025): Completely migrated from `/(tabs)/search` to `/(tabs)/search-new` as the single unified search page. All navigation throughout the app (homepage, TopBar, CategoryCarousel, Footer, cart, checkout, etc.) now redirects to search-new. The old search.tsx has been deleted. Search-new provides enhanced filtering with the integrated sidebar.
 - **TopBar Filters Simplification** (November 9, 2025): Removed the FiltersModal component entirely in favor of direct navigation. The search bar remains expanded (45% width on desktop), but the Filters button and badge system have been removed. Category selection now happens exclusively through the sidebar, which redirects to the search-new page.
 - **Sidebar Direct Navigation** (November 9, 2025): Modified the sidebar's `handleCategoryToggle` function in `CategoriesAndFilters.tsx` to redirect main categories (Véhicules, Immobilier, Électronique, etc.) directly to `/(tabs)/search-new?category_id=<uuid>` instead of expanding filters inline. This creates a cleaner, more focused user experience.
 - **Homepage Simplification**: Removed search bar and location selector from homepage for a cleaner look.
