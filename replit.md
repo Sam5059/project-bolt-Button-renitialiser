@@ -211,16 +211,20 @@ Preferred communication style: Simple, everyday language.
    - **Result**: Clear visual distinction between action types, intuitive color association with listing types
 
 9. **Search Page Consolidation & TopBar Search Visibility** (`app/(tabs)/searchnew.tsx`, `components/TopBar.tsx`) - November 9, 2025
-   - **Change**: Unified all search functionality to single `searchnew` page with exclusive search bar placement
+   - **Change**: Unified all search functionality to single `searchnew` page with simplified TopBar layout
    - **File Renaming**: `search-new.tsx` → `searchnew.tsx` (Expo Router hyphen compatibility)
    - **Navigation Updates**:
      - Deleted obsolete `search.tsx` and `search copy.tsx` files
      - Updated all navigation references: TopBar, CategoryCarousel, QuickAccessMenu, Footer, checkout, cart, index
      - All links now redirect to `/(tabs)/searchnew`
-   - **TopBar Search Visibility - Final Implementation**:
-     - Search bar visible **ONLY on searchnew page** (45% width) between logo and "Déposer une annonce"
-     - Replaced `showSearchControls` with granular flags:
-       - `showSearchBar = isSearchPage` - displays search **exclusively** on search page
-       - `showLocationSelector = !isHomePage && !isSearchPage` - hides location on homepage and search page
-     - Category dropdown hidden on searchnew (categories already in sidebar)
-   - **Result**: Clean navigation across all pages, search bar exclusive to search page, category highlighting functional from homepage clicks
+   - **TopBar Search Page Layout - Final Implementation**:
+     - Logo hidden on search page to make room for search bar
+     - Simple search input (max-width 500px) displayed on left side - no category dropdown
+     - Center navigation buttons hidden on search page (`showCenterNav = !isSearchPage`)
+     - Right section (icons, language, user menu) remains visible
+     - Replaced complex parallel layout approach with minimal conditional rendering
+   - **Logic Flags**:
+     - `showSearchBar = isSearchPage` - search input exclusive to search page
+     - `showLocationSelector = !isHomePage && !isSearchPage` - location hidden on homepage and search page
+     - `showCenterNav = !isSearchPage` - center buttons hidden on search page
+   - **Result**: Clean, streamlined TopBar on search page with focus on search functionality, navigation buttons accessible on all other pages

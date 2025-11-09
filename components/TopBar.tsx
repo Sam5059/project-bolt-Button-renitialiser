@@ -72,8 +72,10 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   // Détermine si on doit afficher les contrôles de recherche
   // Barre de recherche visible UNIQUEMENT sur la page de recherche
   const showSearchBar = isSearchPage;
-  // Localisation visible seulement en dehors de l'accueil et de la page de recherche
+  // Localisation visible seulement en dehors de l'accueil et de la page de recherche  
   const showLocationSelector = !isHomePage && !isSearchPage;
+  // Centre de navigation caché sur la page de recherche pour simplifier le layout
+  const showCenterNav = !isSearchPage;
   
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showLocationMenu, setShowLocationMenu] = useState(false);
@@ -381,144 +383,125 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
       ) : (
         /* DESKTOP: Barre supérieure complète */
         <View style={styles.topBar}>
-        <View style={styles.topBarLeft}>
-          {/* Logo coloré dans la barre supérieure */}
-          <View style={styles.logoContainerDesktop}>
-            {!isHomePage && (
-              <TouchableOpacity
-                onPress={() => router.back()}
-                style={styles.backButton}
-              >
-                <ArrowLeft size={20} color="#2563EB" />
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity onPress={() => router.push('/(tabs)')} style={styles.coloredLogo}>
-              <Logo language={language as 'ar' | 'fr' | 'en'} size="large" />
-            </TouchableOpacity>
-          </View>
-
-          {showSearchBar && (
-            <>
-              <View style={styles.dividerVertical} />
-
-              {/* Barre de recherche avec sélecteur de catégorie */}
-              <View style={[
-                styles.searchContainerTop,
-                isSearchPage && { width: '45%' }
-              ]}>
-                <View style={styles.searchBarWithCategory}>
-                  <Search size={20} color="#64748B" style={styles.searchIcon} />
-                  <TextInput
-                    style={[styles.searchInputWithCategory, isRTL && styles.searchInputRTL]}
-                    placeholder={t('home.searchPlaceholder')}
-                    placeholderTextColor="#94A3B8"
-                    value={searchQuery}
-                    onChangeText={handleSearchQueryChange}
-                    onSubmitEditing={handleSearch}
-                    returnKeyType="search"
-                  />
-                  {searchQuery.length > 0 && (
+          <View style={styles.topBarLeft}>
+              {/* Logo coloré dans la barre supérieure - caché sur page de recherche */}
+              {!isSearchPage && (
+                <View style={styles.logoContainerDesktop}>
+                  {!isHomePage && (
                     <TouchableOpacity
-                      onPress={() => handleSearchQueryChange('')}
-                      style={styles.clearSearchButton}
+                      onPress={() => router.back()}
+                      style={styles.backButton}
                     >
-                      <X size={18} color="#94A3B8" />
+                      <ArrowLeft size={20} color="#2563EB" />
                     </TouchableOpacity>
                   )}
-                  {!isSearchPage && (
-                    <>
-                      <View style={styles.categoryDivider} />
-                      <TouchableOpacity
-                        style={styles.categoryDropdownButton}
-                        onPress={() => setShowCategoryDropdown(true)}
-                      >
-                        <Text style={styles.categoryDropdownText} numberOfLines={1}>
-                          {selectedCategoryId
-                            ? getCategoryName(categories.find(c => c.id === selectedCategoryId)!)
-                            : (language === 'ar' ? 'جميع الفئات' : language === 'en' ? 'All Categories' : 'Toutes Catégories')}
-                        </Text>
-                        <ChevronDown size={16} color="#64748B" />
-                      </TouchableOpacity>
-                    </>
-                  )}
+                  <TouchableOpacity onPress={() => router.push('/(tabs)')} style={styles.coloredLogo}>
+                    <Logo language={language as 'ar' | 'fr' | 'en'} size="large" />
+                  </TouchableOpacity>
                 </View>
-              </View>
-            </>
-          )}
+              )}
 
-          {showLocationSelector && (
-            <>
-              <View style={styles.dividerVertical} />
+              {/* Barre de recherche simple sur la page de recherche */}
+              {showSearchBar && (
+                <View style={[styles.searchContainerTop, { flex: 1, maxWidth: 500 }]}>
+                  <View style={styles.searchBarWithCategory}>
+                    <Search size={18} color="#64748B" style={styles.searchIcon} />
+                    <TextInput
+                      style={[styles.searchInputWithCategory, isRTL && styles.searchInputRTL]}
+                      placeholder={t('home.searchPlaceholder')}
+                      placeholderTextColor="#94A3B8"
+                      value={searchQuery}
+                      onChangeText={handleSearchQueryChange}
+                      onSubmitEditing={handleSearch}
+                      returnKeyType="search"
+                    />
+                    {searchQuery.length > 0 && (
+                      <TouchableOpacity
+                        onPress={() => handleSearchQueryChange('')}
+                        style={styles.clearSearchButton}
+                      >
+                        <X size={16} color="#94A3B8" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </View>
+              )}
 
-              {/* Sélecteur de localisation */}
-              <Tooltip text="Changer la localisation">
+              {showLocationSelector && (
+                <>
+                  <View style={styles.dividerVertical} />
+
+                  {/* Sélecteur de localisation */}
+                  <Tooltip text="Changer la localisation">
+                    <TouchableOpacity
+                      style={styles.locationSelector}
+                      onPress={() => setShowLocationMenu(true)}
+                    >
+                      <MapPin size={16} color="#2563EB" />
+                      <Text style={styles.locationValue}>{currentLocation}</Text>
+                      <ChevronDown size={14} color="#2563EB" />
+                    </TouchableOpacity>
+                  </Tooltip>
+                </>
+              )}
+            </View>
+
+            {/* Navigation principale au centre - cachée sur la page de recherche */}
+            {showCenterNav && (
+              <View style={styles.topBarCenter}>
                 <TouchableOpacity
-                  style={styles.locationSelector}
-                  onPress={() => setShowLocationMenu(true)}
+                  style={[styles.navButtonCompact, styles.navButtonBlue]}
+                  onPress={() => router.push('/(tabs)/publish')}
                 >
-                  <MapPin size={16} color="#2563EB" />
-                  <Text style={styles.locationValue}>{currentLocation}</Text>
-                  <ChevronDown size={14} color="#2563EB" />
+                  <PlusCircle size={16} color="#FFFFFF" />
+                  <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                    {t('topBar.publishFree')}
+                  </Text>
                 </TouchableOpacity>
-              </Tooltip>
-            </>
-          )}
-        </View>
 
-        {/* Navigation principale au centre */}
-        <View style={styles.topBarCenter}>
-          <TouchableOpacity
-            style={[styles.navButtonCompact, styles.navButtonBlue]}
-            onPress={() => router.push('/(tabs)/publish')}
-          >
-            <PlusCircle size={16} color="#FFFFFF" />
-            <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
-              {t('topBar.publishFree')}
-            </Text>
-          </TouchableOpacity>
+                {profile?.user_type === 'professional' ? (
+                  <TouchableOpacity
+                    style={[styles.navButtonCompact, styles.navButtonPurple]}
+                    onPress={() => setShowProMenu(!showProMenu)}
+                  >
+                    <Gem size={16} color="#FFFFFF" />
+                    <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                      {t('topBar.proSpace')}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={[styles.navButtonCompact, styles.navButtonPurple]}
+                    onPress={() => router.push('/pro/packages')}
+                  >
+                    <Gem size={16} color="#FFFFFF" />
+                    <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                      {t('topBar.buyPro')}
+                    </Text>
+                  </TouchableOpacity>
+                )}
 
-          {profile?.user_type === 'professional' ? (
-            <TouchableOpacity
-              style={[styles.navButtonCompact, styles.navButtonPurple]}
-              onPress={() => setShowProMenu(!showProMenu)}
-            >
-              <Gem size={16} color="#FFFFFF" />
-              <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
-                {t('topBar.proSpace')}
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={[styles.navButtonCompact, styles.navButtonPurple]}
-              onPress={() => router.push('/pro/packages')}
-            >
-              <Gem size={16} color="#FFFFFF" />
-              <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
-                {t('topBar.buyPro')}
-              </Text>
-            </TouchableOpacity>
-          )}
+                <TouchableOpacity
+                  style={[styles.navButtonCompact, styles.navButtonGreen]}
+                  onPress={() => router.push('/(tabs)/searchnew?listing_type=sale')}
+                >
+                  <ShoppingBag size={15} color="#FFFFFF" />
+                  <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                    Offres
+                  </Text>
+                </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.navButtonCompact, styles.navButtonGreen]}
-            onPress={() => router.push('/(tabs)/searchnew?listing_type=sale')}
-          >
-            <ShoppingBag size={15} color="#FFFFFF" />
-            <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
-              Offres
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.navButtonCompact, styles.navButtonOrange]}
-            onPress={() => router.push('/(tabs)/searchnew?listing_type=purchase')}
-          >
-            <Search size={15} color="#FFFFFF" />
-            <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
-              Demandes
-            </Text>
-          </TouchableOpacity>
-        </View>
+                <TouchableOpacity
+                  style={[styles.navButtonCompact, styles.navButtonOrange]}
+                  onPress={() => router.push('/(tabs)/searchnew?listing_type=purchase')}
+                >
+                  <Search size={15} color="#FFFFFF" />
+                  <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                    Demandes
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
 
         <View style={styles.topBarRight}>
           {/* Icônes rapides */}
