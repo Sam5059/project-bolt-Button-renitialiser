@@ -89,19 +89,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="search"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
         name="messages"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="search copy"
         options={{
           href: null,
         }}
