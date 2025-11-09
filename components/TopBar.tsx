@@ -69,8 +69,11 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   const isSearchPage =
     segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'searchnew';
   
-  // Détermine si on doit afficher les contrôles de recherche (catégories et localisation)
-  const showSearchControls = !isHomePage && !isSearchPage;
+  // Détermine si on doit afficher les contrôles de recherche
+  // Barre de recherche visible partout sauf sur l'accueil
+  const showSearchBar = !isHomePage;
+  // Localisation visible seulement en dehors de l'accueil et de la page de recherche
+  const showLocationSelector = !isHomePage && !isSearchPage;
   
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showLocationMenu, setShowLocationMenu] = useState(false);
@@ -394,12 +397,15 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
             </TouchableOpacity>
           </View>
 
-          {showSearchControls && (
+          {showSearchBar && (
             <>
               <View style={styles.dividerVertical} />
 
               {/* Barre de recherche avec sélecteur de catégorie */}
-              <View style={styles.searchContainerTop}>
+              <View style={[
+                styles.searchContainerTop,
+                isSearchPage && { width: '45%' }
+              ]}>
                 <View style={styles.searchBarWithCategory}>
                   <Search size={20} color="#64748B" style={styles.searchIcon} />
                   <TextInput
@@ -419,21 +425,29 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                       <X size={18} color="#94A3B8" />
                     </TouchableOpacity>
                   )}
-                  <View style={styles.categoryDivider} />
-                  <TouchableOpacity
-                    style={styles.categoryDropdownButton}
-                    onPress={() => setShowCategoryDropdown(true)}
-                  >
-                    <Text style={styles.categoryDropdownText} numberOfLines={1}>
-                      {selectedCategoryId
-                        ? getCategoryName(categories.find(c => c.id === selectedCategoryId)!)
-                        : (language === 'ar' ? 'جميع الفئات' : language === 'en' ? 'All Categories' : 'Toutes Catégories')}
-                    </Text>
-                    <ChevronDown size={16} color="#64748B" />
-                  </TouchableOpacity>
+                  {!isSearchPage && (
+                    <>
+                      <View style={styles.categoryDivider} />
+                      <TouchableOpacity
+                        style={styles.categoryDropdownButton}
+                        onPress={() => setShowCategoryDropdown(true)}
+                      >
+                        <Text style={styles.categoryDropdownText} numberOfLines={1}>
+                          {selectedCategoryId
+                            ? getCategoryName(categories.find(c => c.id === selectedCategoryId)!)
+                            : (language === 'ar' ? 'جميع الفئات' : language === 'en' ? 'All Categories' : 'Toutes Catégories')}
+                        </Text>
+                        <ChevronDown size={16} color="#64748B" />
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
               </View>
+            </>
+          )}
 
+          {showLocationSelector && (
+            <>
               <View style={styles.dividerVertical} />
 
               {/* Sélecteur de localisation */}
