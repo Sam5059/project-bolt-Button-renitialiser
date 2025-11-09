@@ -414,6 +414,32 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
               )}
             </View>
 
+            {/* Barre de recherche sur la page de recherche */}
+            {isSearchPage && (
+              <View style={styles.searchBarContainer}>
+                <View style={styles.searchInputWrapper}>
+                  <Search size={18} color="#64748B" style={styles.searchIcon} />
+                  <TextInput
+                    style={[styles.searchInput, isRTL && styles.searchInputRTL]}
+                    placeholder={t('home.searchPlaceholder')}
+                    placeholderTextColor="#94A3B8"
+                    value={searchQuery}
+                    onChangeText={handleSearchQueryChange}
+                    onSubmitEditing={handleSearch}
+                    returnKeyType="search"
+                  />
+                  {searchQuery.length > 0 && (
+                    <TouchableOpacity
+                      onPress={() => handleSearchQueryChange('')}
+                      style={styles.clearButton}
+                    >
+                      <X size={16} color="#94A3B8" />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+            )}
+
             {/* Navigation principale au centre */}
             <View style={styles.topBarCenter}>
               <TouchableOpacity
@@ -1523,6 +1549,39 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
+  },
+  searchBarContainer: {
+    marginLeft: 20,
+    marginRight: 20,
+    flex: 0.4,
+    maxWidth: 400,
+  },
+  searchInputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    height: 40,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#1E293B',
+    ...(Platform.OS === 'web' && { outlineStyle: 'none' as any }),
+  },
+  searchInputRTL: {
+    textAlign: 'right',
+    writingDirection: 'rtl',
+  },
+  clearButton: {
+    padding: 4,
+    marginLeft: 4,
   },
   navButtonCompact: {
     flexDirection: 'row',
