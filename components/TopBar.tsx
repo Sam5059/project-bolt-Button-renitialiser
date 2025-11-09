@@ -67,7 +67,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   
   // Détermine si on est sur la page de recherche
   const isSearchPage =
-    segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'search';
+    segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'search-new';
   
   // Détermine si on doit afficher les contrôles de recherche (catégories et localisation)
   const showSearchControls = !isHomePage && !isSearchPage;
@@ -197,8 +197,8 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
       onSearchChange(query);
     }
 
-    // Si le texte devient vide et qu'on est sur la page search, nettoyer l'URL
-    if (query.trim() === '' && segments.includes('search')) {
+    // Si le texte devient vide et qu'on est sur la page search-new, nettoyer l'URL
+    if (query.trim() === '' && segments.includes('search-new')) {
       router.push('/(tabs)/search-new');
     }
   };
