@@ -14,7 +14,7 @@ import {
   Image,
 } from 'react-native';
 import { router, useSegments } from 'expo-router';
-import { Search, Bell, MessageCircle, User, X, MapPin, ChevronDown, Check, LogOut, Settings, Store, ArrowLeft, Clock, Menu, Package, Heart, Hop as Home, ShoppingBag, Gem, CirclePlus as PlusCircle, HelpCircle, SlidersHorizontal } from 'lucide-react-native';
+import { Search, Bell, MessageCircle, User, X, MapPin, ChevronDown, Check, LogOut, Settings, Store, ArrowLeft, Clock, Menu, Package, Heart, Hop as Home, ShoppingBag, Gem, CirclePlus as PlusCircle, HelpCircle } from 'lucide-react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from '@/contexts/LocationContext';
@@ -24,7 +24,6 @@ import { supabase } from '@/lib/supabase';
 import Logo from './Logo';
 import { Category } from '@/types/database';
 import SearchHistoryModal from './SearchHistoryModal';
-import FiltersModal from './FiltersModal';
 import HelpTooltip from './HelpTooltip';
 import Tooltip from './Tooltip';
 
@@ -87,7 +86,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showSearchHistory, setShowSearchHistory] = useState(false);
   const [showProMenu, setShowProMenu] = useState(false);
-  const [showFiltersModal, setShowFiltersModal] = useState(false);
 
   useEffect(() => {
     loadCategories();
@@ -301,20 +299,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   returnKeyType="search"
                 />
               </View>
-              
-              <TouchableOpacity
-                style={styles.filtersButtonMobile}
-                onPress={() => setShowFiltersModal(true)}
-              >
-                <SlidersHorizontal size={16} color="#2563EB" />
-                {(selectedCategoryId || currentLocation !== '16-Alger' || selectedListingType !== 'all') && (
-                  <View style={styles.filtersBadgeMobile}>
-                    <Text style={styles.filtersBadgeText}>
-                      {(selectedCategoryId ? 1 : 0) + (currentLocation !== '16-Alger' ? 1 : 0) + (selectedListingType !== 'all' ? 1 : 0)}
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
             </View>
           )}
 
@@ -425,21 +409,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                     </TouchableOpacity>
                   )}
                 </View>
-                
-                <TouchableOpacity
-                  style={styles.filtersButton}
-                  onPress={() => setShowFiltersModal(true)}
-                >
-                  <SlidersHorizontal size={20} color="#2563EB" />
-                  <Text style={styles.filtersButtonText}>Filtres</Text>
-                  {(selectedCategoryId || currentLocation !== '16-Alger' || selectedListingType !== 'all') && (
-                    <View style={styles.filtersBadge}>
-                      <Text style={styles.filtersBadgeText}>
-                        {(selectedCategoryId ? 1 : 0) + (currentLocation !== '16-Alger' ? 1 : 0) + (selectedListingType !== 'all' ? 1 : 0)}
-                      </Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
               </View>
             </>
           )}
@@ -1241,16 +1210,6 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
           }
           handleSearch();
         }}
-      />
-
-      {/* Filters Modal */}
-      <FiltersModal
-        visible={showFiltersModal}
-        onClose={() => setShowFiltersModal(false)}
-        selectedCategoryId={selectedCategoryId}
-        onCategoryChange={setSelectedCategoryId}
-        selectedListingType={selectedListingType}
-        onListingTypeChange={setSelectedListingType}
       />
     </>
   );
@@ -2617,66 +2576,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     paddingRight: 8,
     outlineStyle: 'none',
-  },
-  filtersButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: '#F1F5F9',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#CBD5E1',
-    height: 48,
-    position: 'relative',
-  },
-  filtersButtonMobile: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    backgroundColor: '#EFF6FF',
-    borderRadius: 8,
-    borderWidth: 1.5,
-    borderColor: '#BFDBFE',
-    height: 44,
-    position: 'relative',
-  },
-  filtersButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2563EB',
-  },
-  filtersBadge: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    backgroundColor: '#EF4444',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 6,
-  },
-  filtersBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  filtersBadgeMobile: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    backgroundColor: '#EF4444',
-    borderRadius: 8,
-    minWidth: 16,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 4,
   },
   searchIcon: {
     marginRight: 8,
