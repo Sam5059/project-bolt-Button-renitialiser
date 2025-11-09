@@ -210,21 +210,16 @@ Preferred communication style: Simple, everyday language.
      - Maintained consistent styling between desktop and mobile navigation
    - **Result**: Clear visual distinction between action types, intuitive color association with listing types
 
-9. **Search Page Consolidation & TopBar Search Visibility** (`app/(tabs)/searchnew.tsx`, `components/TopBar.tsx`) - November 9, 2025
-   - **Change**: Unified all search functionality to single `searchnew` page with simplified TopBar layout
+9. **Search Page Consolidation & TopBar Standardization** (`app/(tabs)/searchnew.tsx`, `components/TopBar.tsx`) - November 9, 2025
+   - **Change**: Unified all search functionality to single `searchnew` page with standard TopBar across all pages
    - **File Renaming**: `search-new.tsx` → `searchnew.tsx` (Expo Router hyphen compatibility)
    - **Navigation Updates**:
      - Deleted obsolete `search.tsx` and `search copy.tsx` files
      - Updated all navigation references: TopBar, CategoryCarousel, QuickAccessMenu, Footer, checkout, cart, index
      - All links now redirect to `/(tabs)/searchnew`
-   - **TopBar Search Page Layout - Final Implementation**:
-     - Logo hidden on search page to make room for search bar
-     - Simple search input (max-width 500px) displayed on left side - no category dropdown
-     - Center navigation buttons hidden on search page (`showCenterNav = !isSearchPage`)
-     - Right section (icons, language, user menu) remains visible
-     - Replaced complex parallel layout approach with minimal conditional rendering
-   - **Logic Flags**:
-     - `showSearchBar = isSearchPage` - search input exclusive to search page
-     - `showLocationSelector = !isHomePage && !isSearchPage` - location hidden on homepage and search page
-     - `showCenterNav = !isSearchPage` - center buttons hidden on search page
-   - **Result**: Clean, streamlined TopBar on search page with focus on search functionality, navigation buttons accessible on all other pages
+   - **TopBar Final Layout** (uniform across all pages):
+     - Logo "OuechDZ" à gauche
+     - Boutons de navigation au centre: "Déposer une annonce" (bleu), "Acheter un forfait Pro" (violet), "Offres" (vert), "Demandes" (orange)
+     - Icônes et menu utilisateur à droite
+     - Sélecteur de localisation caché sur la page d'accueil et la page de recherche
+   - **Result**: TopBar cohérent et professionnel sur toutes les pages, navigation simplifiée, catégories filtrables via le sidebar de la page de recherche
