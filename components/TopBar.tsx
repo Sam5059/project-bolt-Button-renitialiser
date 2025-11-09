@@ -64,6 +64,14 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
     segments.length === 0 ||
     (segments.length === 1 && segments[0] === '(tabs)') ||
     (segments.length === 2 && segments[0] === '(tabs)' && segments[1] === 'index');
+  
+  // Détermine si on est sur la page de recherche
+  const isSearchPage =
+    segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'search';
+  
+  // Détermine si on doit afficher les contrôles de recherche (catégories et localisation)
+  const showSearchControls = !isHomePage && !isSearchPage;
+  
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showLocationMenu, setShowLocationMenu] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
@@ -386,7 +394,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
             </TouchableOpacity>
           </View>
 
-          {!isHomePage && (
+          {showSearchControls && (
             <>
               <View style={styles.dividerVertical} />
 
