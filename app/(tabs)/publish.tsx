@@ -461,6 +461,24 @@ export default function PublishScreen() {
     }
   };
 
+  const getSmartOfferType = (categorySlug: string, currentListingType: 'offre' | 'je_cherche'): 'sale' | 'free' | 'exchange' | 'rent' => {
+    const slug = categorySlug.toLowerCase();
+    
+    if (slug.includes('location') || slug.includes('vacances')) {
+      return 'rent';
+    }
+    
+    if (slug.includes('immobilier-vente')) {
+      return 'sale';
+    }
+    
+    if (currentListingType === 'je_cherche') {
+      return 'sale';
+    }
+    
+    return 'sale';
+  };
+
   const handleCategoryChange = async (value: string) => {
     setParentCategoryId(value);
     setCategoryId('');
@@ -469,6 +487,10 @@ export default function PublishScreen() {
     if (value) {
       loadSubcategories(value);
       const category = categories.find(c => c.id === value);
+      
+      const smartOfferType = getSmartOfferType(category?.slug || '', listingType);
+      setOfferType(smartOfferType);
+      
       if (category?.slug === 'vehicules') {
         await loadBrands('vehicles');
       } else if (category?.slug === 'electronique') {
@@ -1314,13 +1336,35 @@ export default function PublishScreen() {
             </View>
           )}
 
-          {/* 2.4 TYPE D'OFFRE - À vendre/À donner/etc. */}
+          {/* 2.5 Catégorie */}
+          <View style={styles.inputGroup}>
+            <Text style={[styles.label, isRTL && styles.textRTL]}>
+              {t('publish.category')} <Text style={styles.required}>*</Text>
+            </Text>
+            <View style={[styles.pickerContainer, fieldErrors.category && styles.inputError]}>
+              <Picker
+                selectedValue={parentCategoryId}
+                onValueChange={(value) => {
+                  handleCategoryChange(value);
+                  if (fieldErrors.category) setFieldErrors({ ...fieldErrors, category: false });
+                }}
+                style={[styles.picker, !parentCategoryId && styles.pickerPlaceholder]}
+              >
+                <Picker.Item label={t('publish.categoryQuestion')} value="" color="#94A3B8" />
+                {categories.map((cat) => (
+                  <Picker.Item key={cat.id} label={getCategoryName(cat)} value={cat.id} />
+                ))}
+              </Picker>
+            </View>
+          </View>
+
+          {/* 2.6 TYPE D'OFFRE - À vendre/À donner/etc. */}
           {getFormType() !== 'job' && getFormType() !== 'service' && (
             <View style={styles.inputGroup}>
               <Text style={[styles.label, isRTL && styles.textRTL]}>
                 {listingType === 'offre' ? 'Type d\'offre' : 'Type de recherche'} <Text style={styles.required}>*</Text>
               </Text>
-              <View style={styles.offerTypeGrid}>
+              <View style={styles.offerTypeRow}>
                 {listingType === 'offre' ? (
                   <>
                     <TouchableOpacity
@@ -1486,29 +1530,7 @@ export default function PublishScreen() {
             </View>
           )}
 
-          {/* 2.5 Catégorie */}
-          <View style={styles.inputGroup}>
-            <Text style={[styles.label, isRTL && styles.textRTL]}>
-              {t('publish.category')} <Text style={styles.required}>*</Text>
-            </Text>
-            <View style={[styles.pickerContainer, fieldErrors.category && styles.inputError]}>
-              <Picker
-                selectedValue={parentCategoryId}
-                onValueChange={(value) => {
-                  handleCategoryChange(value);
-                  if (fieldErrors.category) setFieldErrors({ ...fieldErrors, category: false });
-                }}
-                style={[styles.picker, !parentCategoryId && styles.pickerPlaceholder]}
-              >
-                <Picker.Item label={t('publish.categoryQuestion')} value="" color="#94A3B8" />
-                {categories.map((cat) => (
-                  <Picker.Item key={cat.id} label={getCategoryName(cat)} value={cat.id} />
-                ))}
-              </Picker>
-            </View>
-          </View>
-
-          {/* 2.4 Sous-catégorie */}
+          {/* 2.7 Sous-catégorie */}
           {subcategories.length > 0 && (
             <View style={styles.inputGroup}>
               <Text style={[styles.label, isRTL && styles.textRTL]}>
@@ -3842,16 +3864,22 @@ const styles = StyleSheet.create({
     gap: 12,
     marginTop: 12,
   },
+  offerTypeRow: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'space-between',
+    marginTop: 12,
+  },
   offerTypeButton: {
     flex: 1,
-    minWidth: '45%',
+    minWidth: 0,
     backgroundColor: '#F8FAFC',
     borderWidth: 2,
     borderColor: '#E2E8F0',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -3867,17 +3895,17 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   offerTypeIcon: {
-    fontSize: 32,
+    fontSize: 24,
   },
   offerTypeLabel: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: '#64748B',
     textAlign: 'center',
   },
   offerTypeLabelActive: {
     fontWeight: '800',
-    fontSize: 15,
+    fontSize: 14,
   },
   offerTypeNotice: {
     flexDirection: 'row',
