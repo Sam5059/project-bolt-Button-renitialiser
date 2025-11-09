@@ -3,6 +3,12 @@
 ## Overview
 BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) and Supabase. It allows users to buy, sell, and rent items across various categories, featuring specialized "PRO Stores" for professional sellers. The platform aims to be the go-to destination for classifieds in Algeria.
 
+## Recent Changes (November 9, 2025)
+- **Intelligent Category Detection System**: Implemented automatic category detection based on search keywords with visual highlighting in sidebar
+- **Enhanced Keyword Dictionary**: Added comprehensive multilingual keywords (montre, maçonnerie, informatique, plomberie, électricité, etc.)
+- **Category Filter Bug Fix**: Fixed critical bug where all categories defaulted to vehicle filters; created centralized filter configuration system
+- **Visual UX Improvements**: Auto-detected categories display with cream background, orange left border, and multilingual "Détectée" badge
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
@@ -25,7 +31,14 @@ Preferred communication style: Simple, everyday language.
 - Listing card badges updated for clarity (e.g., "RECHERCHÉ" to "DEMANDE").
 
 ### Feature Specifications
-- **Smart Category Detection**: Multilingual keyword dictionary for 9 major categories, auto-selects and highlights categories based on search input.
+- **Smart Category Detection via Keywords**: 
+  - Intelligent keyword-based category detection with multilingual support (FR/EN/AR)
+  - 300ms debounce for optimal performance during typing
+  - Comprehensive keyword dictionary covering 9 major categories: Vehicles, Real Estate, Electronics, Furniture, Clothing, Animals, Services, Employment, Rentals
+  - Auto-highlighting in sidebar with distinct visual feedback (cream background, orange border, "Détectée" badge)
+  - Scoring algorithm: exact match (10 pts) > partial match (5 pts)
+  - Examples: "renault" → Véhicules, "appartement" → Immobilier, "montre" → Électronique, "maçonnerie" → Services
+  - Architecture: 3-layer mapping (keyword dict → logical ID → Supabase slug → category ID)
 - **Global Search Synchronization**: Single search bar in TopBar controls app-wide search state, query persists across navigation, synchronizes bidirectionally with URL.
 - **Rental Listings**: Category-aware filter rendering to correctly display rental listings.
 - **PRO Stores**: Professional seller storefronts with tiered subscription packages.
