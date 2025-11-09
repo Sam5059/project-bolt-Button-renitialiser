@@ -210,20 +210,21 @@ Preferred communication style: Simple, everyday language.
      - Maintained consistent styling between desktop and mobile navigation
    - **Result**: Clear visual distinction between action types, intuitive color association with listing types
 
-9. **Search Page Consolidation & TopBar Layout** (`app/(tabs)/searchnew.tsx`, `components/TopBar.tsx`) - November 9, 2025
-   - **Change**: Unified all search functionality to single `searchnew` page with adaptive TopBar layout
+9. **Search Page Consolidation & TopBar Adaptive Layout** (`app/(tabs)/searchnew.tsx`, `components/TopBar.tsx`) - November 9, 2025
+   - **Change**: Unified all search functionality to single `searchnew` page with context-aware TopBar layout
    - **File Renaming**: `search-new.tsx` → `searchnew.tsx` (Expo Router hyphen compatibility)
    - **Navigation Updates**:
      - Deleted obsolete `search.tsx` and `search copy.tsx` files
      - Updated all navigation references: TopBar, CategoryCarousel, QuickAccessMenu, Footer, checkout, cart, index
      - All links now redirect to `/(tabs)/searchnew`
-   - **TopBar Layout**:
+   - **TopBar Adaptive Layout**:
      - **Standard pages**: Logo "OuechDZ" + Boutons navigation (Déposer une annonce, Acheter un forfait Pro, Offres, Demandes) + Icônes utilisateur
-     - **Page de recherche**: Logo "OuechDZ" + Barre de recherche (max 400px) + Boutons navigation + Icônes utilisateur
+     - **Page de recherche**: Logo "OuechDZ" + **Barre de recherche** (max 400px) + Boutons navigation + Icônes utilisateur
+     - **Page "Déposer"**: Logo "OuechDZ" + Boutons navigation (**sans** "Déposer une annonce" et "Acheter un forfait Pro") + Icônes utilisateur
      - Sélecteur de localisation caché sur la page d'accueil et la page de recherche
    - **Search Bar Styling**:
      - Background: #F8FAFC avec bordure #E2E8F0
      - Icône de recherche à gauche, bouton X pour effacer à droite
      - Taille compacte (40px height, max-width 400px)
      - Support RTL pour l'arabe
-   - **Result**: TopBar professionnel avec barre de recherche visible uniquement sur la page de recherche, navigation cohérente sur toutes les pages
+   - **Result**: TopBar intelligent qui s'adapte au contexte de chaque page, évitant les boutons redondants et optimisant l'espace

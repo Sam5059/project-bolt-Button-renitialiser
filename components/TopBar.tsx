@@ -69,6 +69,10 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   const isSearchPage =
     segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'searchnew';
   
+  // Détermine si on est sur la page "Déposer"
+  const isPublishPage =
+    segments.length >= 2 && segments[0] === '(tabs)' && segments[1] === 'publish';
+  
   // Détermine si on doit afficher les contrôles de recherche
   // Localisation visible seulement en dehors de l'accueil et de la page de recherche  
   const showLocationSelector = !isHomePage && !isSearchPage;
@@ -442,36 +446,40 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
 
             {/* Navigation principale au centre */}
             <View style={styles.topBarCenter}>
-              <TouchableOpacity
-                style={[styles.navButtonCompact, styles.navButtonBlue]}
-                onPress={() => router.push('/(tabs)/publish')}
-              >
-                <PlusCircle size={16} color="#FFFFFF" />
-                <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
-                  {t('topBar.publishFree')}
-                </Text>
-              </TouchableOpacity>
+              {!isPublishPage && (
+                <TouchableOpacity
+                  style={[styles.navButtonCompact, styles.navButtonBlue]}
+                  onPress={() => router.push('/(tabs)/publish')}
+                >
+                  <PlusCircle size={16} color="#FFFFFF" />
+                  <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                    {t('topBar.publishFree')}
+                  </Text>
+                </TouchableOpacity>
+              )}
 
-              {profile?.user_type === 'professional' ? (
-                <TouchableOpacity
-                  style={[styles.navButtonCompact, styles.navButtonPurple]}
-                  onPress={() => setShowProMenu(!showProMenu)}
-                >
-                  <Gem size={16} color="#FFFFFF" />
-                  <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
-                    {t('topBar.proSpace')}
-                  </Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={[styles.navButtonCompact, styles.navButtonPurple]}
-                  onPress={() => router.push('/pro/packages')}
-                >
-                  <Gem size={16} color="#FFFFFF" />
-                  <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
-                    {t('topBar.buyPro')}
-                  </Text>
-                </TouchableOpacity>
+              {!isPublishPage && (
+                profile?.user_type === 'professional' ? (
+                  <TouchableOpacity
+                    style={[styles.navButtonCompact, styles.navButtonPurple]}
+                    onPress={() => setShowProMenu(!showProMenu)}
+                  >
+                    <Gem size={16} color="#FFFFFF" />
+                    <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                      {t('topBar.proSpace')}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={[styles.navButtonCompact, styles.navButtonPurple]}
+                    onPress={() => router.push('/pro/packages')}
+                  >
+                    <Gem size={16} color="#FFFFFF" />
+                    <Text style={[styles.navButtonText, styles.navButtonTextWhite]}>
+                      {t('topBar.buyPro')}
+                    </Text>
+                  </TouchableOpacity>
+                )
               )}
 
               <TouchableOpacity
