@@ -14,7 +14,7 @@ import {
   Image,
 } from 'react-native';
 import { router, useSegments } from 'expo-router';
-import { Search, Bell, MessageCircle, User, X, MapPin, ChevronDown, Check, LogOut, Settings, Store, ArrowLeft, Clock, Menu, Package, Heart, Hop as Home, ShoppingBag, Gem, CirclePlus as PlusCircle, HelpCircle } from 'lucide-react-native';
+import { Search, Bell, MessageCircle, User, X, MapPin, ChevronDown, Check, LogOut, Settings, Store, ArrowLeft, Clock, Menu, Package, Heart, Hop as Home, ShoppingBag, Gem, CirclePlus as PlusCircle, HelpCircle, SlidersHorizontal } from 'lucide-react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from '@/contexts/LocationContext';
@@ -24,6 +24,7 @@ import { supabase } from '@/lib/supabase';
 import Logo from './Logo';
 import { Category } from '@/types/database';
 import SearchHistoryModal from './SearchHistoryModal';
+import FiltersModal from './FiltersModal';
 import HelpTooltip from './HelpTooltip';
 import Tooltip from './Tooltip';
 
@@ -86,6 +87,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showSearchHistory, setShowSearchHistory] = useState(false);
   const [showProMenu, setShowProMenu] = useState(false);
+  const [showFiltersModal, setShowFiltersModal] = useState(false);
 
   useEffect(() => {
     loadCategories();
@@ -398,12 +400,12 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
             <>
               <View style={styles.dividerVertical} />
 
-              {/* Barre de recherche avec sélecteur de catégorie */}
-              <View style={styles.searchContainerTop}>
-                <View style={styles.searchBarWithCategory}>
+              {/* Barre de recherche élargie */}
+              <View style={styles.searchContainerExpanded}>
+                <View style={styles.searchBarExpanded}>
                   <Search size={20} color="#64748B" style={styles.searchIcon} />
                   <TextInput
-                    style={[styles.searchInputWithCategory, isRTL && styles.searchInputRTL]}
+                    style={[styles.searchInputExpanded, isRTL && styles.searchInputRTL]}
                     placeholder={t('home.searchPlaceholder')}
                     placeholderTextColor="#94A3B8"
                     value={searchQuery}
@@ -419,34 +421,24 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                       <X size={18} color="#94A3B8" />
                     </TouchableOpacity>
                   )}
-                  <View style={styles.categoryDivider} />
-                  <TouchableOpacity
-                    style={styles.categoryDropdownButton}
-                    onPress={() => setShowCategoryDropdown(true)}
-                  >
-                    <Text style={styles.categoryDropdownText} numberOfLines={1}>
-                      {selectedCategoryId
-                        ? getCategoryName(categories.find(c => c.id === selectedCategoryId)!)
-                        : (language === 'ar' ? 'جميع الفئات' : language === 'en' ? 'All Categories' : 'Toutes Catégories')}
-                    </Text>
-                    <ChevronDown size={16} color="#64748B" />
-                  </TouchableOpacity>
                 </View>
-              </View>
-
-              <View style={styles.dividerVertical} />
-
-              {/* Sélecteur de localisation */}
-              <Tooltip text="Changer la localisation">
+                
+                {/* Bouton Filtres avec badge */}
                 <TouchableOpacity
-                  style={styles.locationSelector}
-                  onPress={() => setShowLocationMenu(true)}
+                  style={styles.filtersButton}
+                  onPress={() => setShowFiltersModal(true)}
                 >
-                  <MapPin size={16} color="#2563EB" />
-                  <Text style={styles.locationValue}>{currentLocation}</Text>
-                  <ChevronDown size={14} color="#2563EB" />
+                  <SlidersHorizontal size={20} color="#2563EB" />
+                  <Text style={styles.filtersButtonText}>Filtres</Text>
+                  {(selectedCategoryId || currentLocation !== '16-Alger' || selectedListingType !== 'all') && (
+                    <View style={styles.filtersBadge}>
+                      <Text style={styles.filtersBadgeText}>
+                        {(selectedCategoryId ? 1 : 0) + (currentLocation !== '16-Alger' ? 1 : 0) + (selectedListingType !== 'all' ? 1 : 0)}
+                      </Text>
+                    </View>
+                  )}
                 </TouchableOpacity>
-              </Tooltip>
+              </View>
             </>
           )}
         </View>
@@ -1246,6 +1238,23 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
             setSelectedCategoryId(categoryId);
           }
           handleSearch();
+        }}
+      />
+
+      {/* Filters Modal */}
+      <FiltersModal
+        visible={showFiltersModal}
+        onClose={() => setShowFiltersModal(false)}
+        selectedCategoryId={selectedCategoryId}
+        onCategoryChange={setSelectedCategoryId}
+        selectedListingType={selectedListingType}
+        onListingTypeChange={setSelectedListingType}
+        onApply={handleSearch}
+        onReset={() => {
+          handleSearchQueryChange('');
+          setSelectedCategoryId(null);
+          setCurrentLocation('16-Alger');
+          setSelectedListingType('all');
         }}
       />
     </>
@@ -2583,6 +2592,70 @@ const styles = StyleSheet.create({
     minHeight: 48,
     height: 48,
     flex: 1,
+  },
+  searchContainerExpanded: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+    maxWidth: '45%',
+    minWidth: 400,
+  },
+  searchBarExpanded: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingLeft: 16,
+    paddingVertical: 14,
+    borderWidth: 2,
+    borderColor: '#CBD5E1',
+    height: 48,
+    flex: 1,
+  },
+  searchInputExpanded: {
+    flex: 1,
+    fontSize: 15,
+    color: '#0F172A',
+    fontWeight: '500',
+    paddingVertical: 0,
+    paddingRight: 8,
+    outlineStyle: 'none',
+  },
+  filtersButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#CBD5E1',
+    height: 48,
+    position: 'relative',
+  },
+  filtersButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2563EB',
+  },
+  filtersBadge: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    backgroundColor: '#EF4444',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+  },
+  filtersBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '700',
   },
   searchIcon: {
     marginRight: 8,
