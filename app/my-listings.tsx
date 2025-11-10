@@ -1,41 +1,74 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
   Alert,
   Modal,
   Pressable,
   useWindowDimensions,
   Platform,
+  Image,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/lib/supabase';
 import { Listing } from '@/types/database';
-import { Package, Plus, Edit, Trash2, MoreVertical, Eye, EyeOff } from 'lucide-react-native';
+import { Plus, ChevronLeft, ChevronRight, Trash2, X } from 'lucide-react-native';
 import TopBar from '@/components/TopBar';
 import ListingsQuotaCard from '@/components/ListingsQuotaCard';
 import Footer from '@/components/Footer';
+import MyListingsSidebar from '@/components/MyListingsSidebar';
+import MyListingCard from '@/components/MyListingCard';
+import SidebarResizeHandle from '@/components/SidebarResizeHandle';
+
+const isWeb = Platform.OS === 'web';
+const SIDEBAR_DEFAULT_WIDTH = 280;
+const SIDEBAR_MIN_WIDTH = 240;
+const SIDEBAR_MAX_WIDTH = 400;
+
+type FilterType = 'all' | 'active' | 'suspended' | 'sold';
 
 export default function MyListingsScreen() {
   const { user } = useAuth();
   const { t, isRTL } = useLanguage();
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
+
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedListing, setSelectedListing] = useState<string | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>('all');
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [listingToDelete, setListingToDelete] = useState<Listing | null>(null);
   const [listingsQuota, setListingsQuota] = useState<any>(null);
   const [quotaLoading, setQuotaLoading] = useState(false);
+
+  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+  useEffect(() => {
+    if (isWeb && !isMobile) {
+      const savedWidth = localStorage.getItem('myListingsSidebarWidth');
+      const savedCollapsed = localStorage.getItem('myListingsSidebarCollapsed');
+
+      if (savedWidth) {
+        const parsedWidth = parseInt(savedWidth, 10);
+        if (parsedWidth >= SIDEBAR_MIN_WIDTH && parsedWidth <= SIDEBAR_MAX_WIDTH) {
+          setSidebarWidth(parsedWidth);
+        }
+      }
+
+      if (savedCollapsed === 'true') {
+        setSidebarCollapsed(true);
+      }
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     loadListings();
@@ -64,7 +97,7 @@ export default function MyListingsScreen() {
     try {
       setQuotaLoading(true);
       const { data, error } = await supabase.rpc('get_user_listings_quota', {
-        p_user_id: user.id
+        p_user_id: user.id,
       });
 
       if (error) {
@@ -80,60 +113,69 @@ export default function MyListingsScreen() {
     }
   };
 
-  const formatPrice = (price: number) => {
-    const formatted = new Intl.NumberFormat('fr-DZ', {
-      style: 'currency',
-      currency: 'DZD',
-      minimumFractionDigits: 0,
-    }).format(price);
-    return formatted.replace('DZD', 'DA');
-  };
+  const handleSidebarResize = useCallback((newWidth: number) => {
+    setSidebarWidth(newWidth);
+    if (isWeb) {
+      localStorage.setItem('myListingsSidebarWidth', newWidth.toString());
+    }
+  }, []);
+
+  const toggleSidebar = useCallback(() => {
+    const newCollapsed = !sidebarCollapsed;
+    setSidebarCollapsed(newCollapsed);
+    if (isWeb) {
+      localStorage.setItem('myListingsSidebarCollapsed', newCollapsed.toString());
+    }
+  }, [sidebarCollapsed]);
+
+  const filteredListings = useMemo(() => {
+    if (selectedFilter === 'all') return listings;
+    return listings.filter((listing) => listing.status === selectedFilter);
+  }, [listings, selectedFilter]);
+
+  const counts = useMemo(() => {
+    return {
+      all: listings.length,
+      active: listings.filter((l) => l.status === 'active').length,
+      inactive: listings.filter((l) => l.status === 'suspended').length,
+      sold: listings.filter((l) => l.status === 'sold').length,
+    };
+  }, [listings]);
 
   const confirmDelete = (listing: Listing) => {
     setListingToDelete(listing);
     setShowDeleteModal(true);
-    setSelectedListing(null);
   };
 
   const handleDelete = async () => {
     if (!listingToDelete) return;
 
-    console.log('[DELETE] Starting deletion for listing:', listingToDelete.id);
-    console.log('[DELETE] User ID:', user?.id);
     setDeletingId(listingToDelete.id);
 
     try {
-      const { error, data } = await supabase
+      const { error } = await supabase
         .from('listings')
         .delete()
         .eq('id', listingToDelete.id)
-        .eq('user_id', user!.id)
-        .select();
+        .eq('user_id', user!.id);
 
-      if (error) {
-        console.error('[DELETE] Supabase error:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      console.log('[DELETE] Delete successful, data:', data);
-
-      setListings(listings.filter(l => l.id !== listingToDelete.id));
+      setListings(listings.filter((l) => l.id !== listingToDelete.id));
       setShowDeleteModal(false);
       setListingToDelete(null);
-
-      // Recharger le quota après suppression
       loadListingsQuota();
 
-      Alert.alert(
-        t('common.success'),
-        t('myListings.deleteSuccess'),
-        [{ text: t('common.ok') }]
-      );
+      Alert.alert(t('common.success'), t('myListings.deleteSuccess'), [
+        { text: t('common.ok') },
+      ]);
     } catch (error) {
       console.error('[DELETE] Error deleting listing:', error);
       Alert.alert(
         t('common.error'),
-        `${t('myListings.deleteError')}\n${error instanceof Error ? error.message : 'Unknown error'}`,
+        `${t('myListings.deleteError')}\n${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
         [{ text: t('common.ok') }]
       );
     } finally {
@@ -142,27 +184,25 @@ export default function MyListingsScreen() {
   };
 
   const handleToggleStatus = async (listing: Listing) => {
-    const newStatus = listing.status === 'active' ? 'inactive' : 'active';
+    const newStatus = listing.status === 'active' ? 'suspended' : 'active';
 
     try {
       const { error } = await supabase
         .from('listings')
         .update({
           status: newStatus,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', listing.id)
         .eq('user_id', user!.id);
 
       if (error) throw error;
 
-      // Recharger le quota après changement de statut
       loadListingsQuota();
 
-      setListings(listings.map(l =>
-        l.id === listing.id ? { ...l, status: newStatus } : l
-      ));
-      setSelectedListing(null);
+      setListings(
+        listings.map((l) => (l.id === listing.id ? { ...l, status: newStatus } : l))
+      );
 
       Alert.alert(
         t('common.success'),
@@ -173,11 +213,9 @@ export default function MyListingsScreen() {
       );
     } catch (error) {
       console.error('Error updating status:', error);
-      Alert.alert(
-        t('common.error'),
-        t('myListings.statusError'),
-        [{ text: t('common.ok') }]
-      );
+      Alert.alert(t('common.error'), t('myListings.statusError'), [
+        { text: t('common.ok') },
+      ]);
     }
   };
 
@@ -187,32 +225,43 @@ export default function MyListingsScreen() {
         .from('listings')
         .update({
           status: 'sold',
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', listing.id)
         .eq('user_id', user!.id);
 
       if (error) throw error;
 
-      setListings(listings.map(l =>
-        l.id === listing.id ? { ...l, status: 'sold' } : l
-      ));
-      setSelectedListing(null);
-
-      Alert.alert(
-        t('common.success'),
-        t('myListings.soldSuccess'),
-        [{ text: t('common.ok') }]
+      setListings(
+        listings.map((l) => (l.id === listing.id ? { ...l, status: 'sold' } : l))
       );
+
+      Alert.alert(t('common.success'), t('myListings.soldSuccess'), [
+        { text: t('common.ok') },
+      ]);
     } catch (error) {
       console.error('Error marking as sold:', error);
-      Alert.alert(
-        t('common.error'),
-        t('myListings.statusError'),
-        [{ text: t('common.ok') }]
-      );
+      Alert.alert(t('common.error'), t('myListings.statusError'), [
+        { text: t('common.ok') },
+      ]);
     }
   };
+
+  const formatPrice = (price: number) => {
+    const formatted = new Intl.NumberFormat('fr-DZ', {
+      style: 'currency',
+      currency: 'DZD',
+      minimumFractionDigits: 0,
+    }).format(price);
+    return formatted.replace('DZD', 'DA');
+  };
+
+  const cardWidth = useMemo(() => {
+    if (isMobile) return width - 32;
+    const availableWidth = width - (sidebarCollapsed ? 0 : sidebarWidth) - 64;
+    const columns = Math.floor(availableWidth / 300);
+    return Math.max(280, Math.floor(availableWidth / Math.max(1, columns)) - 16);
+  }, [width, sidebarWidth, sidebarCollapsed, isMobile]);
 
   if (loading) {
     return (
@@ -224,149 +273,115 @@ export default function MyListingsScreen() {
 
   return (
     <View style={styles.container}>
-      <TopBar />
-      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.pageHeader}>
-          <Text style={[styles.pageTitle, isRTL && styles.textRTL]}>{t('myListings.title')}</Text>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => router.push('/(tabs)/publish')}
-          >
-            <Plus size={20} color="#2563EB" />
-            <Text style={[styles.addButtonText, isRTL && styles.textRTL]}>{t('myListings.add')}</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.stickyHeader}>
+        <TopBar />
+      </View>
 
-        <View style={styles.content}>
-        {listingsQuota && !quotaLoading && (
-          <View style={styles.quotaContainer}>
-            <ListingsQuotaCard quota={listingsQuota} showUpgradeButton={true} />
+      <View style={styles.mainContainer}>
+        {isWeb && !isMobile && (
+          <TouchableOpacity
+            onPress={toggleSidebar}
+            style={[
+              styles.toggleSidebarButton,
+              sidebarCollapsed && styles.toggleSidebarButtonCollapsed,
+            ]}
+            activeOpacity={0.7}
+          >
+            {sidebarCollapsed ? (
+              <ChevronRight size={20} color="#64748B" />
+            ) : (
+              <ChevronLeft size={20} color="#64748B" />
+            )}
+          </TouchableOpacity>
+        )}
+
+        {isWeb && !isMobile && !sidebarCollapsed && (
+          <View style={[styles.sidebarContainer, { width: sidebarWidth }]}>
+            <MyListingsSidebar
+              selectedFilter={selectedFilter}
+              onFilterChange={setSelectedFilter}
+              counts={counts}
+            />
           </View>
         )}
 
-        {listings.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Package size={64} color="#CBD5E1" />
-            <Text style={[styles.emptyTitle, isRTL && styles.textRTL]}>{t('myListings.emptyTitle')}</Text>
-            <Text style={[styles.emptyText, isRTL && styles.textRTL]}>
-              {t('myListings.emptyText')}
-            </Text>
-            <TouchableOpacity
-              style={styles.publishButton}
-              onPress={() => router.push('/(tabs)/publish')}
-            >
-              <Text style={[styles.publishButtonText, isRTL && styles.textRTL]}>{t('myListings.publishListing')}</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.listingsGrid}>
-            {listings.map((listing) => (
-              <View key={listing.id} style={[styles.listingCard, isMobile && styles.listingCardMobile]}>
-                <TouchableOpacity
-                  onPress={() => router.push(`/listing/${listing.id}`)}
-                  style={styles.listingCardInner}
-                >
-                  <Image
-                    source={{
-                      uri:
-                        listing.images[0] ||
-                        'https://images.pexels.com/photos/1667849/pexels-photo-1667849.jpeg?auto=compress&cs=tinysrgb&w=400',
-                    }}
-                    style={styles.listingImage}
-                  />
-                  <View style={styles.listingContent}>
-                    <Text style={styles.listingTitle} numberOfLines={2}>
-                      {listing.title}
+        {isWeb && !isMobile && !sidebarCollapsed && (
+          <SidebarResizeHandle
+            onResize={handleSidebarResize}
+            minWidth={SIDEBAR_MIN_WIDTH}
+            maxWidth={SIDEBAR_MAX_WIDTH}
+          />
+        )}
+
+        <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+          <View style={styles.contentWrapper}>
+            <View style={styles.pageHeader}>
+              <Text style={[styles.pageTitle, isRTL && styles.textRTL]}>
+                {t('myListings.title')}
+              </Text>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => router.push('/(tabs)/publish')}
+              >
+                <Plus size={20} color="#2563EB" />
+                <Text style={[styles.addButtonText, isRTL && styles.textRTL]}>
+                  {t('myListings.add')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {listingsQuota && !quotaLoading && (
+              <View style={styles.quotaContainer}>
+                <ListingsQuotaCard quota={listingsQuota} showUpgradeButton={true} />
+              </View>
+            )}
+
+            {filteredListings.length === 0 ? (
+              <View style={styles.emptyState}>
+                <Text style={[styles.emptyTitle, isRTL && styles.textRTL]}>
+                  {selectedFilter === 'all'
+                    ? t('myListings.emptyTitle')
+                    : t('myListings.emptyFilterTitle')}
+                </Text>
+                <Text style={[styles.emptyText, isRTL && styles.textRTL]}>
+                  {selectedFilter === 'all'
+                    ? t('myListings.emptyText')
+                    : t('myListings.emptyFilterText')}
+                </Text>
+                {selectedFilter === 'all' && (
+                  <TouchableOpacity
+                    style={styles.publishButton}
+                    onPress={() => router.push('/(tabs)/publish')}
+                  >
+                    <Text style={[styles.publishButtonText, isRTL && styles.textRTL]}>
+                      {t('myListings.publishListing')}
                     </Text>
-                    <Text style={styles.listingPrice}>
-                      {formatPrice(parseFloat(listing.price))}
-                    </Text>
-                    <View style={styles.statsRow}>
-                      <View
-                        style={[
-                          styles.statusBadge,
-                          listing.status === 'active' && styles.statusActive,
-                          listing.status === 'inactive' && styles.statusInactive,
-                          listing.status === 'sold' && styles.statusSold,
-                        ]}
-                      >
-                        <Text style={[styles.statusText, isRTL && styles.textRTL]}>
-                          {listing.status === 'active' ? t('myListings.active') :
-                           listing.status === 'inactive' ? t('myListings.inactive') :
-                           t('myListings.sold')}
-                        </Text>
-                      </View>
-                      <Text style={styles.viewsText}>
-                        <Eye size={12} color="#64748B" /> {listing.views_count || 0}
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.menuButton}
-                  onPress={() => setSelectedListing(selectedListing === listing.id ? null : listing.id)}
-                >
-                  <MoreVertical size={20} color="#64748B" />
-                </TouchableOpacity>
-                {selectedListing === listing.id && (
-                  <View style={styles.contextMenu}>
-                    <TouchableOpacity
-                      style={styles.menuItem}
-                      onPress={() => {
-                        router.push(`/(tabs)/publish?editId=${listing.id}`);
-                        setSelectedListing(null);
-                      }}
-                    >
-                      <Edit size={16} color="#2563EB" />
-                      <Text style={styles.menuItemText}>{t('myListings.edit')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.menuItem}
-                      onPress={() => handleToggleStatus(listing)}
-                    >
-                      {listing.status === 'active' ? (
-                        <EyeOff size={16} color="#F59E0B" />
-                      ) : (
-                        <Eye size={16} color="#10B981" />
-                      )}
-                      <Text style={styles.menuItemText}>
-                        {listing.status === 'active' ? t('myListings.deactivate') : t('myListings.activate')}
-                      </Text>
-                    </TouchableOpacity>
-                    {listing.status !== 'sold' && (
-                      <TouchableOpacity
-                        style={styles.menuItem}
-                        onPress={() => {
-                          handleMarkAsSold(listing);
-                          setSelectedListing(null);
-                        }}
-                      >
-                        <Package size={16} color="#8B5CF6" />
-                        <Text style={styles.menuItemText}>{t('myListings.markAsSold')}</Text>
-                      </TouchableOpacity>
-                    )}
-                    <TouchableOpacity
-                      style={styles.menuItem}
-                      onPress={() => {
-                        console.log('[DELETE] Delete button clicked for listing:', listing.id);
-                        confirmDelete(listing);
-                      }}
-                    >
-                      <Trash2 size={16} color="#EF4444" />
-                      <Text style={[styles.menuItemText, styles.menuItemDanger]}>{t('myListings.delete')}</Text>
-                    </TouchableOpacity>
-                  </View>
+                  </TouchableOpacity>
                 )}
               </View>
-            ))}
+            ) : (
+              <View style={styles.listingsGrid}>
+                {filteredListings.map((listing) => (
+                  <MyListingCard
+                    key={listing.id}
+                    listing={listing}
+                    onPress={() => router.push(`/listing/${listing.id}`)}
+                    onEdit={() => router.push(`/(tabs)/publish?editId=${listing.id}`)}
+                    onToggleStatus={() => handleToggleStatus(listing)}
+                    onMarkAsSold={() => handleMarkAsSold(listing)}
+                    onDelete={() => confirmDelete(listing)}
+                    isWeb={isWeb}
+                    width={cardWidth}
+                    isDeleting={deletingId === listing.id}
+                  />
+                ))}
+              </View>
+            )}
+
+            <Footer />
           </View>
-        )}
-
-        </View>
-
-        {/* Footer */}
-        <Footer />
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <Modal
         visible={showDeleteModal}
@@ -374,10 +389,7 @@ export default function MyListingsScreen() {
         animationType="fade"
         onRequestClose={() => setShowDeleteModal(false)}
       >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setShowDeleteModal(false)}
-        >
+        <Pressable style={styles.modalOverlay} onPress={() => setShowDeleteModal(false)}>
           <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
             <View style={styles.modalHeader}>
               <Trash2 size={32} color="#EF4444" />
@@ -390,17 +402,21 @@ export default function MyListingsScreen() {
               <View style={styles.listingPreview}>
                 <Image
                   source={{
-                    uri: listingToDelete.images[0] ||
+                    uri:
+                      listingToDelete.images[0] ||
                       'https://images.pexels.com/photos/1667849/pexels-photo-1667849.jpeg?auto=compress&cs=tinysrgb&w=200',
                   }}
                   style={styles.previewImage}
                 />
                 <View style={styles.previewContent}>
-                  <Text style={[styles.previewTitle, isRTL && styles.textRTL]} numberOfLines={2}>
+                  <Text
+                    style={[styles.previewTitle, isRTL && styles.textRTL]}
+                    numberOfLines={2}
+                  >
                     {listingToDelete.title}
                   </Text>
                   <Text style={styles.previewPrice}>
-                    {formatPrice(parseFloat(listingToDelete.price))}
+                    {formatPrice(parseFloat(String(listingToDelete.price)))}
                   </Text>
                 </View>
               </View>
@@ -449,11 +465,53 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F7FA',
   },
-  scrollContainer: {
+  stickyHeader: {
+    ...(isWeb && {
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+    }),
+  },
+  mainContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    position: 'relative',
+  },
+  toggleSidebarButton: {
+    position: 'absolute',
+    left: 0,
+    top: 20,
+    backgroundColor: '#FFFFFF',
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    paddingVertical: 12,
+    paddingLeft: 6,
+    paddingRight: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    zIndex: 101,
+    ...(isWeb && {
+      cursor: 'pointer',
+      transition: 'left 0.3s',
+    }),
+  },
+  toggleSidebarButtonCollapsed: {
+    left: 0,
+  },
+  sidebarContainer: {
+    height: '100%',
+    flexShrink: 0,
+  },
+  contentContainer: {
     flex: 1,
   },
-  scrollContent: {
-    flexGrow: 1,
+  contentWrapper: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   loadingContainer: {
     flex: 1,
@@ -462,53 +520,45 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F7FA',
   },
   pageHeader: {
-    backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    marginBottom: 20,
   },
   pageTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 28,
+    fontWeight: '700',
     color: '#1E293B',
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#E6F0FF',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 6,
+    gap: 8,
+    backgroundColor: '#2563EB',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
     ...(Platform.OS === 'web' && {
       cursor: 'pointer',
     }),
   },
   addButtonText: {
-    color: '#2563EB',
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
   },
-  content: {
-    padding: 16,
-  },
   quotaContainer: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 100,
+    paddingVertical: 100,
   },
   emptyTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#1E293B',
-    marginTop: 24,
     marginBottom: 8,
   },
   emptyText: {
@@ -516,6 +566,7 @@ const styles = StyleSheet.create({
     color: '#64748B',
     textAlign: 'center',
     marginBottom: 32,
+    paddingHorizontal: 32,
   },
   publishButton: {
     backgroundColor: '#2563EB',
@@ -534,131 +585,8 @@ const styles = StyleSheet.create({
   listingsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginHorizontal: -6,
-  },
-  listingCard: {
-    width: '50%',
-    padding: 6,
-    position: 'relative',
-  },
-  listingCardMobile: {
-    width: '100%',
-  },
-  listingCardInner: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  listingImage: {
-    width: '100%',
-    height: 160,
-    backgroundColor: '#E5E7EB',
-  },
-  listingContent: {
-    padding: 12,
-  },
-  listingTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1E293B',
-    marginBottom: 6,
-    lineHeight: 18,
-  },
-  listingPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2563EB',
-    marginBottom: 6,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  statusActive: {
-    backgroundColor: '#D1FAE5',
-  },
-  statusInactive: {
-    backgroundColor: '#FEF3C7',
-  },
-  statusSold: {
-    backgroundColor: '#FEE2E2',
-  },
-  viewsText: {
-    fontSize: 12,
-    color: '#64748B',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  menuButton: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    zIndex: 999,
-    ...(Platform.OS === 'web' && {
-      cursor: 'pointer',
-    }),
-  },
-  contextMenu: {
-    position: 'absolute',
-    top: 50,
-    right: 16,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    paddingVertical: 4,
-    minWidth: 180,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
-    zIndex: 1000,
-    ...(Platform.OS === 'web' && {
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    }),
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    ...(Platform.OS === 'web' && {
-      cursor: 'pointer',
-      transition: 'background-color 0.2s',
-    }),
-  },
-  menuItemText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#1E293B',
-  },
-  menuItemDanger: {
-    color: '#EF4444',
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#1E293B',
+    gap: 16,
+    marginBottom: 32,
   },
   textRTL: {
     textAlign: 'right',
