@@ -3314,7 +3314,7 @@ export default function PublishScreen() {
               }
             }}
           >
-            <View style={styles.checkbox}>
+            <View style={styles.deliveryCheckbox}>
               {deliveryMethods.includes('hand_delivery') && (
                 <View style={styles.checkboxInner} />
               )}
@@ -3341,7 +3341,7 @@ export default function PublishScreen() {
               }
             }}
           >
-            <View style={styles.checkbox}>
+            <View style={styles.deliveryCheckbox}>
               {deliveryMethods.includes('shipping') && (
                 <View style={styles.checkboxInner} />
               )}
@@ -3384,7 +3384,7 @@ export default function PublishScreen() {
               }
             }}
           >
-            <View style={styles.checkbox}>
+            <View style={styles.deliveryCheckbox}>
               {deliveryMethods.includes('pickup') && (
                 <View style={styles.checkboxInner} />
               )}
@@ -3411,7 +3411,7 @@ export default function PublishScreen() {
               }
             }}
           >
-            <View style={styles.checkbox}>
+            <View style={styles.deliveryCheckbox}>
               {deliveryMethods.includes('other') && (
                 <View style={styles.checkboxInner} />
               )}
@@ -4691,7 +4691,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 12,
   },
-  checkbox: {
+  deliveryCheckbox: {
     width: 24,
     height: 24,
     borderRadius: 6,
