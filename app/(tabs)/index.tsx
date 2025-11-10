@@ -77,7 +77,10 @@ export default function HomePage() {
 
         const subcategoryIds = subcats ? subcats.map(s => s.id) : [];
 
+        console.log(`[HomePage] Category ${category.name}: ${subcategoryIds.length} subcategories found`);
+
         if (subcategoryIds.length === 0) {
+          console.log(`[HomePage] Skipping ${category.name} - no subcategories`);
           return { category, listings: [] };
         }
 
