@@ -85,15 +85,18 @@ export default function HomePage() {
         console.log(`[HomePage] Searching in ${allCategoryIds.length} categories (parent + subs)`);
 
         // Récupérer les annonces de la catégorie ET ses sous-catégories
-        const { data: listings } = await supabase
+        const { data: listings, error: listingsError } = await supabase
           .from('listings')
           .select('*, profiles(phone_number, whatsapp_number, messenger_username, full_name)')
-          .eq('status', 'active')
           .in('category_id', allCategoryIds)
           .order('created_at', { ascending: false })
           .limit(20);
 
-        console.log(`[HomePage] Category ${category.name}: ${listings?.length || 0} listings loaded`);
+        if (listingsError) {
+          console.error(`[HomePage] Error loading listings for ${category.name}:`, listingsError);
+        }
+
+        console.log(`[HomePage] Category ${category.name}: ${listings?.length || 0} listings loaded (without status filter)`);
 
         let filteredListings = listings || [];
         
