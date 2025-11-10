@@ -141,13 +141,12 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
               onScroll={handleScroll}
               scrollEventThrottle={16}
               style={styles.carousel}
-              contentContainerStyle={{ flexGrow: 1 }}
             >
               {images.map((image: string, index: number) => (
                 <Image
                   key={index}
                   source={{ uri: image }}
-                  style={styles.image}
+                  style={[styles.image, { width: cardWidth }]}
                   resizeMode="cover"
                 />
               ))}
