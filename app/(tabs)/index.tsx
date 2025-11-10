@@ -8,6 +8,8 @@ import { useCart } from '@/contexts/CartContext';
 import TopBar from '@/components/TopBar';
 import CategoryBar from '@/components/CategoryBar';
 import ListingCard from '@/components/ListingCard';
+import ContactOptionsModal from '@/components/ContactOptionsModal';
+import ReservationModal from '@/components/ReservationModal';
 
 export default function HomePage() {
   const [categories, setCategories] = useState([]);
@@ -264,6 +266,38 @@ export default function HomePage() {
           </View>
         ))}
       </ScrollView>
+
+      {/* Contact Options Modal */}
+      {contactOptionsData && (
+        <ContactOptionsModal
+          visible={!!contactOptionsData}
+          onClose={dismissContactOptions}
+          sellerName={contactOptionsData.sellerName}
+          phoneNumber={contactOptionsData.phoneNumber}
+          whatsappNumber={contactOptionsData.whatsappNumber}
+          messengerUsername={contactOptionsData.messengerUsername}
+        />
+      )}
+
+      {/* Reservation Modal */}
+      {reservationListing && (
+        <ReservationModal
+          visible={!!reservationListing}
+          onClose={() => setReservationListing(null)}
+          listing={reservationListing}
+          onSuccess={() => {
+            setReservationListing(null);
+            Alert.alert(
+              language === 'ar' ? 'تم' : language === 'en' ? 'Success' : 'Succès',
+              language === 'ar'
+                ? 'تم إرسال طلب الحجز'
+                : language === 'en'
+                ? 'Reservation request sent'
+                : 'Demande de réservation envoyée'
+            );
+          }}
+        />
+      )}
     </View>
   );
 }
