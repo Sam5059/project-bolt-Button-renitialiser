@@ -16,10 +16,10 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend
 - **Database**: Supabase (PostgreSQL).
-- **Core Tables**: `profiles`, `categories`, `sub_categories`, `listings`, `pro_packages`, `pro_subscriptions`, `pro_stores`, `pro_transactions`, `brands`, `communes`.
+- **Core Tables**: `profiles`, `categories`, `sub_categories`, `listings`, `pro_packages`, `pro_subscriptions`, `pro_stores`, `pro_transactions`, `brands`, `communes`, `vehicle_reservations`, `purchase_requests`, `free_item_requests`, `exchange_requests`.
 - **Security Model**: Row Level Security (RLS), `SECURITY DEFINER` functions, role-based access control, API key authentication.
-- **Key Stored Functions**: `search_listings()`, `calculate_distance_km()`, `activate_pro_subscription()`, `check_pro_status()`, `assign_admin_role()`.
-- **Data Architecture Decisions**: Separated categories and subcategories, migrated critical searchable fields from JSONB to dedicated columns, implemented GIN indexes, automatic triggers for timestamps and analytics.
+- **Key Stored Functions**: `search_listings()`, `calculate_distance_km()`, `activate_pro_subscription()`, `check_pro_status()`, `assign_admin_role()`, `check_vehicle_availability()`.
+- **Data Architecture Decisions**: Separated categories and subcategories, migrated critical searchable fields from JSONB to dedicated columns, implemented GIN indexes, automatic triggers for timestamps and analytics, offer-type-specific request tables with RLS policies.
 
 ### Feature Specifications
 - **Smart Category Detection via Keywords**: Intelligent keyword-based category detection with multilingual support (FR/EN/AR), 300ms debounce, comprehensive keyword dictionary, visual highlighting in sidebar, and a scoring algorithm.
@@ -32,6 +32,13 @@ Preferred communication style: Simple, everyday language.
 - **Listing Card Quick Actions**: Circular phone and message buttons on listing cards enable direct contact with sellers from search results.
 - **Category Harmonization**: Synchronization of category-specific fields between publish forms and search filters, as demonstrated with the 'Animals' category.
 - **Category Consolidation**: Merging of redundant categories (e.g., 'Loisirs & Divertissement' into 'Loisirs & Hobbies') for improved data consistency and user experience.
+- **Multi-Type Offer Forms**: Specialized request forms for different offer types:
+  - **RentalBookingModal**: For rental listings with date selection, location, and total calculation
+  - **PurchaseRequestModal**: For sale listings with quantity, delivery address, and payment method selection (CCP, BaridiMob, bank transfer, cash on delivery)
+  - **FreeItemRequestModal**: For free items with pickup date and location
+  - **ExchangeRequestModal**: For exchange offers with item description, estimated value, and meeting preferences
+  - **Intelligent Routing**: Automatic selection of the appropriate form based on `offer_type` (free, exchange, rent) with fallback to `listing_type` (sale, rent, service, purchase)
+- **Offer Type Badge System**: Centralized badge rendering via `lib/offerTypeUtils.ts` with multilingual support (FR/EN/AR), emoji indicators, and color coding for consistent display across listing cards and detail pages.
 
 ## External Dependencies
 
