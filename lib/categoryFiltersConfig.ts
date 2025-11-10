@@ -85,8 +85,8 @@ export const CATEGORY_FILTERS_CONFIG: Record<string, CategoryFilterConfig> = {
   },
   animals: {
     categoryType: 'animals',
-    enabled: ['listingType', 'subcategory', 'price', 'age', 'breed', 'gender', 'vaccinated', 'sterilized', 'pedigree', 'microchipped', 'location'],
-    disabled: ['brand', 'model', 'year', 'fuel', 'transmission', 'mileage', 'color', 'propertyType', 'surface', 'rooms', 'bedrooms', 'bathrooms', 'furnished', 'monthlyRent', 'amenities', 'deviceType', 'storage', 'contractType', 'salary', 'experience', 'sector', 'condition', 'healthStatus'],
+    enabled: ['listingType', 'subcategory', 'price', 'age', 'breed', 'gender', 'vaccinated', 'sterilized', 'pedigree', 'microchipped', 'healthStatus', 'location'],
+    disabled: ['brand', 'model', 'year', 'fuel', 'transmission', 'mileage', 'color', 'propertyType', 'surface', 'rooms', 'bedrooms', 'bathrooms', 'furnished', 'monthlyRent', 'amenities', 'deviceType', 'storage', 'contractType', 'salary', 'experience', 'sector', 'condition'],
     description: 'Animaux: vente et adoption d\'animaux, chiens, chats, oiseaux',
   },
   fashion: {
@@ -336,6 +336,12 @@ export const CATEGORY_ATTRIBUTE_DEFINITIONS: Record<string, AttributeDefinition[
       labelKey: 'animals.microchipped',
       inputType: 'boolean',
       group: 'healthOptions',
+    },
+    {
+      id: 'healthStatus',
+      labelKey: 'animals.healthStatus',
+      inputType: 'text',
+      placeholder: 'Ex: Bonne santé, suivi vétérinaire',
     },
   ],
 };

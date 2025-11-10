@@ -87,6 +87,7 @@ interface FilterState {
   sterilized?: boolean;
   pedigree?: boolean;
   microchipped?: boolean;
+  healthStatus?: string;
 }
 
 const isWeb = Platform.OS === 'web';
@@ -689,6 +690,13 @@ export default function CategoriesAndFilters({
           );
         }
       });
+
+      if (filters.healthStatus) {
+        console.log('[applyFilters] Filtering by healthStatus:', filters.healthStatus);
+        filteredData = filteredData.filter(item =>
+          matchesText(item.attributes?.health_status, filters.healthStatus)
+        );
+      }
 
       // Filtres Location Immobilière
       if (filters.furnished) {
@@ -2237,6 +2245,21 @@ export default function CategoriesAndFilters({
             </Text>
           </TouchableOpacity>
         ))}
+      </View>
+
+      {/* État de santé */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'الحالة الصحية' : language === 'en' ? 'Health Status' : 'État de santé'}
+        </Text>
+        <TextInput
+          style={[styles.input, !filters.healthStatus && styles.inputEmpty]}
+          placeholder={language === 'ar' ? 'مثال: صحة جيدة، متابعة بيطرية' : language === 'en' ? 'e.g. Good health, regular vet care' : 'Ex: Bonne santé, suivi vétérinaire'}
+          placeholderTextColor="#9CA3AF"
+          value={filters.healthStatus || ''}
+          onChangeText={(val) => updateFilter('healthStatus', val)}
+          multiline
+        />
       </View>
 
       {/* Prix */}
