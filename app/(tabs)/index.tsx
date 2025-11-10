@@ -6,6 +6,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import TopBar from '@/components/TopBar';
 import ListingCard from '@/components/ListingCard';
 import { useListingCtaHandler } from '@/hooks/useListingCtaHandler';
+import { useListingActions } from '@/hooks/useListingActions';
+import ContactOptionsModal from '@/components/ContactOptionsModal';
 
 export default function HomePage() {
   const [categories, setCategories] = useState([]);
@@ -13,6 +15,7 @@ export default function HomePage() {
   const [categoriesWithListings, setCategoriesWithListings] = useState([]);
   const { language } = useLanguage();
   const { handleListingAction } = useListingCtaHandler();
+  const { onCallSeller, onSendMessage, contactOptionsData, dismissContactOptions } = useListingActions();
 
   useEffect(() => {
     fetchCategories();
@@ -244,6 +247,8 @@ export default function HomePage() {
                     onPress={() => router.push(`/listing/${listing.id}`)}
                     isWeb={false}
                     width={280}
+                    onCallSeller={() => onCallSeller(listing)}
+                    onSendMessage={() => onSendMessage(listing)}
                     onActionClick={() => handleListingAction(listing)}
                   />
                 </View>
@@ -252,6 +257,13 @@ export default function HomePage() {
           </View>
         ))}
       </ScrollView>
+
+      <ContactOptionsModal
+        visible={!!contactOptionsData}
+        onClose={dismissContactOptions}
+        listing={contactOptionsData?.listing || null}
+        actionType={contactOptionsData?.actionType || 'call'}
+      />
     </View>
   );
 }
