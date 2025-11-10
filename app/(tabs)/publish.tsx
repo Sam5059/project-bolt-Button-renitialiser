@@ -3309,7 +3309,7 @@ export default function PublishScreen() {
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={[styles.publishButtonText, isRTL && styles.textRTL]}>
-                {isEditMode ? '✓ METTRE À JOUR' : '✓ Déposer une annonce'}
+                {isEditMode ? '✓ METTRE À JOUR' : '✓ DÉPOSER'}
               </Text>
             )}
           </TouchableOpacity>
