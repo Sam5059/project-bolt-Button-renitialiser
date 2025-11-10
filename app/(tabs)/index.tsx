@@ -79,17 +79,17 @@ export default function HomePage() {
 
         console.log(`[HomePage] Category ${category.name}: ${subcategoryIds.length} subcategories found`);
 
-        if (subcategoryIds.length === 0) {
-          console.log(`[HomePage] Skipping ${category.name} - no subcategories`);
-          return { category, listings: [] };
-        }
+        // Charger les listings de la catégorie parente ET de ses sous-catégories
+        const allCategoryIds = [category.id, ...subcategoryIds];
+        
+        console.log(`[HomePage] Searching in ${allCategoryIds.length} categories (parent + subs)`);
 
-        // Récupérer les annonces de ces sous-catégories
+        // Récupérer les annonces de la catégorie ET ses sous-catégories
         const { data: listings } = await supabase
           .from('listings')
           .select('*, profiles(phone_number, whatsapp_number, messenger_username, full_name)')
           .eq('status', 'active')
-          .in('category_id', subcategoryIds)
+          .in('category_id', allCategoryIds)
           .order('created_at', { ascending: false })
           .limit(20);
 
