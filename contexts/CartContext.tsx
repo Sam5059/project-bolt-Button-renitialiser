@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './AuthContext';
 
+type DeliveryMethod = 'hand_delivery' | 'shipping' | 'pickup' | 'other';
+
 interface CartItem {
   id: string;
   listing_id: string;
@@ -15,19 +17,32 @@ interface CartItem {
     listing_type: string;
     wilaya: string;
     category_id: string;
+    delivery_methods?: DeliveryMethod[] | null;
+    shipping_price?: number | null;
+    other_delivery_info?: string | null;
   };
+  deliverySelection?: {
+    method: DeliveryMethod;
+    selectionId: string;
+  } | null;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
   cartCount: number;
   cartTotal: number;
+  deliveryTotal: number;
+  grandTotal: number;
   loading: boolean;
   addToCart: (listingId: string, quantity?: number) => Promise<void>;
   removeFromCart: (cartItemId: string) => Promise<void>;
   updateQuantity: (cartItemId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
   refreshCart: () => Promise<void>;
+  selectDeliveryMethod: (cartItemId: string, method: DeliveryMethod) => Promise<void>;
+  getDeliverySelection: (cartItemId: string) => DeliveryMethod | null;
+  clearDeliverySelection: (cartItemId: string) => Promise<void>;
+  hasUnselectedDeliveryMethods: () => boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -38,10 +53,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  
   const cartTotal = cartItems.reduce((sum, item) => {
     if (!item.listing || item.listing.price == null) return sum;
     return sum + (item.listing.price * item.quantity);
   }, 0);
+
+  const deliveryTotal = cartItems.reduce((sum, item) => {
+    if (!item.deliverySelection || item.deliverySelection.method !== 'shipping') return sum;
+    if (!item.listing || item.listing.shipping_price == null) return sum;
+    return sum + item.listing.shipping_price;
+  }, 0);
+
+  const grandTotal = cartTotal + deliveryTotal;
 
   const refreshCart = async () => {
     if (!user) {
@@ -68,7 +92,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
             user_id,
             listing_type,
             wilaya,
-            category_id
+            category_id,
+            delivery_methods,
+            shipping_price,
+            other_delivery_info
           )
         `)
         .eq('user_id', user.id)
@@ -80,7 +107,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       console.log('[CART v2] ===== CART DATA LOADED =====');
       console.log('[CART v2] Items count:', data?.length || 0);
-      console.log('[CART v2] Raw data:', JSON.stringify(data, null, 2));
       
       const normalizedData = (data || [])
         .map((item: any) => ({
@@ -89,8 +115,64 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }))
         .filter((item: any) => item.listing !== null) as CartItem[];
       
-      console.log('[CART v2] Valid items after filtering:', normalizedData.length);
-      setCartItems(normalizedData);
+      const { data: selections } = await supabase
+        .from('cart_delivery_selections')
+        .select('id, cart_item_id, selected_delivery_method')
+        .eq('user_id', user.id);
+
+      const selectionsMap = new Map(
+        (selections || []).map((s: any) => [
+          s.cart_item_id,
+          { method: s.selected_delivery_method, selectionId: s.id }
+        ])
+      );
+
+      const itemsWithSelections = normalizedData.map(item => ({
+        ...item,
+        deliverySelection: selectionsMap.get(item.id) || null
+      }));
+
+      for (const item of itemsWithSelections) {
+        const methods = item.listing?.delivery_methods;
+        if (methods && methods.length === 1 && !item.deliverySelection) {
+          const singleMethod = methods[0];
+          try {
+            let { data: selection } = await supabase
+              .from('cart_delivery_selections')
+              .upsert({
+                cart_item_id: item.id,
+                user_id: user.id,
+                selected_delivery_method: singleMethod
+              }, {
+                onConflict: 'cart_item_id'
+              })
+              .select()
+              .single();
+
+            if (!selection) {
+              const { data: existingSelection } = await supabase
+                .from('cart_delivery_selections')
+                .select('id, selected_delivery_method')
+                .eq('cart_item_id', item.id)
+                .eq('user_id', user.id)
+                .single();
+              selection = existingSelection;
+            }
+
+            if (selection) {
+              item.deliverySelection = {
+                method: selection.selected_delivery_method,
+                selectionId: selection.id
+              };
+            }
+          } catch (error) {
+            console.error('[CART v2] Error auto-selecting single delivery method:', error);
+          }
+        }
+      }
+      
+      console.log('[CART v2] Valid items after filtering:', itemsWithSelections.length);
+      setCartItems(itemsWithSelections);
     } catch (error) {
       console.error('[CART v2] Error fetching cart:', error);
     } finally {
@@ -182,6 +264,93 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const selectDeliveryMethod = async (cartItemId: string, method: DeliveryMethod) => {
+    if (!user) {
+      throw new Error('Must be logged in to select delivery method');
+    }
+
+    try {
+      let { data, error } = await supabase
+        .from('cart_delivery_selections')
+        .upsert({
+          cart_item_id: cartItemId,
+          user_id: user.id,
+          selected_delivery_method: method
+        }, {
+          onConflict: 'cart_item_id'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (!data) {
+        const { data: existingSelection } = await supabase
+          .from('cart_delivery_selections')
+          .select('id, selected_delivery_method')
+          .eq('cart_item_id', cartItemId)
+          .eq('user_id', user.id)
+          .single();
+        data = existingSelection;
+      }
+
+      if (!data) {
+        throw new Error('Failed to persist delivery selection');
+      }
+
+      setCartItems(prev => prev.map(item => 
+        item.id === cartItemId
+          ? {
+              ...item,
+              deliverySelection: {
+                method: data.selected_delivery_method,
+                selectionId: data.id
+              }
+            }
+          : item
+      ));
+    } catch (error) {
+      console.error('Error selecting delivery method:', error);
+      throw error;
+    }
+  };
+
+  const getDeliverySelection = (cartItemId: string): DeliveryMethod | null => {
+    const item = cartItems.find(i => i.id === cartItemId);
+    return item?.deliverySelection?.method || null;
+  };
+
+  const clearDeliverySelection = async (cartItemId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('cart_delivery_selections')
+        .delete()
+        .eq('cart_item_id', cartItemId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      setCartItems(prev => prev.map(item =>
+        item.id === cartItemId
+          ? { ...item, deliverySelection: null }
+          : item
+      ));
+    } catch (error) {
+      console.error('Error clearing delivery selection:', error);
+      throw error;
+    }
+  };
+
+  const hasUnselectedDeliveryMethods = (): boolean => {
+    return cartItems.some(item => {
+      const methods = item.listing?.delivery_methods;
+      if (!methods || methods.length === 0) return false;
+      return !item.deliverySelection;
+    });
+  };
+
   useEffect(() => {
     refreshCart();
   }, [user]);
@@ -192,12 +361,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
         cartItems,
         cartCount,
         cartTotal,
+        deliveryTotal,
+        grandTotal,
         loading,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
         refreshCart,
+        selectDeliveryMethod,
+        getDeliverySelection,
+        clearDeliverySelection,
+        hasUnselectedDeliveryMethods,
       }}
     >
       {children}

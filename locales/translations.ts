@@ -453,6 +453,8 @@ export const translations = {
       addError: 'Erreur lors de l\'ajout au panier',
       cannotAddOwnListing: 'Vous ne pouvez pas ajouter votre propre annonce',
       cannotAddPurchaseRequest: 'Les demandes d\'achat ne peuvent pas être ajoutées au panier',
+      deliveryMethod: 'Méthode de livraison',
+      selectDeliveryMethod: 'Choisissez votre méthode de livraison',
     },
     checkout: {
       title: 'Paiement',
@@ -992,6 +994,8 @@ export const translations = {
       addError: 'Error adding to cart',
       cannotAddOwnListing: 'You cannot add your own listing',
       cannotAddPurchaseRequest: 'Purchase requests cannot be added to cart',
+      deliveryMethod: 'Delivery method',
+      selectDeliveryMethod: 'Choose your delivery method',
     },
     checkout: {
       title: 'Checkout',
@@ -1531,6 +1535,8 @@ export const translations = {
       addError: 'خطأ في الإضافة إلى السلة',
       cannotAddOwnListing: 'لا يمكنك إضافة إعلانك الخاص',
       cannotAddPurchaseRequest: 'لا يمكن إضافة طلبات الشراء إلى السلة',
+      deliveryMethod: 'طريقة التوصيل',
+      selectDeliveryMethod: 'اختر طريقة التوصيل',
     },
     checkout: {
       title: 'الدفع',
