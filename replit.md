@@ -5,6 +5,17 @@ BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) a
 
 ## Recent Changes (November 10, 2025)
 
+### Animals Category Synchronization
+- **Complete Field Synchronization**: Harmonized all 8 animal-specific fields between publish form and search sidebar
+  - **Text Filters**: Âge (age), Race (breed), État de santé (healthStatus) with case-insensitive partial matching
+  - **Select Filter**: Sexe (gender) with Mâle/Femelle options, exact matching
+  - **Boolean Filters**: Vacciné (vaccinated), Stérilisé (sterilized), Pedigree (pedigree), Pucé (microchipped)
+  - Created CATEGORY_ATTRIBUTE_DEFINITIONS registry for scalable category-specific metadata
+  - Implemented `matchesText()` helper for partial text matching
+  - Created `animalBooleanMap` for camelCase → snake_case attribute mapping (vaccinated → is_vaccinated)
+- **Architecture Impact**: Established pattern for future category harmonizations (vehicles, real estate, etc.)
+- **User Experience**: Users can now filter animal listings with the same criteria used when creating listings
+
 ### Category Consolidation - Loisirs
 - **Unified Category**: Merged "Loisirs & Divertissement" into "Loisirs & Hobbies" to eliminate duplication
   - Created migration `20251110_merge_loisirs_categories.sql` to consolidate database records
