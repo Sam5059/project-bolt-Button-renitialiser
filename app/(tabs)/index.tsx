@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useListingActions } from '@/hooks/useListingActions';
+import { useCart } from '@/contexts/CartContext';
 import TopBar from '@/components/TopBar';
 import CategoryBar from '@/components/CategoryBar';
 import ListingCard from '@/components/ListingCard';
@@ -11,7 +13,11 @@ export default function HomePage() {
   const [categories, setCategories] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [categoriesWithListings, setCategoriesWithListings] = useState([]);
+  const [reservationListing, setReservationListing] = useState<any>(null);
+  
   const { language } = useLanguage();
+  const { onCallSeller, onSendMessage, contactOptionsData, dismissContactOptions } = useListingActions();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     fetchCategories();
@@ -111,6 +117,30 @@ export default function HomePage() {
       });
       router.push(`/(tabs)/searchnew?category_id=${category.id}`);
     }
+  };
+
+  const handleAddToCart = async (listing: any) => {
+    try {
+      await addToCart(listing.id);
+      Alert.alert(
+        language === 'ar' ? 'تم' : language === 'en' ? 'Success' : 'Succès',
+        language === 'ar'
+          ? 'تمت الإضافة إلى السلة'
+          : language === 'en'
+          ? 'Added to cart'
+          : 'Ajouté au panier'
+      );
+    } catch (error) {
+      console.error('[HomePage] Add to cart error:', error);
+      Alert.alert(
+        language === 'ar' ? 'خطأ' : language === 'en' ? 'Error' : 'Erreur',
+        language === 'ar' ? 'فشل في إضافة إلى السلة' : language === 'en' ? 'Failed to add to cart' : 'Échec de l\'ajout au panier'
+      );
+    }
+  };
+
+  const handleReserve = (listing: any) => {
+    setReservationListing(listing);
   };
 
   const getCategoryName = (cat) => {
@@ -221,6 +251,10 @@ export default function HomePage() {
                   <ListingCard
                     listing={listing}
                     onPress={() => router.push(`/listing/${listing.id}`)}
+                    onCallSeller={() => onCallSeller(listing)}
+                    onSendMessage={() => onSendMessage(listing)}
+                    onAddToCart={() => handleAddToCart(listing)}
+                    onReserve={() => handleReserve(listing)}
                     isWeb={false}
                     width={280}
                   />
