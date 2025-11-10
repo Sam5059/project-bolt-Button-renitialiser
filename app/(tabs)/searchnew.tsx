@@ -197,6 +197,7 @@ export default function SearchPage() {
                       isWeb={isWeb}
                       onCallSeller={() => onCallSeller(listing)}
                       onSendMessage={() => onSendMessage(listing)}
+                      onActionClick={() => router.push(`/listing/${listing.id}`)}
                     />
                   </View>
                 ))}

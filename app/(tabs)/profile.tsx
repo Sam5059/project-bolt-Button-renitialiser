@@ -297,6 +297,7 @@ export default function ProfileScreen() {
           onPress={() => router.push(`/listing/${listing.id}`)}
           isWeb={false}
           width={cardWidth}
+          onActionClick={() => router.push(`/listing/${listing.id}`)}
         />
         <View style={styles.listingActionsOverlay}>
           <View style={styles.listingStatusRow}>

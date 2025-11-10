@@ -242,6 +242,7 @@ export default function HomePage() {
                     onPress={() => router.push(`/listing/${listing.id}`)}
                     isWeb={false}
                     width={280}
+                    onActionClick={() => router.push(`/listing/${listing.id}`)}
                   />
                 </View>
               ))}

@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Phone, MessageCircle } from 'lucide-react-native';
+import { Phone, MessageCircle, Calendar, ShoppingCart, Gift, Repeat } from 'lucide-react-native';
 
 interface ListingCardProps {
   listing: any;
@@ -21,15 +21,53 @@ interface ListingCardProps {
   averagePrice?: number | null;
   onCallSeller?: () => void;
   onSendMessage?: () => void;
+  onActionClick?: () => void;
 }
 
-export default function ListingCard({ listing, onPress, isWeb = false, width, distance, averagePrice, onCallSeller, onSendMessage }: ListingCardProps) {
-  const { language } = useLanguage();
+export default function ListingCard({ listing, onPress, isWeb = false, width, distance, averagePrice, onCallSeller, onSendMessage, onActionClick }: ListingCardProps) {
+  const { language, t } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const screenWidth = Dimensions.get('window').width;
   const cardWidth = width || (isWeb ? 280 : screenWidth - 32);
 
   console.log('[ListingCard] Rendering:', listing?.title, 'isWeb:', isWeb, 'cardWidth:', cardWidth);
+
+  const getActionButton = () => {
+    const offerType = listing.offer_type || listing.listing_type;
+    
+    if (offerType === 'rent' || listing.listing_type === 'rent') {
+      return {
+        label: t('listingCard.reserve'),
+        icon: Calendar,
+        color: '#3B82F6',
+      };
+    }
+    
+    if (offerType === 'free') {
+      return {
+        label: t('listingCard.request'),
+        icon: Gift,
+        color: '#10B981',
+      };
+    }
+    
+    if (offerType === 'exchange') {
+      return {
+        label: t('listingCard.propose'),
+        icon: Repeat,
+        color: '#F59E0B',
+      };
+    }
+    
+    // Default: sale
+    return {
+      label: t('listingCard.addToCart'),
+      icon: ShoppingCart,
+      color: '#2563EB',
+    };
+  };
+
+  const actionButton = getActionButton();
 
   const formatPrice = (price: number) => {
     if (!price) return new Intl.NumberFormat('fr-DZ', {
@@ -293,6 +331,15 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
                 onPress={onSendMessage}
               >
                 <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.5} />
+              </TouchableOpacity>
+            )}
+            {onActionClick && (
+              <TouchableOpacity
+                style={[styles.ctaButton, { backgroundColor: actionButton.color }]}
+                onPress={onActionClick}
+              >
+                <actionButton.icon size={14} color="#FFFFFF" strokeWidth={2.5} />
+                <Text style={styles.ctaButtonText}>{actionButton.label}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -596,6 +643,25 @@ const styles = StyleSheet.create({
   },
   quickActionBtnMessage: {
     backgroundColor: '#2563EB',
+  },
+  ctaButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  ctaButtonText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
   },
   detailsLinkContainer: {
     alignSelf: 'flex-end',
