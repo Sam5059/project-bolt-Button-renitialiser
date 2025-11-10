@@ -20,12 +20,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from '@/contexts/LocationContext';
 import { useHelp } from '@/contexts/HelpContext';
 import { useSearch } from '@/contexts/SearchContext';
+import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/lib/supabase';
 import Logo from './Logo';
 import { Category } from '@/types/database';
 import SearchHistoryModal from './SearchHistoryModal';
 import HelpTooltip from './HelpTooltip';
 import Tooltip from './Tooltip';
+import Badge from './Badge';
 
 const wilayas = [
   '01-Adrar', '02-Chlef', '03-Laghouat', '04-Oum El Bouaghi', '05-Batna',
@@ -53,6 +55,8 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   const { language, setLanguage, t, isRTL } = useLanguage();
   const { user, profile, signOut } = useAuth();
   const { currentLocation, setCurrentLocation } = useLocation();
+  const cart = useCart();
+  const cartItems = cart?.cartItems ?? [];
   const { setShowGlobalHelp } = useHelp();
   const { globalSearchQuery, setGlobalSearchQuery } = useSearch();
   const { width } = useWindowDimensions();
@@ -209,9 +213,9 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
   };
 
   const languages = [
-    { code: 'fr', name: 'Français' },
-    { code: 'en', name: 'English' },
-    { code: 'ar', name: 'العربية' },
+    { code: 'fr', name: 'FR' },
+    { code: 'en', name: 'EN' },
+    { code: 'ar', name: 'AR' },
   ];
 
   const handleSearch = () => {
@@ -510,7 +514,7 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
               <Tooltip text="Centre d'aide">
                 <TouchableOpacity
                   style={styles.quickIconButton}
-                  onPress={() => setShowGlobalHelp(true)}
+                  onPress={() => router.push('/help')}
                 >
                   <HelpCircle size={20} color="#2563EB" />
                 </TouchableOpacity>
@@ -530,7 +534,10 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   style={styles.quickIconButton}
                   onPress={() => router.push('/my-listings')}
                 >
-                  <Package size={20} color="#64748B" />
+                  <View>
+                    <Package size={20} color="#64748B" />
+                    <Badge count={1} size="small" color="#10B981" />
+                  </View>
                 </TouchableOpacity>
               </Tooltip>
               <Tooltip text="Mes favoris">
@@ -538,7 +545,10 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   style={styles.quickIconButton}
                   onPress={() => router.push('/(tabs)/profile?tab=favorites')}
                 >
-                  <Heart size={20} color="#64748B" />
+                  <View>
+                    <Heart size={20} color="#64748B" />
+                    <Badge count={1} size="small" color="#EF4444" />
+                  </View>
                 </TouchableOpacity>
               </Tooltip>
               <Tooltip text="Panier">
@@ -546,7 +556,10 @@ export default function TopBar({ searchQuery: externalSearchQuery, onSearchChang
                   style={styles.quickIconButton}
                   onPress={() => router.push('/cart')}
                 >
-                  <ShoppingBag size={20} color="#64748B" />
+                  <View>
+                    <ShoppingBag size={20} color="#64748B" />
+                    <Badge count={cartItems.length} size="small" color="#EF4444" />
+                  </View>
                 </TouchableOpacity>
               </Tooltip>
             </View>
