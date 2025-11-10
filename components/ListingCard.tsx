@@ -139,7 +139,7 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
                 <Image
                   key={index}
                   source={{ uri: image }}
-                  style={styles.image}
+                  style={[styles.image, { width: cardWidth }]}
                   resizeMode="cover"
                 />
               ))}
