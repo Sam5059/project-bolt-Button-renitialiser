@@ -619,6 +619,25 @@ export default function ListingDetailsScreen() {
                     resizeMode="cover"
                   />
 
+                  {/* Boutons d'action rapide en overlay (Appeler + Message) */}
+                  {(!user || (listing?.user_id !== user.id)) && (
+                    <View style={styles.quickActionsOverlay}>
+                      <TouchableOpacity
+                        style={styles.quickActionButton}
+                        onPress={handleCallSeller}
+                        disabled={!listing?.profiles?.phone_number}
+                      >
+                        <Phone size={22} color="#FFFFFF" strokeWidth={2.5} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.quickActionButton, styles.quickActionButtonMessage]}
+                        onPress={handleSendMessage}
+                      >
+                        <MessageCircle size={22} color="#FFFFFF" strokeWidth={2.5} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+
                   {/* Overlay informations sur l'image */}
                   <View style={styles.imageOverlay}>
                     <View style={styles.imageOverlayTop}>
@@ -1145,6 +1164,32 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 400,
     backgroundColor: '#F1F5F9',
+  },
+  quickActionsOverlay: {
+    position: 'absolute',
+    bottom: 90,
+    right: 20,
+    flexDirection: 'column',
+    gap: 12,
+    zIndex: 15,
+  },
+  quickActionButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#10B981',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.9)',
+  },
+  quickActionButtonMessage: {
+    backgroundColor: '#2563EB',
   },
   imageOverlay: {
     position: 'absolute',
