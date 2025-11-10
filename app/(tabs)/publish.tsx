@@ -1047,6 +1047,15 @@ export default function PublishScreen() {
         return;
       }
 
+      // Vérifier que la mise à jour a bien modifié une ligne
+      if (isEditMode && (!insertedData || insertedData.length === 0)) {
+        console.error('Update failed: No rows affected');
+        setModalMessage(t('publish.updateError'));
+        setShowErrorModal(true);
+        setLoading(false);
+        return;
+      }
+
       console.log('Listing inserted successfully:', insertedData);
 
       if (isEditMode) {

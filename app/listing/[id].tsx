@@ -812,15 +812,26 @@ export default function ListingDetailsScreen() {
                       <View style={styles.section}>
                         <Text style={[styles.sectionTitle, isRTL && styles.textRTL]}>{t('listing.specifications')}</Text>
                         <View style={styles.attributesGrid}>
+                          {/* ID de l'annonce */}
+                          <View style={styles.attributeItem}>
+                            <Text style={styles.attributeLabel}>ID</Text>
+                            <Text style={styles.attributeValue}>#{listing.id.substring(0, 8)}</Text>
+                          </View>
+
                           {Object.entries(listing.attributes)
                             .filter(([key]) => !['brand_id', 'model_id'].includes(key))
                             .map(([key, value]) => {
                               let label = getAttributeLabel(key);
                               let displayValue = String(value);
 
+                              // Mapping pour les champs spéciaux
                               if (key === 'brand_name') {
                                 label = getAttributeLabel('brand');
                               } else if (key === 'model_name') {
+                                label = getAttributeLabel('model');
+                              } else if (key === 'vehicle_brand') {
+                                label = getAttributeLabel('brand');
+                              } else if (key === 'vehicle_model') {
                                 label = getAttributeLabel('model');
                               }
 
