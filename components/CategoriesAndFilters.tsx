@@ -79,6 +79,14 @@ interface FilterState {
   experience?: string;
   sector?: string;
   listing_type?: string;
+  // Animaux
+  age?: string;
+  breed?: string;
+  gender?: string;
+  vaccinated?: boolean;
+  sterilized?: boolean;
+  pedigree?: boolean;
+  microchipped?: boolean;
 }
 
 const isWeb = Platform.OS === 'web';
@@ -640,6 +648,47 @@ export default function CategoriesAndFilters({
       if (filters.hasAccessories) {
         filteredData = filteredData.filter(item => item.attributes?.has_accessories === true);
       }
+
+      // Filtres Animaux
+      const matchesText = (source?: string, needle?: string) =>
+        !!needle && !!source && source.toLowerCase().includes(needle.toLowerCase());
+
+      if (filters.age) {
+        console.log('[applyFilters] Filtering by age:', filters.age);
+        filteredData = filteredData.filter(item =>
+          matchesText(item.attributes?.age, filters.age)
+        );
+      }
+
+      if (filters.breed) {
+        console.log('[applyFilters] Filtering by breed:', filters.breed);
+        filteredData = filteredData.filter(item =>
+          matchesText(item.attributes?.breed, filters.breed)
+        );
+      }
+
+      if (filters.gender) {
+        console.log('[applyFilters] Filtering by gender:', filters.gender);
+        filteredData = filteredData.filter(item =>
+          item.attributes?.gender?.toLowerCase() === filters.gender.toLowerCase()
+        );
+      }
+
+      const animalBooleanMap = {
+        vaccinated: 'is_vaccinated',
+        sterilized: 'is_sterilized',
+        pedigree: 'has_pedigree',
+        microchipped: 'is_microchipped',
+      } as const;
+
+      Object.entries(animalBooleanMap).forEach(([stateKey, attrKey]) => {
+        if (filters[stateKey as keyof FilterState]) {
+          console.log(`[applyFilters] Filtering by ${stateKey}:`, filters[stateKey as keyof FilterState]);
+          filteredData = filteredData.filter(item =>
+            item.attributes?.[attrKey] === true
+          );
+        }
+      });
 
       // Filtres Location Immobilière
       if (filters.furnished) {
@@ -2111,6 +2160,85 @@ export default function CategoriesAndFilters({
       {/* Sous-catégorie */}
       {renderSubcategoryFilter()}
 
+      {/* Âge */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'العمر' : language === 'en' ? 'Age' : 'Âge'}
+        </Text>
+        <TextInput
+          style={[styles.input, !filters.age && styles.inputEmpty]}
+          placeholder={language === 'ar' ? 'مثال: سنتان، 6 أشهر' : language === 'en' ? 'e.g. 2 years, 6 months' : 'Ex: 2 ans, 6 mois'}
+          placeholderTextColor="#9CA3AF"
+          value={filters.age || ''}
+          onChangeText={(val) => updateFilter('age', val)}
+        />
+      </View>
+
+      {/* Race */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'السلالة' : language === 'en' ? 'Breed' : 'Race'}
+        </Text>
+        <TextInput
+          style={[styles.input, !filters.breed && styles.inputEmpty]}
+          placeholder={language === 'ar' ? 'مثال: الراعي الألماني، الفارسي' : language === 'en' ? 'e.g. German Shepherd, Persian' : 'Ex: Berger Allemand, Persan'}
+          placeholderTextColor="#9CA3AF"
+          value={filters.breed || ''}
+          onChangeText={(val) => updateFilter('breed', val)}
+        />
+      </View>
+
+      {/* Sexe */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'الجنس' : language === 'en' ? 'Gender' : 'Sexe'}
+        </Text>
+        <View style={styles.chipsContainer}>
+          {['male', 'female'].map((gender) => (
+            <TouchableOpacity
+              key={gender}
+              style={[styles.chip, filters.gender === gender && styles.chipActive]}
+              onPress={() => updateFilter('gender', filters.gender === gender ? '' : gender)}
+            >
+              <Text style={[styles.chipText, filters.gender === gender && styles.chipTextActive]}>
+                {gender === 'male' 
+                  ? (language === 'ar' ? 'ذكر' : language === 'en' ? 'Male' : 'Mâle')
+                  : (language === 'ar' ? 'أنثى' : language === 'en' ? 'Female' : 'Femelle')}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Santé & Soins */}
+      <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>
+          {language === 'ar' ? 'الصحة والرعاية' : language === 'en' ? 'Health & Care' : 'Santé & Soins'}
+        </Text>
+        {[
+          { key: 'vaccinated', label: language === 'ar' ? 'ملقح' : language === 'en' ? 'Vaccinated' : 'Vacciné' },
+          { key: 'sterilized', label: language === 'ar' ? 'معقم' : language === 'en' ? 'Sterilized' : 'Stérilisé' },
+          { key: 'pedigree', label: language === 'ar' ? 'نسب' : language === 'en' ? 'Pedigree' : 'Pedigree' },
+          { key: 'microchipped', label: language === 'ar' ? 'شريحة إلكترونية' : language === 'en' ? 'Microchipped' : 'Pucé' },
+        ].map((item) => (
+          <TouchableOpacity
+            key={item.key}
+            style={[styles.amenityItem, filters[item.key as keyof FilterState] && styles.amenityItemActive]}
+            onPress={() => {
+              const currentValue = filters[item.key as keyof FilterState];
+              updateFilter(item.key, currentValue ? undefined : true);
+            }}
+          >
+            <View style={[styles.checkbox, filters[item.key as keyof FilterState] && styles.checkboxActive]}>
+              {filters[item.key as keyof FilterState] && <Text style={styles.checkmark}>✓</Text>}
+            </View>
+            <Text style={[styles.amenityText, filters[item.key as keyof FilterState] && styles.amenityTextActive]}>
+              {item.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       {/* Prix */}
       <View style={styles.filterGroup}>
         <Text style={styles.filterLabel}>
@@ -2136,8 +2264,6 @@ export default function CategoriesAndFilters({
           />
         </View>
       </View>
-
-      {/* NOTE: Pas de filtre "État" pour les animaux - non applicable */}
 
       {/* Localisation (Wilaya + Commune) */}
       {renderLocationFilters()}
