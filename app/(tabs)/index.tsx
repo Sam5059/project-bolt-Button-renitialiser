@@ -36,10 +36,14 @@ export default function HomePage() {
   }
 
   async function fetchCategoriesWithListings() {
+    console.log('[HomePage] Starting fetchCategoriesWithListings...');
+    
     // Charger TOUTES les catégories une seule fois pour mapping
     const { data: allCategories } = await supabase
       .from('categories')
       .select('*');
+
+    console.log('[HomePage] All categories loaded:', allCategories?.length);
 
     // Créer un map pour lookup rapide
     const categoryMap = new Map();
@@ -55,7 +59,12 @@ export default function HomePage() {
       .neq('slug', 'stores-pro')
       .order('display_order', { ascending: true });
 
-    if (!parentCategories) return;
+    console.log('[HomePage] Parent categories:', parentCategories?.length);
+
+    if (!parentCategories) {
+      console.log('[HomePage] No parent categories found!');
+      return;
+    }
 
     // Pour chaque catégorie, récupérer ses annonces via ses sous-catégories
     const categoriesData = await Promise.all(
@@ -80,6 +89,8 @@ export default function HomePage() {
           .in('category_id', subcategoryIds)
           .order('created_at', { ascending: false })
           .limit(20);
+
+        console.log(`[HomePage] Category ${category.name}: ${listings?.length || 0} listings loaded`);
 
         let filteredListings = listings || [];
         
@@ -111,7 +122,10 @@ export default function HomePage() {
       })
     );
 
-    setCategoriesWithListings(categoriesData.filter(c => c.listings.length > 0));
+    const withListings = categoriesData.filter(c => c.listings.length > 0);
+    console.log('[HomePage] Categories with listings:', withListings.length);
+    console.log('[HomePage] First enriched listing:', withListings[0]?.listings[0]?.category_slug, withListings[0]?.listings[0]?.parent_category_slug);
+    setCategoriesWithListings(withListings);
   }
 
   const handleCategoryPress = (category) => {
