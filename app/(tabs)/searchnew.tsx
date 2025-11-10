@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { X, ChevronLeft, ChevronRight, Phone } from 'lucide-react-native';
 import TopBar from '@/components/TopBar';
 import CategoriesAndFilters from '@/components/CategoriesAndFilters';
 import ListingCard from '@/components/ListingCard';
 import SidebarResizeHandle from '@/components/SidebarResizeHandle';
+import { useListingActions } from '@/hooks/useListingActions';
 
 const isWeb = Platform.OS === 'web';
 const SIDEBAR_DEFAULT_WIDTH = 320;
@@ -28,6 +29,7 @@ export default function SearchPage() {
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const { language } = useLanguage();
+  const { onCallSeller, onSendMessage, visiblePhone, dismissPhone } = useListingActions();
 
   const [listings, setListings] = useState<any[]>([]);
   const [searchText, setSearchText] = useState(typeof q === 'string' ? q : '');
@@ -192,6 +194,8 @@ export default function SearchPage() {
                       listing={listing}
                       onPress={() => router.push(`/listing/${listing.id}`)}
                       isWeb={isWeb}
+                      onCallSeller={() => onCallSeller(listing)}
+                      onSendMessage={() => onSendMessage(listing)}
                     />
                   </View>
                 ))}
@@ -200,6 +204,33 @@ export default function SearchPage() {
           </ScrollView>
         </View>
       </View>
+
+      {/* Modal Phone Number (Web only) */}
+      {isWeb && visiblePhone && (
+        <Modal
+          visible={!!visiblePhone}
+          animationType="fade"
+          transparent
+          onRequestClose={dismissPhone}
+        >
+          <View style={styles.phoneModalOverlay}>
+            <View style={styles.phoneModalContent}>
+              <Text style={styles.phoneModalTitle}>
+                {language === 'ar' ? 'رقم الهاتف' : language === 'en' ? 'Phone Number' : 'Numéro de téléphone'}
+              </Text>
+              <View style={styles.phoneNumberRow}>
+                <Phone size={20} color="#10B981" />
+                <Text style={styles.phoneNumber}>{visiblePhone}</Text>
+              </View>
+              <TouchableOpacity style={styles.phoneModalButton} onPress={dismissPhone}>
+                <Text style={styles.phoneModalButtonText}>
+                  {language === 'ar' ? 'إغلاق' : language === 'en' ? 'Close' : 'Fermer'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
 
       {/* Modal Filtres Mobile */}
       {isMobile && (
@@ -382,5 +413,58 @@ const styles = StyleSheet.create({
   },
   mobileFiltersClose: {
     padding: 8,
+  },
+  phoneModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  phoneModalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    minWidth: 300,
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  phoneModalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  phoneNumberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    backgroundColor: '#F0FDF4',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  phoneNumber: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#10B981',
+    letterSpacing: 1,
+  },
+  phoneModalButton: {
+    backgroundColor: '#2563EB',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  phoneModalButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

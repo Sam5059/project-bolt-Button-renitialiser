@@ -5,7 +5,23 @@ BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) a
 
 ## Recent Changes (November 10, 2025)
 
-### Quick Action Buttons on Listing Details
+### Quick Action Buttons on Listing Cards
+- **Position**: Added Phone (📞) and Message (💬) circular buttons **in bas à gauche of each listing card** in search results
+  - **Phone Button** (green #10B981, 36×36px): Quick call seller action, opens `tel:` on mobile, displays modal on web
+  - **Message Button** (blue #2563EB, 36×36px): Direct messaging to seller, creates/navigates to conversation
+  - **Layout**: Footer flexbox with buttons left, "Détails →" link right
+  - **Conditional rendering**: Buttons only appear when handlers are provided
+  - **Smart disabling**: Phone button disabled if seller has no phone number
+- **Shared Logic Hook**: Created `hooks/useListingActions.ts` for reusable handler logic across all ListingCard usages
+  - `onCallSeller(listing)`: Validates phone, prevents self-call, handles web vs mobile flows
+  - `onSendMessage(listing)`: Validates auth, prevents self-message, creates/reuses conversations
+  - `visiblePhone` state + modal for displaying phone number on web
+  - Uses `useAuth`, `useLanguage`, `supabase`, `router`, `Linking`, `Alert`
+- **Integration**: Implemented in `app/(tabs)/searchnew.tsx` with phone modal for web users
+- **Data Fix**: Updated Supabase query in `CategoriesAndFilters.tsx` to include `profiles(phone_number)`
+- **UX Benefit**: Users can instantly contact sellers from search results without navigating to detail pages
+
+### Quick Action Buttons on Listing Details (Removed)
 - **Overlay Action Buttons**: Added two circular floating buttons on listing detail images for instant seller contact
   - **Phone Button** (green #10B981): Quick call seller action, disabled if no phone number
   - **Message Button** (blue #2563EB): Direct messaging to seller

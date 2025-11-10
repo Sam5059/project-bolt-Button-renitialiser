@@ -62,7 +62,7 @@ export function useListingActions() {
         .single();
 
       if (existingConversation) {
-        router.push(`/messages/${existingConversation.id}`);
+        router.push(`/conversation/${existingConversation.id}`);
         return;
       }
 
@@ -79,7 +79,7 @@ export function useListingActions() {
       if (error) throw error;
 
       if (newConversation) {
-        router.push(`/messages/${newConversation.id}`);
+        router.push(`/conversation/${newConversation.id}`);
       }
     } catch (error) {
       console.error('[useListingActions] Error creating conversation:', error);
