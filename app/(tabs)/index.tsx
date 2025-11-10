@@ -66,10 +66,25 @@ export default function HomePage() {
           };
         }
 
-        // Récupérer les annonces de ces sous-catégories
+        // Récupérer les annonces de ces sous-catégories avec leurs informations de catégorie
         const { data: listings } = await supabase
           .from('listings')
-          .select('*')
+          .select(`
+            *,
+            category:categories!listings_category_id_fkey(
+              id,
+              slug,
+              parent_id,
+              parent:categories!categories_parent_id_fkey(slug)
+            ),
+            profiles(
+              id,
+              full_name,
+              phone_number,
+              whatsapp_number,
+              messenger_username
+            )
+          `)
           .eq('status', 'active')
           .in('category_id', subcategoryIds)
           .order('created_at', { ascending: false })
@@ -96,9 +111,16 @@ export default function HomePage() {
           });
         }
 
+        // Transformer les données pour correspondre à la structure attendue par ListingCard
+        const normalizedListings = filteredListings.map(listing => ({
+          ...listing,
+          category_slug: listing.category?.slug,
+          parent_category_slug: listing.category?.parent?.slug || null,
+        }));
+
         return {
           category,
-          listings: filteredListings,
+          listings: normalizedListings,
         };
       })
     );
