@@ -68,7 +68,8 @@ export default function CategoryBar({ categories, onCategoryPress }: CategoryBar
   };
 
   const getCategoryIcon = (category: Category) => {
-    return category.icon || CATEGORY_ICONS[category.slug] || '📦';
+    // Utiliser uniquement notre mapping local d'icônes emoji, ignorer la DB
+    return CATEGORY_ICONS[category.slug] || '📦';
   };
 
   const getCategoryColor = (slug: string) => {
