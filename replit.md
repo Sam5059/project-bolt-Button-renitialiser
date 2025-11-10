@@ -4,6 +4,14 @@
 BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) and Supabase. It enables users to buy, sell, and rent items across various categories, featuring specialized "PRO Stores" for professional sellers. The platform aims to be the leading destination for classifieds in Algeria, offering a comprehensive and user-friendly experience.
 
 ## Recent Changes (November 10, 2025)
+- **Delivery System Implementation**: Complete delivery options workflow from publish forms to cart
+  - **Backend**: Added delivery_methods (text array), shipping_price (decimal), other_delivery_info (text) to listings table with default ['hand_delivery']
+  - **cart_delivery_selections table**: Tracks user delivery choices per cart item with RLS policies verifying ownership via cart_items
+  - **Publish Form**: Checkbox-based delivery method selection (hand delivery, shipping, pickup, other), optional shipping price input, and other delivery details textarea with validation
+  - **CartContext**: Auto-selects single-method listings, manages delivery selections with upsert + fallback SELECT for idempotence, separate totals (cartTotal, deliveryTotal, grandTotal)
+  - **DeliveryMethodSelector Component**: Reusable UI component with read-only mode for single methods, radio selection for multiple methods, multilingual labels/pricing
+  - **Data Integrity**: Handles free shipping (shipping_price = 0), validates numeric prices, prevents publication without delivery method selection
+  - **Race Condition Safety**: Robust upsert logic with fallback SELECT ensures delivery selections persist correctly even with concurrent refreshCart calls
 - **Help Center Page**: New dedicated help page (/help) with comprehensive FAQ sections (Getting Started, Account, Payments, Safety, Contact) and full multilingual support (FR/EN/AR)
 - **TopBar Enhancements**: Language selector now displays abbreviated codes (FR/EN/AR), added badge counters on icons (cart shows real item count, favorites and listings show placeholders), help icon now routes to /help page
 - **Badge Component**: New reusable Badge component for displaying notification counters with customizable size and color, auto-hides when count is zero
