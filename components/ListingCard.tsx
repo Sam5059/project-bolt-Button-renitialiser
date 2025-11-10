@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ interface ListingCardProps {
 export default function ListingCard({ listing, onPress, isWeb = false, width, distance, averagePrice, onCallSeller, onSendMessage, onActionClick }: ListingCardProps) {
   const { language, t } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const skipCardPressRef = useRef(false);
   const screenWidth = Dimensions.get('window').width;
   const cardWidth = width || (isWeb ? 280 : screenWidth - 32);
 
@@ -156,6 +157,13 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
     setCurrentImageIndex(index);
   };
 
+  const handleCardPress = () => {
+    if (skipCardPressRef.current) {
+      return;
+    }
+    onPress();
+  };
+
   return (
     <TouchableOpacity
       style={[
@@ -163,7 +171,7 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
         isWeb && styles.cardWeb,
         { width: cardWidth }
       ]}
-      onPress={onPress}
+      onPress={handleCardPress}
       activeOpacity={0.7}
     >
       <View style={styles.imageContainer}>
@@ -318,12 +326,15 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
 
         {/* Footer avec boutons d'action à gauche et lien "Détails" à droite */}
         <View style={styles.footer}>
-          <View style={styles.quickActionsContainer} pointerEvents="box-none">
+          <View style={styles.quickActionsContainer}>
             {onCallSeller && (
               <TouchableOpacity
                 style={styles.quickActionBtn}
-                onPress={(e) => {
-                  e?.stopPropagation?.();
+                onPress={() => {
+                  skipCardPressRef.current = true;
+                  setTimeout(() => {
+                    skipCardPressRef.current = false;
+                  }, 100);
                   onCallSeller();
                 }}
                 disabled={!listing?.profiles?.phone_number}
@@ -334,8 +345,11 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
             {onSendMessage && (
               <TouchableOpacity
                 style={[styles.quickActionBtn, styles.quickActionBtnMessage]}
-                onPress={(e) => {
-                  e?.stopPropagation?.();
+                onPress={() => {
+                  skipCardPressRef.current = true;
+                  setTimeout(() => {
+                    skipCardPressRef.current = false;
+                  }, 100);
                   onSendMessage();
                 }}
               >
@@ -345,8 +359,11 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
             {onActionClick && actionButton && (
               <TouchableOpacity
                 style={[styles.ctaButton, { backgroundColor: actionButton.color }]}
-                onPress={(e) => {
-                  e?.stopPropagation?.();
+                onPress={() => {
+                  skipCardPressRef.current = true;
+                  setTimeout(() => {
+                    skipCardPressRef.current = false;
+                  }, 100);
                   onActionClick();
                 }}
               >
