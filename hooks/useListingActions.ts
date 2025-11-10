@@ -3,6 +3,7 @@ import { Platform, Linking, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useChatDrawer } from '@/contexts/ChatDrawerContext';
 import { supabase } from '@/lib/supabase';
 
 export interface ContactOptionsData {
@@ -15,6 +16,7 @@ export interface ContactOptionsData {
 export function useListingActions() {
   const { user } = useAuth();
   const { language, t } = useLanguage();
+  const { openChat } = useChatDrawer();
   const [contactOptionsData, setContactOptionsData] = useState<ContactOptionsData | null>(null);
 
   const onCallSeller = (listing: any) => {
@@ -72,7 +74,7 @@ export function useListingActions() {
         .single();
 
       if (existingConversation) {
-        router.push(`/conversation/${existingConversation.id}`);
+        openChat(existingConversation.id);
         return;
       }
 
@@ -89,7 +91,7 @@ export function useListingActions() {
       if (error) throw error;
 
       if (newConversation) {
-        router.push(`/conversation/${newConversation.id}`);
+        openChat(newConversation.id);
       }
     } catch (error) {
       console.error('[useListingActions] Error creating conversation:', error);

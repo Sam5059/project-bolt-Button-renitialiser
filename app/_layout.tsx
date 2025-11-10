@@ -9,7 +9,9 @@ import { LocationProvider } from '@/contexts/LocationContext';
 import { CartProvider } from '@/contexts/CartContext';
 import { HelpProvider } from '@/contexts/HelpContext';
 import { SearchProvider } from '@/contexts/SearchContext';
+import { ChatDrawerProvider } from '@/contexts/ChatDrawerContext';
 import HelpModal from '@/components/HelpModal';
+import ChatDrawer from '@/components/ChatDrawer';
 
 export default function RootLayout() {
   useFrameworkReady();
@@ -47,31 +49,34 @@ export default function RootLayout() {
           <LocationProvider>
             <SearchProvider>
               <HelpProvider>
-                <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="cart" options={{ headerShown: false }} />
-                <Stack.Screen name="cart-test" options={{ headerShown: false }} />
-                <Stack.Screen name="checkout" options={{ headerShown: false }} />
-                <Stack.Screen name="pro/[slug]" options={{ headerShown: false }} />
-                <Stack.Screen name="pro/index" options={{ headerShown: false }} />
-                <Stack.Screen name="pro/packages" options={{ headerShown: false }} />
-                <Stack.Screen name="pro/dashboard" options={{ headerShown: false }} />
-                <Stack.Screen name="pro/create-store" options={{ headerShown: false }} />
-                <Stack.Screen name="pro/promote-listing" options={{ headerShown: false }} />
-                <Stack.Screen name="listing/[id]" options={{ headerShown: false }} />
-                <Stack.Screen name="conversation/[id]" options={{ headerShown: false }} />
-                <Stack.Screen name="admin/dashboard" options={{ headerShown: false }} />
-                <Stack.Screen name="admin/users" options={{ headerShown: false }} />
-                <Stack.Screen name="admin/moderation" options={{ headerShown: false }} />
-                <Stack.Screen name="admin/financial-stats" options={{ headerShown: false }} />
-                <Stack.Screen name="admin/users-management" options={{ headerShown: false }} />
-                <Stack.Screen name="admin/cart-management" options={{ headerShown: false }} />
-                <Stack.Screen name="legal/privacy" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
-                </Stack>
-                <HelpModal />
-                <StatusBar style="auto" />
+                <ChatDrawerProvider>
+                  <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="cart" options={{ headerShown: false }} />
+                  <Stack.Screen name="cart-test" options={{ headerShown: false }} />
+                  <Stack.Screen name="checkout" options={{ headerShown: false }} />
+                  <Stack.Screen name="pro/[slug]" options={{ headerShown: false }} />
+                  <Stack.Screen name="pro/index" options={{ headerShown: false }} />
+                  <Stack.Screen name="pro/packages" options={{ headerShown: false }} />
+                  <Stack.Screen name="pro/dashboard" options={{ headerShown: false }} />
+                  <Stack.Screen name="pro/create-store" options={{ headerShown: false }} />
+                  <Stack.Screen name="pro/promote-listing" options={{ headerShown: false }} />
+                  <Stack.Screen name="listing/[id]" options={{ headerShown: false }} />
+                  <Stack.Screen name="conversation/[id]" options={{ headerShown: false }} />
+                  <Stack.Screen name="admin/dashboard" options={{ headerShown: false }} />
+                  <Stack.Screen name="admin/users" options={{ headerShown: false }} />
+                  <Stack.Screen name="admin/moderation" options={{ headerShown: false }} />
+                  <Stack.Screen name="admin/financial-stats" options={{ headerShown: false }} />
+                  <Stack.Screen name="admin/users-management" options={{ headerShown: false }} />
+                  <Stack.Screen name="admin/cart-management" options={{ headerShown: false }} />
+                  <Stack.Screen name="legal/privacy" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" />
+                  </Stack>
+                  <HelpModal />
+                  <ChatDrawer />
+                  <StatusBar style="auto" />
+                </ChatDrawerProvider>
               </HelpProvider>
             </SearchProvider>
           </LocationProvider>
