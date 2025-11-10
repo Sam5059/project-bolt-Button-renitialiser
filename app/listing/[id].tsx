@@ -491,22 +491,73 @@ export default function ListingDetailsScreen() {
   const getAttributeLabel = (key: string): string | null => {
     const translations: Record<string, Record<string, string>> = {
       fr: {
+        // Véhicules
         brand: 'Marque',
+        brand_name: 'Marque',
         model: 'Modèle',
+        model_name: 'Modèle',
         year: 'Année',
         mileage: 'Kilométrage',
         fuel: 'Carburant',
+        fuel_type: 'Carburant',
         transmission: 'Transmission',
         color: 'Couleur',
+        
+        // Général
         condition: 'État',
+        
+        // Immobilier
+        property_type: 'Type de bien',
         bedrooms: 'Chambres',
         bathrooms: 'Salles de bain',
         surface: 'Surface',
+        surface_area: 'Surface',
         furnished: 'Meublé',
+        rooms: 'Pièces',
+        floor: 'Étage',
+        monthly_rent: 'Loyer mensuel',
+        charges: 'Charges',
+        has_elevator: 'Ascenseur',
+        has_parking: 'Parking',
+        has_balcony: 'Balcon',
+        has_garden: 'Jardin',
+        has_pool: 'Piscine',
+        has_air_conditioning: 'Climatisation',
+        has_heating: 'Chauffage',
+        
+        // Électronique
+        deviceType: 'Type d\'appareil',
         storage: 'Stockage',
         ram: 'RAM',
         processor: 'Processeur',
         screen_size: 'Taille écran',
+        has_warranty: 'Garantie',
+        has_box: 'Boîte d\'origine',
+        has_accessories: 'Accessoires',
+        
+        // Animaux
+        age: 'Âge',
+        animal_type: 'Type d\'animal',
+        animal_breed: 'Race',
+        breed: 'Race',
+        gender: 'Sexe',
+        vaccinated: 'Vacciné',
+        sterilized: 'Stérilisé',
+        pedigree: 'Pedigree',
+        microchipped: 'Pucé',
+        health_status: 'État de santé',
+        healthStatus: 'État de santé',
+        
+        // Services & Emploi
+        tarif: 'Tarif',
+        contrat: 'Type de contrat',
+        contract_type: 'Type de contrat',
+        contractType: 'Type de contrat',
+        salary: 'Salaire',
+        experience: 'Expérience',
+        sector: 'Secteur',
+        
+        // Autres
         size: 'Taille',
         material: 'Matériau',
         usage: 'Usage',
@@ -514,26 +565,75 @@ export default function ListingDetailsScreen() {
         duration: 'Durée',
         location: 'Localisation',
         capacity: 'Capacité',
-        rooms: 'Chambres',
-        floor: 'Étage',
       },
       en: {
+        // Véhicules
         brand: 'Brand',
+        brand_name: 'Brand',
         model: 'Model',
+        model_name: 'Model',
         year: 'Year',
         mileage: 'Mileage',
         fuel: 'Fuel',
+        fuel_type: 'Fuel',
         transmission: 'Transmission',
         color: 'Color',
+        
+        // Général
         condition: 'Condition',
+        
+        // Immobilier
+        property_type: 'Property type',
         bedrooms: 'Bedrooms',
         bathrooms: 'Bathrooms',
         surface: 'Surface',
+        surface_area: 'Surface area',
         furnished: 'Furnished',
+        rooms: 'Rooms',
+        floor: 'Floor',
+        monthly_rent: 'Monthly rent',
+        charges: 'Charges',
+        has_elevator: 'Elevator',
+        has_parking: 'Parking',
+        has_balcony: 'Balcony',
+        has_garden: 'Garden',
+        has_pool: 'Pool',
+        has_air_conditioning: 'Air conditioning',
+        has_heating: 'Heating',
+        
+        // Électronique
+        deviceType: 'Device type',
         storage: 'Storage',
         ram: 'RAM',
         processor: 'Processor',
         screen_size: 'Screen size',
+        has_warranty: 'Warranty',
+        has_box: 'Original box',
+        has_accessories: 'Accessories',
+        
+        // Animaux
+        age: 'Age',
+        animal_type: 'Animal type',
+        animal_breed: 'Breed',
+        breed: 'Breed',
+        gender: 'Gender',
+        vaccinated: 'Vaccinated',
+        sterilized: 'Sterilized',
+        pedigree: 'Pedigree',
+        microchipped: 'Microchipped',
+        health_status: 'Health status',
+        healthStatus: 'Health status',
+        
+        // Services & Emploi
+        tarif: 'Rate',
+        contrat: 'Contract type',
+        contract_type: 'Contract type',
+        contractType: 'Contract type',
+        salary: 'Salary',
+        experience: 'Experience',
+        sector: 'Sector',
+        
+        // Autres
         size: 'Size',
         material: 'Material',
         usage: 'Usage',
@@ -541,26 +641,75 @@ export default function ListingDetailsScreen() {
         duration: 'Duration',
         location: 'Location',
         capacity: 'Capacity',
-        rooms: 'Rooms',
-        floor: 'Floor',
       },
       ar: {
+        // Véhicules
         brand: 'العلامة التجارية',
+        brand_name: 'العلامة التجارية',
         model: 'الطراز',
+        model_name: 'الطراز',
         year: 'السنة',
         mileage: 'المسافة المقطوعة',
         fuel: 'الوقود',
+        fuel_type: 'الوقود',
         transmission: 'ناقل الحركة',
         color: 'اللون',
+        
+        // Général
         condition: 'الحالة',
+        
+        // Immobilier
+        property_type: 'نوع العقار',
         bedrooms: 'غرف نوم',
         bathrooms: 'حمامات',
         surface: 'المساحة',
+        surface_area: 'المساحة',
         furnished: 'مفروش',
+        rooms: 'غرف',
+        floor: 'الطابق',
+        monthly_rent: 'الإيجار الشهري',
+        charges: 'الرسوم',
+        has_elevator: 'مصعد',
+        has_parking: 'موقف سيارات',
+        has_balcony: 'شرفة',
+        has_garden: 'حديقة',
+        has_pool: 'مسبح',
+        has_air_conditioning: 'تكييف',
+        has_heating: 'تدفئة',
+        
+        // Électronique
+        deviceType: 'نوع الجهاز',
         storage: 'التخزين',
         ram: 'الذاكرة',
         processor: 'المعالج',
         screen_size: 'حجم الشاشة',
+        has_warranty: 'ضمان',
+        has_box: 'علبة أصلية',
+        has_accessories: 'ملحقات',
+        
+        // Animaux
+        age: 'العمر',
+        animal_type: 'نوع الحيوان',
+        animal_breed: 'السلالة',
+        breed: 'السلالة',
+        gender: 'الجنس',
+        vaccinated: 'ملقح',
+        sterilized: 'معقم',
+        pedigree: 'شهادة أصالة',
+        microchipped: 'مشرّح',
+        health_status: 'الحالة الصحية',
+        healthStatus: 'الحالة الصحية',
+        
+        // Services & Emploi
+        tarif: 'التعريفة',
+        contrat: 'نوع العقد',
+        contract_type: 'نوع العقد',
+        contractType: 'نوع العقد',
+        salary: 'الراتب',
+        experience: 'الخبرة',
+        sector: 'القطاع',
+        
+        // Autres
         size: 'الحجم',
         material: 'المادة',
         usage: 'الاستخدام',
@@ -568,14 +717,57 @@ export default function ListingDetailsScreen() {
         duration: 'المدة',
         location: 'الموقع',
         capacity: 'السعة',
-        rooms: 'غرف',
-        floor: 'الطابق',
       },
     };
 
     const currentLang = language || 'fr';
     const langMap = translations[currentLang] || translations.fr;
     return langMap[key] || null;
+  };
+
+  const formatAttributeValue = (key: string, value: any): string => {
+    // Format boolean values
+    if (typeof value === 'boolean') {
+      if (language === 'ar') return value ? 'نعم' : 'لا';
+      if (language === 'en') return value ? 'Yes' : 'No';
+      return value ? 'Oui' : 'Non';
+    }
+    
+    // Format numbers with units
+    if (key === 'mileage' && typeof value === 'number') {
+      return `${value.toLocaleString()} km`;
+    }
+    if ((key === 'surface' || key === 'surface_area') && typeof value === 'number') {
+      return `${value} m²`;
+    }
+    if ((key === 'monthly_rent' || key === 'charges' || key === 'salary') && typeof value === 'number') {
+      return `${value.toLocaleString()} DA`;
+    }
+    if (key === 'storage' && typeof value === 'number') {
+      return `${value} GB`;
+    }
+    if (key === 'ram' && typeof value === 'number') {
+      return `${value} GB`;
+    }
+    
+    // Format age (assuming in months, convert to years/months)
+    if (key === 'age' && typeof value === 'number') {
+      if (value < 12) {
+        return language === 'ar' ? `${value} شهر` : language === 'en' ? `${value} month(s)` : `${value} mois`;
+      }
+      const years = Math.floor(value / 12);
+      const months = value % 12;
+      if (months === 0) {
+        return language === 'ar' ? `${years} سنة` : language === 'en' ? `${years} year(s)` : `${years} an(s)`;
+      }
+      return language === 'ar' 
+        ? `${years} سنة و ${months} شهر` 
+        : language === 'en' 
+        ? `${years} year(s) ${months} month(s)`
+        : `${years} an(s) ${months} mois`;
+    }
+    
+    return String(value);
   };
 
   const images = listing.images && listing.images.length > 0
@@ -790,13 +982,15 @@ export default function ListingDetailsScreen() {
                     <>
                       <View style={styles.divider} />
                       <View style={styles.section}>
-                        <Text style={[styles.sectionTitle, isRTL && styles.textRTL]}>{t('listing.specifications')}</Text>
+                        <Text style={[styles.sectionTitle, isRTL && styles.textRTL]}>
+                          {language === 'ar' ? 'المواصفات' : language === 'en' ? 'Specifications' : 'Caractéristiques'}
+                        </Text>
                         <View style={styles.attributesGrid}>
                           {Object.entries(listing.attributes)
                             .filter(([key]) => !['brand_id', 'model_id'].includes(key))
                             .map(([key, value]) => {
                               let label = getAttributeLabel(key);
-                              let displayValue = String(value);
+                              let displayValue = formatAttributeValue(key, value);
 
                               if (key === 'brand_name') {
                                 label = getAttributeLabel('brand');
@@ -808,8 +1002,8 @@ export default function ListingDetailsScreen() {
 
                               return (
                                 <View key={key} style={styles.attributeItem}>
-                                  <Text style={styles.attributeLabel}>{label}</Text>
-                                  <Text style={styles.attributeValue}>{displayValue}</Text>
+                                  <Text style={[styles.attributeLabel, isRTL && styles.textRTL]}>{label}</Text>
+                                  <Text style={[styles.attributeValue, isRTL && styles.textRTL]}>{displayValue}</Text>
                                 </View>
                               );
                             })
