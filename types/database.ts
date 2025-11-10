@@ -48,6 +48,9 @@ export interface Listing {
   featured_until?: string;
   views_count: number;
   attributes: Record<string, any>;
+  delivery_methods?: string[];
+  shipping_price?: number;
+  other_delivery_info?: string;
   created_at: string;
   updated_at: string;
   profiles?: Profile;

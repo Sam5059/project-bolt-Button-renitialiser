@@ -68,6 +68,9 @@ export default function PublishScreen() {
   const [isDateFlexible, setIsDateFlexible] = useState(true);
   const [offerType, setOfferType] = useState<'sale' | 'free' | 'exchange' | 'rent'>('sale');
   const [priceType, setPriceType] = useState<'fixed' | 'quote' | 'free'>('fixed');
+  const [deliveryMethods, setDeliveryMethods] = useState<string[]>(['hand_delivery']);
+  const [shippingPrice, setShippingPrice] = useState('');
+  const [otherDeliveryInfo, setOtherDeliveryInfo] = useState('');
 
   // Inject CSS styles for web platform
   useEffect(() => {
@@ -365,6 +368,19 @@ export default function PublishScreen() {
       // Charger le type d'offre
       if (data.offer_type) {
         setOfferType(data.offer_type);
+      }
+
+      // Charger les options de livraison
+      if (data.delivery_methods && Array.isArray(data.delivery_methods)) {
+        setDeliveryMethods(data.delivery_methods);
+      } else {
+        setDeliveryMethods(['hand_delivery']); // Valeur par défaut
+      }
+      if (data.shipping_price !== null && data.shipping_price !== undefined) {
+        setShippingPrice(data.shipping_price.toString());
+      }
+      if (data.other_delivery_info) {
+        setOtherDeliveryInfo(data.other_delivery_info);
       }
 
       const { data: categoryData } = await supabase
@@ -918,6 +934,42 @@ export default function PublishScreen() {
       }
     }
 
+    // Validation des options de livraison
+    if (deliveryMethods.length === 0) {
+      Alert.alert(
+        t('common.error'),
+        t('publish.delivery.selectAtLeastOne')
+      );
+      return;
+    }
+
+    // Validation du prix de livraison si shipping sélectionné
+    if (deliveryMethods.includes('shipping')) {
+      if (!shippingPrice || shippingPrice.trim() === '') {
+        Alert.alert(
+          t('common.error'),
+          language === 'ar' 
+            ? 'يرجى إدخال سعر التوصيل (0 للتوصيل المجاني)' 
+            : language === 'en' 
+            ? 'Please enter a shipping price (0 for free shipping)' 
+            : 'Veuillez entrer le prix de livraison (0 pour livraison gratuite)'
+        );
+        return;
+      }
+      const shippingPriceNum = parseFloat(shippingPrice);
+      if (isNaN(shippingPriceNum) || shippingPriceNum < 0) {
+        Alert.alert(
+          t('common.error'),
+          language === 'ar' 
+            ? 'يرجى إدخال سعر توصيل صالح' 
+            : language === 'en' 
+            ? 'Please enter a valid shipping price' 
+            : 'Veuillez entrer un prix de livraison valide'
+        );
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -979,6 +1031,9 @@ export default function PublishScreen() {
           available_to: availableTo ? availableTo.toISOString().split('T')[0] : null,
           is_date_flexible: isDateFlexible,
           offer_type: offerType,
+          delivery_methods: deliveryMethods,
+          shipping_price: deliveryMethods.includes('shipping') && shippingPrice ? parseFloat(shippingPrice) : null,
+          other_delivery_info: deliveryMethods.includes('other') && otherDeliveryInfo ? otherDeliveryInfo : null,
           updated_at: new Date().toISOString(),
         };
 
@@ -1020,6 +1075,9 @@ export default function PublishScreen() {
           available_to: availableTo ? availableTo.toISOString().split('T')[0] : null,
           is_date_flexible: isDateFlexible,
           offer_type: offerType,
+          delivery_methods: deliveryMethods,
+          shipping_price: deliveryMethods.includes('shipping') && shippingPrice ? parseFloat(shippingPrice) : null,
+          other_delivery_info: deliveryMethods.includes('other') && otherDeliveryInfo ? otherDeliveryInfo : null,
         };
 
         if (condition && condition.trim() !== '') {
@@ -1087,6 +1145,9 @@ export default function PublishScreen() {
         setImages([]);
         setCategoryAttributes({});
         setBrands([]);
+        setDeliveryMethods(['hand_delivery']);
+        setShippingPrice('');
+        setOtherDeliveryInfo('');
         setModels([]);
       }
     } catch (error: any) {
@@ -3233,6 +3294,157 @@ export default function PublishScreen() {
           </View>
         </View>
 
+        {/* 5. OPTIONS DE LIVRAISON */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, isRTL && styles.textRTL]}>
+            {t('publish.delivery.title')}
+          </Text>
+          <Text style={[styles.sectionSubtitle, isRTL && styles.textRTL]}>
+            {t('publish.delivery.subtitle')}
+          </Text>
+
+          {/* Hand Delivery */}
+          <TouchableOpacity
+            style={styles.deliveryOption}
+            onPress={() => {
+              if (deliveryMethods.includes('hand_delivery')) {
+                setDeliveryMethods(deliveryMethods.filter(m => m !== 'hand_delivery'));
+              } else {
+                setDeliveryMethods([...deliveryMethods, 'hand_delivery']);
+              }
+            }}
+          >
+            <View style={styles.checkbox}>
+              {deliveryMethods.includes('hand_delivery') && (
+                <View style={styles.checkboxInner} />
+              )}
+            </View>
+            <View style={styles.deliveryOptionContent}>
+              <Text style={[styles.deliveryOptionTitle, isRTL && styles.textRTL]}>
+                {t('publish.delivery.handDelivery')}
+              </Text>
+              <Text style={[styles.deliveryOptionDesc, isRTL && styles.textRTL]}>
+                {t('publish.delivery.handDeliveryDesc')}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Shipping */}
+          <TouchableOpacity
+            style={styles.deliveryOption}
+            onPress={() => {
+              if (deliveryMethods.includes('shipping')) {
+                setDeliveryMethods(deliveryMethods.filter(m => m !== 'shipping'));
+                setShippingPrice('');
+              } else {
+                setDeliveryMethods([...deliveryMethods, 'shipping']);
+              }
+            }}
+          >
+            <View style={styles.checkbox}>
+              {deliveryMethods.includes('shipping') && (
+                <View style={styles.checkboxInner} />
+              )}
+            </View>
+            <View style={styles.deliveryOptionContent}>
+              <Text style={[styles.deliveryOptionTitle, isRTL && styles.textRTL]}>
+                {t('publish.delivery.shipping')}
+              </Text>
+              <Text style={[styles.deliveryOptionDesc, isRTL && styles.textRTL]}>
+                {t('publish.delivery.shippingDesc')}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Shipping Price Input */}
+          {deliveryMethods.includes('shipping') && (
+            <View style={styles.inputGroup}>
+              <Text style={[styles.label, isRTL && styles.textRTL]}>
+                {t('publish.delivery.shippingPrice')}
+              </Text>
+              <TextInput
+                style={[styles.input, isRTL && styles.inputRTL]}
+                placeholder={t('publish.delivery.shippingPricePlaceholder')}
+                placeholderTextColor="#94A3B8"
+                value={shippingPrice}
+                onChangeText={setShippingPrice}
+                keyboardType="numeric"
+              />
+            </View>
+          )}
+
+          {/* Pickup */}
+          <TouchableOpacity
+            style={styles.deliveryOption}
+            onPress={() => {
+              if (deliveryMethods.includes('pickup')) {
+                setDeliveryMethods(deliveryMethods.filter(m => m !== 'pickup'));
+              } else {
+                setDeliveryMethods([...deliveryMethods, 'pickup']);
+              }
+            }}
+          >
+            <View style={styles.checkbox}>
+              {deliveryMethods.includes('pickup') && (
+                <View style={styles.checkboxInner} />
+              )}
+            </View>
+            <View style={styles.deliveryOptionContent}>
+              <Text style={[styles.deliveryOptionTitle, isRTL && styles.textRTL]}>
+                {t('publish.delivery.pickup')}
+              </Text>
+              <Text style={[styles.deliveryOptionDesc, isRTL && styles.textRTL]}>
+                {t('publish.delivery.pickupDesc')}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Other */}
+          <TouchableOpacity
+            style={styles.deliveryOption}
+            onPress={() => {
+              if (deliveryMethods.includes('other')) {
+                setDeliveryMethods(deliveryMethods.filter(m => m !== 'other'));
+                setOtherDeliveryInfo('');
+              } else {
+                setDeliveryMethods([...deliveryMethods, 'other']);
+              }
+            }}
+          >
+            <View style={styles.checkbox}>
+              {deliveryMethods.includes('other') && (
+                <View style={styles.checkboxInner} />
+              )}
+            </View>
+            <View style={styles.deliveryOptionContent}>
+              <Text style={[styles.deliveryOptionTitle, isRTL && styles.textRTL]}>
+                {t('publish.delivery.other')}
+              </Text>
+              <Text style={[styles.deliveryOptionDesc, isRTL && styles.textRTL]}>
+                {t('publish.delivery.otherDesc')}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Other Delivery Info Input */}
+          {deliveryMethods.includes('other') && (
+            <View style={styles.inputGroup}>
+              <Text style={[styles.label, isRTL && styles.textRTL]}>
+                {t('publish.delivery.otherInfo')}
+              </Text>
+              <TextInput
+                style={[styles.input, styles.textArea, isRTL && styles.inputRTL]}
+                placeholder={t('publish.delivery.otherInfoPlaceholder')}
+                placeholderTextColor="#94A3B8"
+                value={otherDeliveryInfo}
+                onChangeText={setOtherDeliveryInfo}
+                multiline
+                numberOfLines={3}
+              />
+            </View>
+          )}
+        </View>
+
         {/* 6. DATES DE DISPONIBILITÉ / PÉRIODE */}
         {needsDatePicker() && (
           <View style={styles.section}>
@@ -4463,6 +4675,48 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   clientRequestDescription: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#64748B',
+    lineHeight: 20,
+  },
+  deliveryOption: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    padding: 16,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#2563EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 2,
+  },
+  checkboxInner: {
+    width: 14,
+    height: 14,
+    borderRadius: 3,
+    backgroundColor: '#2563EB',
+  },
+  deliveryOptionContent: {
+    flex: 1,
+  },
+  deliveryOptionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1E293B',
+    marginBottom: 4,
+  },
+  deliveryOptionDesc: {
     fontSize: 14,
     fontWeight: '500',
     color: '#64748B',
