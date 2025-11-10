@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/contexts/LanguageContext';
 import TopBar from '@/components/TopBar';
+import CategoryBar from '@/components/CategoryBar';
 import ListingCard from '@/components/ListingCard';
 
 export default function HomePage() {
@@ -182,32 +183,12 @@ export default function HomePage() {
         onSearchChange={setSearchText}
         onSearch={handleSearch}
       />
+      <CategoryBar 
+        categories={categories} 
+        onCategoryPress={handleCategoryPress}
+      />
 
       <ScrollView style={styles.content}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.categoriesScroll}
-          contentContainerStyle={styles.categoriesContent}
-        >
-          {categories.map((cat, index) => {
-            const colors = getCategoryColor(index);
-            return (
-              <TouchableOpacity
-                key={cat.id}
-                style={[styles.categoryCard, { backgroundColor: colors.bg }]}
-                onPress={() => handleCategoryPress(cat)}
-              >
-                <View style={[styles.categoryIcon, { backgroundColor: '#FFFFFF' }]}>
-                  <Text style={styles.categoryEmoji}>{getCategoryIcon(cat.slug)}</Text>
-                </View>
-                <Text style={styles.categoryText} numberOfLines={2}>
-                  {getCategoryName(cat)}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
 
         {categoriesWithListings.map(({ category, listings }) => (
           <View key={category.id}>
