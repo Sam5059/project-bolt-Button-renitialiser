@@ -39,6 +39,17 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
     listing?.parent_category_slug
   );
 
+  console.log('[ListingCard] Purchase Type DEBUG:', {
+    title: listing?.title,
+    category_slug: listing?.category_slug,
+    parent_category_slug: listing?.parent_category_slug,
+    purchaseType,
+    hasOnAddToCart: !!onAddToCart,
+    hasOnReserve: !!onReserve,
+    hasOnCallSeller: !!onCallSeller,
+    hasOnSendMessage: !!onSendMessage
+  });
+
   const formatPrice = (price: number) => {
     if (!price) return new Intl.NumberFormat('fr-DZ', {
       style: 'currency',
