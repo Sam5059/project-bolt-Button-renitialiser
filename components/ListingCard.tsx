@@ -35,6 +35,11 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
   const getActionButton = () => {
     const offerType = listing.offer_type || listing.listing_type;
     
+    // Pour les DEMANDES (purchase), pas de bouton CTA
+    if (listing.listing_type === 'purchase') {
+      return null;
+    }
+    
     if (offerType === 'rent' || listing.listing_type === 'rent') {
       return {
         label: t('listingCard.reserve'),
@@ -333,7 +338,7 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
                 <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.5} />
               </TouchableOpacity>
             )}
-            {onActionClick && (
+            {onActionClick && actionButton && (
               <TouchableOpacity
                 style={[styles.ctaButton, { backgroundColor: actionButton.color }]}
                 onPress={onActionClick}
