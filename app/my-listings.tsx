@@ -163,6 +163,22 @@ export default function MyListingsScreen() {
     };
   }, [listings]);
 
+  const categoryCounts = useMemo(() => {
+    const statusFilteredListings =
+      selectedFilter === 'all'
+        ? listings
+        : listings.filter((l) => l.status === selectedFilter);
+
+    const countMap: Record<string, number> = {};
+    statusFilteredListings.forEach((listing) => {
+      if (listing.category_id) {
+        const categoryId = String(listing.category_id);
+        countMap[categoryId] = (countMap[categoryId] || 0) + 1;
+      }
+    });
+    return countMap;
+  }, [listings, selectedFilter]);
+
   const confirmDelete = (listing: Listing) => {
     setListingToDelete(listing);
     setShowDeleteModal(true);
@@ -325,6 +341,7 @@ export default function MyListingsScreen() {
               onCategoryChange={setSelectedCategory}
               categories={categories}
               counts={counts}
+              categoryCounts={categoryCounts}
             />
           </View>
         )}

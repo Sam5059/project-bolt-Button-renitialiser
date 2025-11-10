@@ -23,6 +23,7 @@ interface MyListingsSidebarProps {
     inactive: number;
     sold: number;
   };
+  categoryCounts: Record<string, number>;
 }
 
 export default function MyListingsSidebar({
@@ -32,6 +33,7 @@ export default function MyListingsSidebar({
   onCategoryChange,
   categories,
   counts,
+  categoryCounts,
 }: MyListingsSidebarProps) {
   const { t, language, isRTL } = useLanguage();
 
@@ -158,6 +160,7 @@ export default function MyListingsSidebar({
             <View style={styles.categoriesList}>
               {categories.map((category) => {
                 const isSelected = selectedCategory === category.id;
+                const count = categoryCounts[String(category.id)] || 0;
 
                 return (
                   <TouchableOpacity
@@ -179,6 +182,21 @@ export default function MyListingsSidebar({
                     >
                       {getCategoryName(category)}
                     </Text>
+                    <View
+                      style={[
+                        styles.categoryCountBadge,
+                        isSelected && styles.categoryCountBadgeSelected,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.categoryCountText,
+                          isSelected && styles.categoryCountTextSelected,
+                        ]}
+                      >
+                        {count}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                 );
               })}
@@ -306,6 +324,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   categoryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingVertical: 8,
     marginVertical: 2,
@@ -322,10 +343,31 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     color: '#64748B',
+    flex: 1,
   },
   categoryLabelSelected: {
     color: '#2563EB',
     fontWeight: '600',
+  },
+  categoryCountBadge: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+    minWidth: 24,
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  categoryCountBadgeSelected: {
+    backgroundColor: '#2563EB',
+  },
+  categoryCountText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  categoryCountTextSelected: {
+    color: '#FFFFFF',
   },
   infoSection: {
     flexDirection: 'row',
