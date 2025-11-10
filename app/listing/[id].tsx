@@ -44,7 +44,7 @@ import {
 import TopBar from '@/components/TopBar';
 
 export default function ListingDetailsScreen() {
-  const { id } = useLocalSearchParams();
+  const { id, booking, free, exchange } = useLocalSearchParams();
   const { user } = useAuth();
   const { t, isRTL, language } = useLanguage();
   const { addToCart } = useCart();
@@ -77,6 +77,21 @@ export default function ListingDetailsScreen() {
       loadSimilarListings();
     }
   }, [listing]);
+
+  useEffect(() => {
+    if (listing && !loading) {
+      if (booking === 'open') {
+        setShowRentalModal(true);
+        router.replace(`/listing/${id}`);
+      } else if (free === 'open') {
+        setShowFreeModal(true);
+        router.replace(`/listing/${id}`);
+      } else if (exchange === 'open') {
+        setShowExchangeModal(true);
+        router.replace(`/listing/${id}`);
+      }
+    }
+  }, [listing, loading, booking, free, exchange]);
 
   const loadListing = async () => {
     try {

@@ -57,7 +57,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           id,
           listing_id,
           quantity,
-          listing:listings(
+          listing:listings!cart_items_listing_id_fkey(
             id,
             title,
             price,
@@ -69,7 +69,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           )
         `)
         .eq('user_id', user.id)
-        .order('added_at', { ascending: false });
+        .order('added_at', { ascending: false});
 
       if (error) {
         console.error('[CART v2] Error fetching cart:', error);
@@ -78,7 +78,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       console.log('[CART v2] ===== CART DATA LOADED =====');
       console.log('[CART v2] Items count:', data?.length || 0);
       console.log('[CART v2] Raw data:', JSON.stringify(data, null, 2));
-      setCartItems(data || []);
+      
+      const normalizedData = (data || []).map((item: any) => ({
+        ...item,
+        listing: Array.isArray(item.listing) ? item.listing[0] : item.listing
+      })) as CartItem[];
+      
+      setCartItems(normalizedData);
     } catch (error) {
       console.error('[CART v2] Error fetching cart:', error);
     } finally {

@@ -22,6 +22,7 @@ import { Listing, Wilaya, Category } from '@/types/database';
 import { User, Settings, Heart, Package, LogOut, CreditCard as Edit3, MapPin, Phone, Trash2, Edit, Crown, Zap, Shield } from 'lucide-react-native';
 import TopBar from '@/components/TopBar';
 import ListingCard from '@/components/ListingCard';
+import { useListingCtaHandler } from '@/hooks/useListingCtaHandler';
 import CommuneAutocomplete from '@/components/CommuneAutocomplete';
 
 export default function ProfileScreen() {
@@ -29,6 +30,7 @@ export default function ProfileScreen() {
   const { user, profile, signOut, updateProfile } = useAuth();
   const { setCurrentLocation } = useLocation();
   const { t, isRTL } = useLanguage();
+  const { handleListingAction } = useListingCtaHandler();
   const [myListings, setMyListings] = useState<Listing[]>([]);
   const [favorites, setFavorites] = useState<Listing[]>([]);
   const [activeTab, setActiveTab] = useState<'listings' | 'favorites' | 'settings'>(
@@ -297,7 +299,7 @@ export default function ProfileScreen() {
           onPress={() => router.push(`/listing/${listing.id}`)}
           isWeb={false}
           width={cardWidth}
-          onActionClick={() => router.push(`/listing/${listing.id}`)}
+          onActionClick={() => handleListingAction(listing)}
         />
         <View style={styles.listingActionsOverlay}>
           <View style={styles.listingStatusRow}>

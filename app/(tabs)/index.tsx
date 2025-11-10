@@ -5,12 +5,14 @@ import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/contexts/LanguageContext';
 import TopBar from '@/components/TopBar';
 import ListingCard from '@/components/ListingCard';
+import { useListingCtaHandler } from '@/hooks/useListingCtaHandler';
 
 export default function HomePage() {
   const [categories, setCategories] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [categoriesWithListings, setCategoriesWithListings] = useState([]);
   const { language } = useLanguage();
+  const { handleListingAction } = useListingCtaHandler();
 
   useEffect(() => {
     fetchCategories();
@@ -242,7 +244,7 @@ export default function HomePage() {
                     onPress={() => router.push(`/listing/${listing.id}`)}
                     isWeb={false}
                     width={280}
-                    onActionClick={() => router.push(`/listing/${listing.id}`)}
+                    onActionClick={() => handleListingAction(listing)}
                   />
                 </View>
               ))}

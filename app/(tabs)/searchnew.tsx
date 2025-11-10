@@ -18,6 +18,7 @@ import ListingCard from '@/components/ListingCard';
 import SidebarResizeHandle from '@/components/SidebarResizeHandle';
 import ContactOptionsModal from '@/components/ContactOptionsModal';
 import { useListingActions } from '@/hooks/useListingActions';
+import { useListingCtaHandler } from '@/hooks/useListingCtaHandler';
 
 const isWeb = Platform.OS === 'web';
 const SIDEBAR_DEFAULT_WIDTH = 320;
@@ -31,6 +32,7 @@ export default function SearchPage() {
   const isMobile = width < 768;
   const { language } = useLanguage();
   const { onCallSeller, onSendMessage, contactOptionsData, dismissContactOptions } = useListingActions();
+  const { handleListingAction } = useListingCtaHandler();
 
   const [listings, setListings] = useState<any[]>([]);
   const [searchText, setSearchText] = useState(typeof q === 'string' ? q : '');
@@ -197,7 +199,7 @@ export default function SearchPage() {
                       isWeb={isWeb}
                       onCallSeller={() => onCallSeller(listing)}
                       onSendMessage={() => onSendMessage(listing)}
-                      onActionClick={() => router.push(`/listing/${listing.id}`)}
+                      onActionClick={() => handleListingAction(listing)}
                     />
                   </View>
                 ))}

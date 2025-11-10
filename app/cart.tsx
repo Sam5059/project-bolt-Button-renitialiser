@@ -77,7 +77,7 @@ export default function CartScreen() {
     return (
       <View style={styles.container}>
         <TopBar />
-        <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
               <ArrowLeft size={24} color="#1E293B" />

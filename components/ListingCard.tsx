@@ -338,8 +338,7 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
                 style={[styles.ctaButton, { backgroundColor: actionButton.color }]}
                 onPress={onActionClick}
               >
-                <actionButton.icon size={14} color="#FFFFFF" strokeWidth={2.5} />
-                <Text style={styles.ctaButtonText}>{actionButton.label}</Text>
+                <actionButton.icon size={18} color="#FFFFFF" strokeWidth={2.5} />
               </TouchableOpacity>
             )}
           </View>
@@ -371,7 +370,6 @@ const styles = StyleSheet.create({
   },
   cardWeb: {
     marginBottom: 20,
-    transition: 'transform 0.2s, box-shadow 0.2s',
   },
   imageContainer: {
     position: 'relative',
@@ -645,12 +643,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#2563EB',
   },
   ctaButton: {
-    flexDirection: 'row',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
