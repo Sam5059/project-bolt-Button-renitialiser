@@ -5,6 +5,16 @@ BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) a
 
 ## Recent Changes (November 10, 2025)
 
+### Edge-to-Edge Image Display on Listing Cards
+- **Full-Width Images**: Adapted listing card images to fill the entire container (edge-to-edge) for a more immersive and professional look
+  - **Container Styling**: Added `overflow: 'hidden'` with `borderTopLeftRadius: 12` and `borderTopRightRadius: 12` to `imageContainer`
+  - **Image Sizing**: Changed from fixed `height: 220` to `width: '100%', height: '100%'` for full container coverage
+  - **Removed Inline Styles**: Eliminated `{width: cardWidth}` inline style that was overriding the 100% width rule
+  - **ScrollView Optimization**: Added `contentContainerStyle={{ flexGrow: 1 }}` for proper carousel behavior
+  - **Removed Debug Border**: Cleaned up temporary blue border (1px #0062FF) on card wrapper
+- **Visual Impact**: Images now reach true edge-to-edge like professional marketplace cards, with rounded corners only on top
+- **No Regressions**: Carousel scrolling, pagination dots, badges, and quick action buttons remain fully functional
+
 ### Quick Action Buttons on Listing Cards
 - **Position**: Added Phone (📞) and Message (💬) circular buttons **in bas à gauche of each listing card** in search results
   - **Phone Button** (green #10B981, 36×36px): Quick call seller action, opens `tel:` on mobile, displays modal on web

@@ -118,7 +118,7 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
       style={[
         styles.card,
         isWeb && styles.cardWeb,
-        { width: cardWidth, borderWidth: 1, borderColor: '#0062FF' }
+        { width: cardWidth }
       ]}
       onPress={onPress}
       activeOpacity={0.7}
@@ -133,12 +133,13 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
               onScroll={handleScroll}
               scrollEventThrottle={16}
               style={styles.carousel}
+              contentContainerStyle={{ flexGrow: 1 }}
             >
               {images.map((image: string, index: number) => (
                 <Image
                   key={index}
                   source={{ uri: image }}
-                  style={[styles.image, { width: cardWidth }]}
+                  style={styles.image}
                   resizeMode="cover"
                 />
               ))}
@@ -159,7 +160,7 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
             )}
           </>
         ) : (
-          <View style={[styles.placeholderContainer, { width: cardWidth }]}>
+          <View style={styles.placeholderContainer}>
             <Text style={styles.placeholderText}>📷</Text>
           </View>
         )}
@@ -330,13 +331,17 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 220,
     backgroundColor: '#F1F5F9',
+    overflow: 'hidden',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   carousel: {
     width: '100%',
     height: '100%',
   },
   image: {
-    height: 220,
+    width: '100%',
+    height: '100%',
   },
   placeholderContainer: {
     height: 220,
