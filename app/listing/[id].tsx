@@ -20,11 +20,15 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useCart } from '@/contexts/CartContext';
 import { Listing } from '@/types/database';
 import Footer from '@/components/Footer';
-import ReservationModal from '@/components/ReservationModal';
+import RentalBookingModal from '@/components/RentalBookingModal';
+import PurchaseRequestModal from '@/components/PurchaseRequestModal';
+import FreeItemRequestModal from '@/components/FreeItemRequestModal';
+import ExchangeRequestModal from '@/components/ExchangeRequestModal';
 import MapModal from '@/components/MapModal';
 import CustomModal from '@/components/CustomModal';
 import { useCustomModal } from '@/hooks/useCustomModal';
 import { getListingPurchaseType, getPurchaseButtonText, getPurchaseButtonIcon } from '@/lib/purchaseUtils';
+import { getOfferTypeBadge, getPriceLabel } from '@/lib/offerTypeUtils';
 import {
   ArrowLeft,
   MapPin,
@@ -51,7 +55,10 @@ export default function ListingDetailsScreen() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
-  const [showReservationModal, setShowReservationModal] = useState(false);
+  const [showRentalModal, setShowRentalModal] = useState(false);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [showFreeModal, setShowFreeModal] = useState(false);
+  const [showExchangeModal, setShowExchangeModal] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
   const { width } = useWindowDimensions();
   const isDesktop = width >= 768;
@@ -418,18 +425,6 @@ export default function ListingDetailsScreen() {
       return;
     }
 
-    const purchaseType = getPurchaseType();
-
-    if (purchaseType === 'reservation') {
-      setShowReservationModal(true);
-      return;
-    }
-
-    if (purchaseType === 'contact') {
-      handleContactSeller();
-      return;
-    }
-
     if (listing?.user_id === user.id) {
       modal.showError(t('common.error'), t('cart.cannotAddOwnListing'));
       return;
@@ -440,9 +435,36 @@ export default function ListingDetailsScreen() {
       return;
     }
 
-    // Si c'est une location, ouvrir le modal de réservation
-    if (isRentalListing()) {
-      setShowReservationModal(true);
+    const offerType = listing?.offer_type || listing?.listing_type;
+
+    if (offerType === 'free') {
+      setShowFreeModal(true);
+      return;
+    }
+
+    if (offerType === 'exchange') {
+      setShowExchangeModal(true);
+      return;
+    }
+
+    if (offerType === 'rent' || isRentalListing()) {
+      setShowRentalModal(true);
+      return;
+    }
+
+    const purchaseType = getPurchaseType();
+    if (purchaseType === 'reservation') {
+      setShowRentalModal(true);
+      return;
+    }
+
+    if (purchaseType === 'contact') {
+      handleContactSeller();
+      return;
+    }
+
+    if (offerType === 'sale' || listing?.listing_type === 'sale') {
+      setShowPurchaseModal(true);
       return;
     }
 
@@ -624,9 +646,7 @@ export default function ListingDetailsScreen() {
                     <View style={styles.imageOverlayTop}>
                       <View style={styles.imageBadge}>
                         <Text style={styles.imageBadgeText}>
-                          {listing.listing_type === 'sale' ? '🔖 VENTE' :
-                           listing.listing_type === 'rent' ? '🔑 LOCATION' :
-                           listing.listing_type === 'service' ? '⚙️ SERVICE' : '🛍️ RECHERCHE'}
+                          {getOfferTypeBadge(listing.offer_type, listing.listing_type, language).emoji} {getOfferTypeBadge(listing.offer_type, listing.listing_type, language).label}
                         </Text>
                       </View>
                       <View style={[styles.imageBadge, styles.conditionBadge]}>
@@ -642,7 +662,7 @@ export default function ListingDetailsScreen() {
                     <View style={styles.imageOverlayBottom}>
                       <View style={styles.imagePriceTag}>
                         <Text style={styles.imagePriceLabel}>
-                          {listing.listing_type === 'rent' ? 'Prix/jour' : 'Prix'}
+                          {getPriceLabel(listing.offer_type, listing.listing_type, language)}
                         </Text>
                         <Text style={styles.imagePriceValue}>{formatPrice(listing.price)}</Text>
                       </View>
@@ -1020,21 +1040,63 @@ export default function ListingDetailsScreen() {
       )}
 
       {listing && (
-        <ReservationModal
-          visible={showReservationModal}
-          onClose={() => setShowReservationModal(false)}
-          listing={{
-            id: listing.id,
-            title: listing.title,
-            price: listing.price,
-            user_id: listing.user_id,
-            category_slug: listing.categories?.slug,
-            subcategory_slug: listing.subcategory_slug,
-          }}
-          onSuccess={() => {
-            modal.showSuccess('Réservation confirmée !', 'Votre réservation a été enregistrée avec succès.');
-          }}
-        />
+        <>
+          <RentalBookingModal
+            visible={showRentalModal}
+            onClose={() => setShowRentalModal(false)}
+            listing={{
+              id: listing.id,
+              title: listing.title,
+              price: listing.price,
+              user_id: listing.user_id,
+              category_slug: listing.categories?.slug,
+              subcategory_slug: listing.subcategory_slug,
+            }}
+            onSuccess={() => {
+              modal.showSuccess('Réservation confirmée !', 'Votre réservation a été enregistrée avec succès.');
+            }}
+          />
+          
+          <PurchaseRequestModal
+            visible={showPurchaseModal}
+            onClose={() => setShowPurchaseModal(false)}
+            listing={{
+              id: listing.id,
+              title: listing.title,
+              price: listing.price,
+              user_id: listing.user_id,
+            }}
+            onSuccess={() => {
+              modal.showSuccess('Demande envoyée !', 'Votre demande d\'achat a été envoyée au vendeur.');
+            }}
+          />
+
+          <FreeItemRequestModal
+            visible={showFreeModal}
+            onClose={() => setShowFreeModal(false)}
+            listing={{
+              id: listing.id,
+              title: listing.title,
+              user_id: listing.user_id,
+            }}
+            onSuccess={() => {
+              modal.showSuccess('Demande envoyée !', 'Votre demande a été envoyée avec succès.');
+            }}
+          />
+
+          <ExchangeRequestModal
+            visible={showExchangeModal}
+            onClose={() => setShowExchangeModal(false)}
+            listing={{
+              id: listing.id,
+              title: listing.title,
+              user_id: listing.user_id,
+            }}
+            onSuccess={() => {
+              modal.showSuccess('Proposition envoyée !', 'Votre proposition d\'échange a été envoyée.');
+            }}
+          />
+        </>
       )}
 
       <CustomModal
