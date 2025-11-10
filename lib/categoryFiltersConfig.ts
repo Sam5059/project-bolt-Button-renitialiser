@@ -291,6 +291,47 @@ export interface AttributeDefinition {
 }
 
 export const CATEGORY_ATTRIBUTE_DEFINITIONS: Record<string, AttributeDefinition[]> = {
+  vehicles: [
+    {
+      id: 'year',
+      labelKey: 'vehicles.year',
+      inputType: 'text',
+      placeholder: 'Ex: 2020',
+    },
+    {
+      id: 'mileage',
+      labelKey: 'vehicles.mileage',
+      inputType: 'text',
+      placeholder: 'Ex: 50000 km',
+    },
+    {
+      id: 'fuel',
+      labelKey: 'vehicles.fuel',
+      inputType: 'select',
+      options: [
+        { value: 'essence', labelKey: 'vehicles.fuelEssence' },
+        { value: 'diesel', labelKey: 'vehicles.fuelDiesel' },
+        { value: 'hybride', labelKey: 'vehicles.fuelHybride' },
+        { value: 'electrique', labelKey: 'vehicles.fuelElectrique' },
+        { value: 'gpl', labelKey: 'vehicles.fuelGPL' },
+      ],
+    },
+    {
+      id: 'transmission',
+      labelKey: 'vehicles.transmission',
+      inputType: 'select',
+      options: [
+        { value: 'manuelle', labelKey: 'vehicles.transmissionManuelle' },
+        { value: 'automatique', labelKey: 'vehicles.transmissionAutomatique' },
+      ],
+    },
+    {
+      id: 'color',
+      labelKey: 'vehicles.color',
+      inputType: 'text',
+      placeholder: 'Ex: Noir',
+    },
+  ],
   animals: [
     {
       id: 'age',
