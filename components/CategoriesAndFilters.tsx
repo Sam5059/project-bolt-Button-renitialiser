@@ -241,7 +241,7 @@ export default function CategoriesAndFilters({
       console.log('Loading all listings...');
       const { data, error } = await supabase
         .from('listings')
-        .select('*, profiles(phone_number)')
+        .select('*, profiles(phone_number, whatsapp_number, messenger_username, full_name, company_name)')
         .eq('status', 'active')
         .order('created_at', { ascending: false })
         .limit(100);

@@ -5,10 +5,17 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/lib/supabase';
 
+export interface ContactOptionsData {
+  sellerName: string;
+  phoneNumber?: string;
+  whatsappNumber?: string;
+  messengerUsername?: string;
+}
+
 export function useListingActions() {
   const { user } = useAuth();
   const { language, t } = useLanguage();
-  const [visiblePhone, setVisiblePhone] = useState<string | null>(null);
+  const [contactOptionsData, setContactOptionsData] = useState<ContactOptionsData | null>(null);
 
   const onCallSeller = (listing: any) => {
     if (!listing?.profiles?.phone_number) {
@@ -19,14 +26,17 @@ export function useListingActions() {
       return;
     }
 
-    const phone = listing.profiles.phone_number;
+    const sellerName = listing.profiles?.full_name || listing.profiles?.company_name || 'Vendeur';
+    const phoneNumber = listing.profiles.phone_number;
+    const whatsappNumber = listing.profiles.whatsapp_number;
+    const messengerUsername = listing.profiles.messenger_username;
 
-    if (Platform.OS === 'web') {
-      setVisiblePhone(phone);
-      return;
-    }
-
-    Linking.openURL(`tel:${phone}`);
+    setContactOptionsData({
+      sellerName,
+      phoneNumber,
+      whatsappNumber,
+      messengerUsername,
+    });
   };
 
   const onSendMessage = async (listing: any) => {
@@ -90,14 +100,14 @@ export function useListingActions() {
     }
   };
 
-  const dismissPhone = () => {
-    setVisiblePhone(null);
+  const dismissContactOptions = () => {
+    setContactOptionsData(null);
   };
 
   return {
     onCallSeller,
     onSendMessage,
-    visiblePhone,
-    dismissPhone,
+    contactOptionsData,
+    dismissContactOptions,
   };
 }

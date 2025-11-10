@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { X, ChevronLeft, ChevronRight, Phone } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react-native';
 import TopBar from '@/components/TopBar';
 import CategoriesAndFilters from '@/components/CategoriesAndFilters';
 import ListingCard from '@/components/ListingCard';
 import SidebarResizeHandle from '@/components/SidebarResizeHandle';
+import ContactOptionsModal from '@/components/ContactOptionsModal';
 import { useListingActions } from '@/hooks/useListingActions';
 
 const isWeb = Platform.OS === 'web';
@@ -29,7 +30,7 @@ export default function SearchPage() {
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const { language } = useLanguage();
-  const { onCallSeller, onSendMessage, visiblePhone, dismissPhone } = useListingActions();
+  const { onCallSeller, onSendMessage, contactOptionsData, dismissContactOptions } = useListingActions();
 
   const [listings, setListings] = useState<any[]>([]);
   const [searchText, setSearchText] = useState(typeof q === 'string' ? q : '');
@@ -205,31 +206,16 @@ export default function SearchPage() {
         </View>
       </View>
 
-      {/* Modal Phone Number (Web only) */}
-      {isWeb && visiblePhone && (
-        <Modal
-          visible={!!visiblePhone}
-          animationType="fade"
-          transparent
-          onRequestClose={dismissPhone}
-        >
-          <View style={styles.phoneModalOverlay}>
-            <View style={styles.phoneModalContent}>
-              <Text style={styles.phoneModalTitle}>
-                {language === 'ar' ? 'رقم الهاتف' : language === 'en' ? 'Phone Number' : 'Numéro de téléphone'}
-              </Text>
-              <View style={styles.phoneNumberRow}>
-                <Phone size={20} color="#10B981" />
-                <Text style={styles.phoneNumber}>{visiblePhone}</Text>
-              </View>
-              <TouchableOpacity style={styles.phoneModalButton} onPress={dismissPhone}>
-                <Text style={styles.phoneModalButtonText}>
-                  {language === 'ar' ? 'إغلاق' : language === 'en' ? 'Close' : 'Fermer'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
+      {/* Contact Options Modal */}
+      {contactOptionsData && (
+        <ContactOptionsModal
+          visible={!!contactOptionsData}
+          onClose={dismissContactOptions}
+          sellerName={contactOptionsData.sellerName}
+          phoneNumber={contactOptionsData.phoneNumber}
+          whatsappNumber={contactOptionsData.whatsappNumber}
+          messengerUsername={contactOptionsData.messengerUsername}
+        />
       )}
 
       {/* Modal Filtres Mobile */}
