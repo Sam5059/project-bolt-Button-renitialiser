@@ -18,8 +18,6 @@ import ListingCard from '@/components/ListingCard';
 import SidebarResizeHandle from '@/components/SidebarResizeHandle';
 import ContactOptionsModal from '@/components/ContactOptionsModal';
 import { useListingActions } from '@/hooks/useListingActions';
-import { useCart } from '@/contexts/CartContext';
-import { Alert } from 'react-native';
 
 const isWeb = Platform.OS === 'web';
 const SIDEBAR_DEFAULT_WIDTH = 320;
@@ -33,8 +31,6 @@ export default function SearchPage() {
   const isMobile = width < 768;
   const { language } = useLanguage();
   const { onCallSeller, onSendMessage, contactOptionsData, dismissContactOptions } = useListingActions();
-  const { addToCart } = useCart();
-  const [reservationListing, setReservationListing] = useState<any>(null);
 
   const [listings, setListings] = useState<any[]>([]);
   const [searchText, setSearchText] = useState(typeof q === 'string' ? q : '');
@@ -77,29 +73,6 @@ export default function SearchPage() {
       localStorage.setItem('sidebarCollapsed', newCollapsed.toString());
     }
   }, [sidebarCollapsed]);
-
-  const handleAddToCart = async (listing: any) => {
-    try {
-      await addToCart(listing.id);
-      Alert.alert(
-        language === 'ar' ? 'تم' : language === 'en' ? 'Success' : 'Succès',
-        language === 'ar'
-          ? 'تمت الإضافة إلى السلة'
-          : language === 'en'
-          ? 'Added to cart'
-          : 'Ajouté au panier'
-      );
-    } catch (error: any) {
-      Alert.alert(
-        language === 'ar' ? 'خطأ' : language === 'en' ? 'Error' : 'Erreur',
-        error.message || (language === 'ar' ? 'فشل في إضافة المنتج' : language === 'en' ? 'Failed to add to cart' : 'Impossible d\'ajouter au panier')
-      );
-    }
-  };
-
-  const handleReserve = (listing: any) => {
-    setReservationListing(listing);
-  };
 
   const handleSearch = () => {
     // La recherche sera gérée par le composant CategoriesAndFilters
@@ -224,8 +197,6 @@ export default function SearchPage() {
                       isWeb={isWeb}
                       onCallSeller={() => onCallSeller(listing)}
                       onSendMessage={() => onSendMessage(listing)}
-                      onAddToCart={() => handleAddToCart(listing)}
-                      onReserve={() => handleReserve(listing)}
                     />
                   </View>
                 ))}

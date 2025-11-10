@@ -268,12 +268,6 @@ export default function CategoriesAndFilters({
   }, [selectedCategory]);
 
   useEffect(() => {
-    if (selectedCategory) {
-      loadBrandsForCategory();
-    }
-  }, [filters.subcategory_id]);
-
-  useEffect(() => {
     if (filters.brand_id) {
       loadModels(filters.brand_id);
     }
@@ -378,6 +372,7 @@ export default function CategoriesAndFilters({
 
     console.log('[loadBrandsForCategory] Loading brands for category:', selectedCategory);
 
+    // Déterminer le type de catégorie pour la table brands
     const brandCategoryType = getCategoryTypeForBrands(selectedCategory);
 
     if (!brandCategoryType) {
@@ -388,29 +383,12 @@ export default function CategoriesAndFilters({
 
     console.log('[loadBrandsForCategory] Brand category type:', brandCategoryType);
 
-    let data, error;
-
-    const subcategoryId = filters.subcategory_id;
-    const subcategorySlug = subcategoryId 
-      ? subcategories.find(sub => sub.id === subcategoryId)?.slug 
-      : null;
-
-    if (brandCategoryType === 'vehicles' && subcategorySlug) {
-      console.log('[loadBrandsForCategory] Using RPC with subcategory:', subcategorySlug);
-      
-      ({ data, error } = await supabase.rpc('get_brands_by_subcategory', {
-        p_category_type: brandCategoryType,
-        p_vehicle_type: subcategorySlug
-      }));
-    } else {
-      console.log('[loadBrandsForCategory] Using direct query');
-      
-      ({ data, error } = await supabase
-        .from('brands')
-        .select('*')
-        .eq('category_type', brandCategoryType)
-        .order('name'));
-    }
+    // Charger les marques filtrées par type de catégorie
+    const { data, error } = await supabase
+      .from('brands')
+      .select('*')
+      .eq('category_type', brandCategoryType)
+      .order('name');
 
     if (error) {
       console.error('[loadBrandsForCategory] Error loading brands:', error);

@@ -385,12 +385,8 @@ export default function PublishScreen() {
           .maybeSingle();
 
         if (parentCategory?.slug === 'vehicules') {
-          const { data: subcategoryData } = await supabase
-            .from('categories')
-            .select('slug')
-            .eq('id', data.category_id)
-            .maybeSingle();
-          await loadBrands('vehicles', subcategoryData?.slug);
+          await loadBrands('vehicles');
+          // Load models if brand is already selected
           if (data.attributes?.brand_id) {
             await loadModels(data.attributes.brand_id);
           }
@@ -503,26 +499,14 @@ export default function PublishScreen() {
     }
   };
 
-  const loadBrands = async (categoryType: string, subcategorySlug?: string) => {
-    console.log('[BRANDS] Loading brands for category type:', categoryType, 'subcategory:', subcategorySlug);
+  const loadBrands = async (categoryType: string) => {
+    console.log('[BRANDS] Loading brands for category type:', categoryType);
     setLoadingBrands(true);
-    
-    let data, error;
-
-    if (categoryType === 'vehicles' && subcategorySlug) {
-      console.log('[BRANDS] Using RPC with subcategory:', subcategorySlug);
-      ({ data, error } = await supabase.rpc('get_brands_by_subcategory', {
-        p_category_type: categoryType,
-        p_vehicle_type: subcategorySlug
-      }));
-    } else {
-      console.log('[BRANDS] Using direct query');
-      ({ data, error } = await supabase
-        .from('brands')
-        .select('*')
-        .eq('category_type', categoryType)
-        .order('name'));
-    }
+    const { data, error } = await supabase
+      .from('brands')
+      .select('*')
+      .eq('category_type', categoryType)
+      .order('name');
 
     setLoadingBrands(false);
 
@@ -1566,8 +1550,7 @@ export default function PublishScreen() {
                     // Load brands if this is a vehicle subcategory
                     const parentCategory = categories.find(c => c.id === parentCategoryId);
                     if (parentCategory?.slug === 'vehicules' && value) {
-                      const subcategoryData = subcategories.find(s => s.id === value);
-                      await loadBrands('vehicles', subcategoryData?.slug);
+                      await loadBrands('vehicles');
                     } else if (parentCategory?.slug === 'electronique' && value) {
                       await loadBrands('electronics');
                     }
