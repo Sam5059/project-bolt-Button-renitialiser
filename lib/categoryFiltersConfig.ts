@@ -98,6 +98,12 @@ export const CATEGORY_FILTERS_CONFIG: Record<string, CategoryFilterConfig> = {
     disabled: ['brand', 'model', 'year', 'fuel', 'transmission', 'mileage', 'color', 'propertyType', 'surface', 'rooms', 'bedrooms', 'bathrooms', 'furnished', 'monthlyRent', 'amenities', 'deviceType', 'storage', 'contractType', 'salary', 'experience', 'sector'],
     description: 'Location d\'équipement',
   },
+  sport: {
+    categoryType: 'sport',
+    enabled: ['listingType', 'subcategory', 'brand', 'price', 'condition', 'location'],
+    disabled: ['model', 'year', 'fuel', 'transmission', 'mileage', 'color', 'propertyType', 'surface', 'rooms', 'bedrooms', 'bathrooms', 'furnished', 'monthlyRent', 'amenities', 'deviceType', 'storage', 'contractType', 'salary', 'experience', 'sector'],
+    description: 'Sport: équipements sportifs, salles de sport, vêtements de sport',
+  },
   generic: {
     categoryType: 'generic',
     enabled: ['listingType', 'subcategory', 'price', 'condition', 'location'],
@@ -204,6 +210,16 @@ export const SLUG_TO_CATEGORY_TYPE: Record<string, string> = {
   // Location d'équipement
   'location-equipement': 'equipment_rental',
   'materiel': 'equipment_rental',
+  
+  // Sport
+  'sport': 'sport',
+  'sports': 'sport',
+  'sports-loisirs': 'sport',
+  'equipements-sport': 'sport',
+  'vetements-sport': 'sport',
+  'salles-sport': 'sport',
+  'fitness': 'sport',
+  'musculation': 'sport',
 };
 
 /**

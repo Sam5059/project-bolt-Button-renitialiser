@@ -264,6 +264,41 @@ export const categoryKeywords: CategoryKeywords = {
       'يوم', 'أسبوع', 'شهر', 'يومي', 'عطلة نهاية الأسبوع', 'قصير المدى', 'طويل المدى',
       'ضمان', 'تأمين', 'متاح', 'حجز'
     ]
+  },
+  sport: {
+    fr: [
+      'sport', 'sportif', 'fitness', 'musculation', 'gym', 'salle de sport',
+      'entraînement', 'exercice', 'yoga', 'pilates', 'crossfit', 'cardio',
+      'équipement sportif', 'matériel sport', 'accessoire sport',
+      'football', 'basket', 'tennis', 'natation', 'running', 'jogging', 'vélo', 'cyclisme',
+      'haltère', 'poids', 'banc', 'tapis de course', 'vélo d\'appartement', 'rameur',
+      'vêtement sport', 'tenue sport', 'short', 'legging', 'brassière', 'chaussure sport',
+      'nike', 'adidas', 'puma', 'reebok', 'under armour', 'decathlon',
+      'ballon', 'raquette', 'but', 'filet', 'corde à sauter', 'élastique',
+      'abdos', 'biceps', 'triceps', 'squat', 'développé couché', 'curl'
+    ],
+    en: [
+      'sport', 'sports', 'fitness', 'gym', 'bodybuilding', 'workout', 'training',
+      'exercise', 'yoga', 'pilates', 'crossfit', 'cardio', 'athletic',
+      'sports equipment', 'gear', 'accessory',
+      'football', 'soccer', 'basketball', 'tennis', 'swimming', 'running', 'cycling',
+      'dumbbell', 'weight', 'bench', 'treadmill', 'exercise bike', 'rowing machine',
+      'sportswear', 'activewear', 'shorts', 'leggings', 'sports bra', 'sneakers',
+      'nike', 'adidas', 'puma', 'reebok', 'under armour', 'decathlon',
+      'ball', 'racket', 'goal', 'net', 'jump rope', 'resistance band',
+      'abs', 'biceps', 'triceps', 'squat', 'bench press', 'curl'
+    ],
+    ar: [
+      'رياضة', 'رياضي', 'لياقة', 'كمال أجسام', 'جيم', 'قاعة رياضة',
+      'تمرين', 'تدريب', 'يوغا', 'بيلاتس', 'كروسفيت', 'كارديو',
+      'معدات رياضية', 'أدوات رياضة', 'إكسسوارات رياضية',
+      'كرة قدم', 'سلة', 'تنس', 'سباحة', 'جري', 'دراجة', 'ركوب الدراجات',
+      'دمبل', 'أوزان', 'مقعد', 'جهاز مشي', 'دراجة ثابتة', 'جهاز تجديف',
+      'ملابس رياضية', 'شورت', 'ليجنز', 'حمالة رياضية', 'حذاء رياضي',
+      'نايك', 'أديداس', 'بوما', 'ريبوك', 'أندر أرمور', 'ديكاثلون',
+      'كرة', 'مضرب', 'هدف', 'شبكة', 'حبل قفز', 'شريط مطاطي',
+      'بطن', 'عضلات', 'ذراع', 'قرفصاء', 'ضغط'
+    ]
   }
 };
 
@@ -280,7 +315,8 @@ export const CATEGORY_KEYWORD_TO_SLUG: Record<string, string> = {
   'animals': 'animaux',
   'services': 'services',
   'jobs': 'emploi',
-  'rentals': 'location-immobiliere'
+  'rentals': 'location-immobiliere',
+  'sport': 'sport'               // Sport
 };
 
 /**

@@ -804,9 +804,8 @@ export default function CategoriesAndFilters({
   const getWilayaName = (code: string) => {
     const wilaya = wilayas.find(w => w.code === code);
     if (!wilaya) return code;
-    if (language === 'ar') return wilaya.name_ar || wilaya.name_fr;
-    if (language === 'en') return wilaya.name_en || wilaya.name_fr;
-    return wilaya.name_fr;
+    const name = language === 'ar' ? wilaya.name_ar || wilaya.name_fr : language === 'en' ? wilaya.name_en || wilaya.name_fr : wilaya.name_fr;
+    return `${wilaya.code} - ${name}`;
   };
 
   const getCommuneName = (communeName: string) => {
