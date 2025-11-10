@@ -36,8 +36,18 @@ export default function HomePage() {
   }
 
   async function fetchCategoriesWithListings() {
+    // Charger TOUTES les catégories une seule fois pour mapping
+    const { data: allCategories } = await supabase
+      .from('categories')
+      .select('*');
+
+    // Créer un map pour lookup rapide
+    const categoryMap = new Map();
+    allCategories?.forEach(cat => {
+      categoryMap.set(cat.id, cat);
+    });
+
     // Récupérer toutes les catégories parentes principales
-    // Exclure la catégorie "Stores PRO" car les annonces de l'accueil sont pour les particuliers
     const { data: parentCategories } = await supabase
       .from('categories')
       .select('*')
@@ -58,85 +68,49 @@ export default function HomePage() {
 
         const subcategoryIds = subcats ? subcats.map(s => s.id) : [];
 
-        // Si la catégorie n'a pas de sous-catégories, ne pas récupérer d'annonces
         if (subcategoryIds.length === 0) {
-          return {
-            category,
-            listings: [],
-          };
+          return { category, listings: [] };
         }
 
         // Récupérer les annonces de ces sous-catégories
-        const { data: listings, error } = await supabase
+        const { data: listings } = await supabase
           .from('listings')
-          .select(`
-            *,
-            profiles(phone_number, whatsapp_number, messenger_username, full_name)
-          `)
+          .select('*, profiles(phone_number, whatsapp_number, messenger_username, full_name)')
           .eq('status', 'active')
           .in('category_id', subcategoryIds)
           .order('created_at', { ascending: false })
           .limit(20);
 
-        if (error) {
-          console.error('[HomePage] Error fetching listings:', error);
-        }
-
-        // Filtrer les véhicules mal catégorisés dans Location Immobilière
         let filteredListings = listings || [];
+        
+        // Filtrer véhicules mal catégorisés
         if (category.slug === 'location-immobiliere' || category.slug === 'immobilier-location') {
           filteredListings = filteredListings.filter(listing => {
             const title = listing.title?.toLowerCase() || '';
-            // Exclure si le titre contient des mots-clés de véhicules
-            const isVehicle =
-              title.includes('bmw') ||
-              title.includes('mercedes') ||
-              title.includes('benz') ||
-              title.includes('dacia') ||
-              title.includes('serie') ||
-              title.includes('voiture') ||
-              title.includes('auto') ||
-              title.includes('moto') ||
-              title.includes('vehicule') ||
-              title.includes('véhicule');
-            return !isVehicle;
+            return !(title.includes('bmw') || title.includes('mercedes') || 
+                    title.includes('voiture') || title.includes('moto'));
           });
         }
 
-        // Enrichir les listings avec les slugs de catégorie
-        const normalizedListings = await Promise.all(filteredListings.map(async (listing) => {
-          // Récupérer la catégorie et sa parente si nécessaire
-          const { data: cat } = await supabase
-            .from('categories')
-            .select('slug, parent_id')
-            .eq('id', listing.category_id)
-            .single();
-
-          let parentSlug = null;
-          if (cat?.parent_id) {
-            const { data: parentCat } = await supabase
-              .from('categories')
-              .select('slug')
-              .eq('id', cat.parent_id)
-              .single();
-            parentSlug = parentCat?.slug || null;
-          }
-
+        // Enrichir avec slugs en utilisant le map (PAS de requêtes supplémentaires !)
+        const enrichedListings = filteredListings.map(listing => {
+          const cat = categoryMap.get(listing.category_id);
+          const parentCat = cat?.parent_id ? categoryMap.get(cat.parent_id) : null;
+          
           return {
             ...listing,
             category_slug: cat?.slug || null,
-            parent_category_slug: parentSlug,
+            parent_category_slug: parentCat?.slug || null,
           };
-        }));
+        });
 
         return {
           category,
-          listings: normalizedListings,
+          listings: enrichedListings,
         };
       })
     );
 
-    // Filtrer seulement les catégories qui ont des annonces
     setCategoriesWithListings(categoriesData.filter(c => c.listings.length > 0));
   }
 

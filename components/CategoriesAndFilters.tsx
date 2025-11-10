@@ -239,6 +239,12 @@ export default function CategoriesAndFilters({
     setLoading(true);
     try {
       console.log('Loading all listings...');
+      
+      // Charger toutes les catégories pour mapping
+      const { data: allCategories } = await supabase.from('categories').select('*');
+      const categoryMap = new Map();
+      allCategories?.forEach(cat => categoryMap.set(cat.id, cat));
+      
       const { data, error } = await supabase
         .from('listings')
         .select('*, profiles(phone_number, whatsapp_number, messenger_username, full_name, company_name)')
@@ -252,30 +258,17 @@ export default function CategoriesAndFilters({
       } else if (data) {
         console.log('Loaded listings count:', data.length);
         
-        // Enrichir avec category_slug et parent_category_slug
-        const enrichedData = await Promise.all(data.map(async (listing) => {
-          const { data: cat } = await supabase
-            .from('categories')
-            .select('slug, parent_id')
-            .eq('id', listing.category_id)
-            .single();
-
-          let parentSlug = null;
-          if (cat?.parent_id) {
-            const { data: parentCat } = await supabase
-              .from('categories')
-              .select('slug')
-              .eq('id', cat.parent_id)
-              .single();
-            parentSlug = parentCat?.slug || null;
-          }
-
+        // Enrichir avec category_slug et parent_category_slug en utilisant le map
+        const enrichedData = data.map(listing => {
+          const cat = categoryMap.get(listing.category_id);
+          const parentCat = cat?.parent_id ? categoryMap.get(cat.parent_id) : null;
+          
           return {
             ...listing,
             category_slug: cat?.slug || null,
-            parent_category_slug: parentSlug,
+            parent_category_slug: parentCat?.slug || null,
           };
-        }));
+        });
         
         console.log('Enriched listings with category info:', enrichedData[0]?.category_slug, enrichedData[0]?.parent_category_slug);
         onFiltersApply(enrichedData);
