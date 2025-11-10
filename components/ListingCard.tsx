@@ -10,7 +10,8 @@ import {
   Platform,
 } from 'react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Phone, MessageCircle } from 'lucide-react-native';
+import { Phone, MessageCircle, ShoppingCart, Calendar } from 'lucide-react-native';
+import { getListingPurchaseType } from '@/lib/purchaseUtils';
 
 interface ListingCardProps {
   listing: any;
@@ -21,15 +22,22 @@ interface ListingCardProps {
   averagePrice?: number | null;
   onCallSeller?: () => void;
   onSendMessage?: () => void;
+  onAddToCart?: () => void;
+  onReserve?: () => void;
 }
 
-export default function ListingCard({ listing, onPress, isWeb = false, width, distance, averagePrice, onCallSeller, onSendMessage }: ListingCardProps) {
+export default function ListingCard({ listing, onPress, isWeb = false, width, distance, averagePrice, onCallSeller, onSendMessage, onAddToCart, onReserve }: ListingCardProps) {
   const { language } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const screenWidth = Dimensions.get('window').width;
   const cardWidth = width || (isWeb ? 280 : screenWidth - 32);
 
   console.log('[ListingCard] Rendering:', listing?.title, 'isWeb:', isWeb, 'cardWidth:', cardWidth);
+
+  const purchaseType = getListingPurchaseType(
+    listing?.category_slug || '',
+    listing?.parent_category_slug
+  );
 
   const formatPrice = (price: number) => {
     if (!price) return new Intl.NumberFormat('fr-DZ', {
@@ -278,6 +286,22 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
         {/* Footer avec boutons d'action à gauche et lien "Détails" à droite */}
         <View style={styles.footer}>
           <View style={styles.quickActionsContainer}>
+            {purchaseType === 'cart' && onAddToCart && (
+              <TouchableOpacity
+                style={[styles.quickActionBtn, styles.quickActionBtnCart]}
+                onPress={onAddToCart}
+              >
+                <ShoppingCart size={18} color="#FFFFFF" strokeWidth={2.5} />
+              </TouchableOpacity>
+            )}
+            {purchaseType === 'reservation' && onReserve && (
+              <TouchableOpacity
+                style={[styles.quickActionBtn, styles.quickActionBtnReserve]}
+                onPress={onReserve}
+              >
+                <Calendar size={18} color="#FFFFFF" strokeWidth={2.5} />
+              </TouchableOpacity>
+            )}
             {onCallSeller && (
               <TouchableOpacity
                 style={styles.quickActionBtn}
@@ -596,6 +620,12 @@ const styles = StyleSheet.create({
   },
   quickActionBtnMessage: {
     backgroundColor: '#2563EB',
+  },
+  quickActionBtnCart: {
+    backgroundColor: '#8B5CF6',
+  },
+  quickActionBtnReserve: {
+    backgroundColor: '#F59E0B',
   },
   detailsLinkContainer: {
     alignSelf: 'flex-end',
