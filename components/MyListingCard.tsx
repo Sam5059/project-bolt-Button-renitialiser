@@ -9,9 +9,11 @@ import {
   ScrollView,
   Platform,
   ActivityIndicator,
+  Modal,
+  Pressable,
 } from 'react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Edit, Trash2, Eye, EyeOff, CheckCircle } from 'lucide-react-native';
+import { Edit, Trash2, Eye, EyeOff, CheckCircle, MoreVertical } from 'lucide-react-native';
 
 interface MyListingCardProps {
   listing: any;
@@ -38,6 +40,7 @@ export default function MyListingCard({
 }: MyListingCardProps) {
   const { language, t } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [menuVisible, setMenuVisible] = useState(false);
   const screenWidth = Dimensions.get('window').width;
   const cardWidth = width || (isWeb ? 280 : screenWidth - 32);
 
@@ -144,91 +147,114 @@ export default function MyListingCard({
           {formatPrice(parseFloat(listing.price))}
         </Text>
 
-        {/* Action Buttons */}
+        {/* Actions Menu Button */}
         <View style={styles.actionsContainer}>
-          {/* Modifier */}
           <TouchableOpacity
-            style={[styles.actionButton, styles.editButton]}
+            style={styles.menuButton}
             onPress={(e) => {
               e.stopPropagation();
-              onEdit();
+              setMenuVisible(true);
             }}
             activeOpacity={0.7}
           >
-            <Edit size={16} color="#2563EB" strokeWidth={2.5} />
-            <Text style={[styles.actionText, styles.editText]}>
-              {t('myListings.edit')}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Désactiver/Réactiver */}
-          <TouchableOpacity
-            style={[
-              styles.actionButton,
-              listing.status === 'active' ? styles.deactivateButton : styles.activateButton,
-            ]}
-            onPress={(e) => {
-              e.stopPropagation();
-              onToggleStatus();
-            }}
-            activeOpacity={0.7}
-          >
-            {listing.status === 'active' ? (
-              <>
-                <EyeOff size={16} color="#F59E0B" strokeWidth={2.5} />
-                <Text style={[styles.actionText, styles.deactivateText]}>
-                  {t('myListings.deactivate')}
-                </Text>
-              </>
-            ) : (
-              <>
-                <Eye size={16} color="#10B981" strokeWidth={2.5} />
-                <Text style={[styles.actionText, styles.activateText]}>
-                  {t('myListings.activate')}
-                </Text>
-              </>
-            )}
-          </TouchableOpacity>
-
-          {/* Marquer comme vendu (si pas déjà vendu) */}
-          {listing.status !== 'sold' && (
-            <TouchableOpacity
-              style={[styles.actionButton, styles.soldButton]}
-              onPress={(e) => {
-                e.stopPropagation();
-                onMarkAsSold();
-              }}
-              activeOpacity={0.7}
-            >
-              <CheckCircle size={16} color="#8B5CF6" strokeWidth={2.5} />
-              <Text style={[styles.actionText, styles.soldText]}>
-                {t('myListings.markAsSold')}
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          {/* Supprimer */}
-          <TouchableOpacity
-            style={[styles.actionButton, styles.deleteButton]}
-            onPress={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            activeOpacity={0.7}
-            disabled={isDeleting}
-          >
-            {isDeleting ? (
-              <ActivityIndicator size="small" color="#EF4444" />
-            ) : (
-              <>
-                <Trash2 size={16} color="#EF4444" strokeWidth={2.5} />
-                <Text style={[styles.actionText, styles.deleteText]}>
-                  {t('myListings.delete')}
-                </Text>
-              </>
-            )}
+            <MoreVertical size={20} color="#64748B" />
           </TouchableOpacity>
         </View>
+
+        {/* Dropdown Menu */}
+        <Modal
+          visible={menuVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setMenuVisible(false)}
+        >
+          <Pressable
+            style={styles.menuOverlay}
+            onPress={() => setMenuVisible(false)}
+          >
+            <View style={styles.menuDropdown}>
+              {/* Modifier */}
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  onEdit();
+                }}
+                activeOpacity={0.7}
+              >
+                <Edit size={18} color="#2563EB" strokeWidth={2.5} />
+                <Text style={[styles.menuItemText, styles.editText]}>
+                  {t('myListings.edit')}
+                </Text>
+              </TouchableOpacity>
+
+              {/* Désactiver/Réactiver */}
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  onToggleStatus();
+                }}
+                activeOpacity={0.7}
+              >
+                {listing.status === 'active' ? (
+                  <>
+                    <EyeOff size={18} color="#F59E0B" strokeWidth={2.5} />
+                    <Text style={[styles.menuItemText, styles.deactivateText]}>
+                      {t('myListings.deactivate')}
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Eye size={18} color="#10B981" strokeWidth={2.5} />
+                    <Text style={[styles.menuItemText, styles.activateText]}>
+                      {t('myListings.activate')}
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+
+              {/* Marquer comme vendu (si pas déjà vendu) */}
+              {listing.status !== 'sold' && (
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => {
+                    setMenuVisible(false);
+                    onMarkAsSold();
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <CheckCircle size={18} color="#8B5CF6" strokeWidth={2.5} />
+                  <Text style={[styles.menuItemText, styles.soldText]}>
+                    {t('myListings.markAsSold')}
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              {/* Supprimer */}
+              <TouchableOpacity
+                style={[styles.menuItem, styles.menuItemLast]}
+                onPress={() => {
+                  setMenuVisible(false);
+                  onDelete();
+                }}
+                activeOpacity={0.7}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <ActivityIndicator size="small" color="#EF4444" />
+                ) : (
+                  <>
+                    <Trash2 size={18} color="#EF4444" strokeWidth={2.5} />
+                    <Text style={[styles.menuItemText, styles.deleteText]}>
+                      {t('myListings.delete')}
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modal>
       </View>
     </TouchableOpacity>
   );
@@ -342,45 +368,55 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   actionsContainer: {
-    gap: 8,
-  },
-  actionButton: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    justifyContent: 'flex-end',
+  },
+  menuButton: {
+    padding: 8,
     borderRadius: 8,
-    borderWidth: 1.5,
+    backgroundColor: '#F1F5F9',
     ...(Platform.OS === 'web' && {
       cursor: 'pointer',
       transition: 'all 0.2s',
     }),
   },
-  editButton: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#BFDBFE',
+  menuOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  deactivateButton: {
-    backgroundColor: '#FEF3C7',
-    borderColor: '#FDE68A',
+  menuDropdown: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    minWidth: 220,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+    overflow: 'hidden',
   },
-  activateButton: {
-    backgroundColor: '#D1FAE5',
-    borderColor: '#A7F3D0',
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+      transition: 'background-color 0.2s',
+    }),
   },
-  soldButton: {
-    backgroundColor: '#F3E8FF',
-    borderColor: '#E9D5FF',
+  menuItemLast: {
+    borderBottomWidth: 0,
   },
-  deleteButton: {
-    backgroundColor: '#FEE2E2',
-    borderColor: '#FECACA',
-  },
-  actionText: {
-    fontSize: 14,
+  menuItemText: {
+    fontSize: 15,
     fontWeight: '600',
+    flex: 1,
   },
   editText: {
     color: '#2563EB',

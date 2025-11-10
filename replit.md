@@ -14,7 +14,7 @@ BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) a
   - Combined filtering logic (status + category)
   - Category counters showing the number of listings per category (dynamically updates based on status filter)
   - Full multilingual support with RTL compatibility
-- **New MyListingCard Component**: Action buttons integrated directly into cards (Edit, Deactivate/Reactivate, Mark as Sold, Delete)
+- **New MyListingCard Component**: Compact dropdown menu with "three dots" button replacing stacked action buttons, providing cleaner UI with Edit, Deactivate/Reactivate, Mark as Sold, and Delete actions in a modal overlay
 - **MyListingsSidebar Component**: Filter panel with live counts, category filtering, and multilingual support
 - **Improved UX**: Users can manage all their listings in one place with visual status badges, category filtering, and quick actions
 
