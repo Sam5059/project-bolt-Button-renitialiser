@@ -237,6 +237,14 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
           </Text>
         </View>
 
+        {listing.delivery_methods && listing.delivery_methods.includes('shipping') && (
+          <View style={[styles.badge, styles.badgeDelivery, { top: 48 }]}>
+            <Text style={styles.badgeText}>
+              🚚 {t('publish.delivery.available')}
+            </Text>
+          </View>
+        )}
+
         {(listing.commune || listing.wilaya || distance !== null) && (
           <View style={styles.imageOverlay}>
             {(listing.commune || listing.wilaya) && (
@@ -472,6 +480,9 @@ const styles = StyleSheet.create({
   },
   badgeWanted: {
     backgroundColor: '#F97316',
+  },
+  badgeDelivery: {
+    backgroundColor: '#06B6D4',
   },
   badgeText: {
     color: '#FFFFFF',
