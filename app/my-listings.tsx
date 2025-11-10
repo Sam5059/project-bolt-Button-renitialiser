@@ -17,7 +17,7 @@ import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/lib/supabase';
-import { Listing } from '@/types/database';
+import { Listing, Category } from '@/types/database';
 import { Plus, ChevronLeft, ChevronRight, Trash2, X } from 'lucide-react-native';
 import TopBar from '@/components/TopBar';
 import ListingsQuotaCard from '@/components/ListingsQuotaCard';
@@ -42,6 +42,8 @@ export default function MyListingsScreen() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [listingToDelete, setListingToDelete] = useState<Listing | null>(null);
@@ -73,6 +75,7 @@ export default function MyListingsScreen() {
   useEffect(() => {
     loadListings();
     loadListingsQuota();
+    loadCategories();
   }, []);
 
   const loadListings = async () => {
@@ -113,6 +116,15 @@ export default function MyListingsScreen() {
     }
   };
 
+  const loadCategories = async () => {
+    const { data } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (data) setCategories(data);
+  };
+
   const handleSidebarResize = useCallback((newWidth: number) => {
     setSidebarWidth(newWidth);
     if (isWeb) {
@@ -129,9 +141,18 @@ export default function MyListingsScreen() {
   }, [sidebarCollapsed]);
 
   const filteredListings = useMemo(() => {
-    if (selectedFilter === 'all') return listings;
-    return listings.filter((listing) => listing.status === selectedFilter);
-  }, [listings, selectedFilter]);
+    let filtered = listings;
+
+    if (selectedFilter !== 'all') {
+      filtered = filtered.filter((listing) => listing.status === selectedFilter);
+    }
+
+    if (selectedCategory) {
+      filtered = filtered.filter((listing) => listing.category_id === selectedCategory);
+    }
+
+    return filtered;
+  }, [listings, selectedFilter, selectedCategory]);
 
   const counts = useMemo(() => {
     return {
@@ -300,6 +321,9 @@ export default function MyListingsScreen() {
             <MyListingsSidebar
               selectedFilter={selectedFilter}
               onFilterChange={setSelectedFilter}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              categories={categories}
               counts={counts}
             />
           </View>

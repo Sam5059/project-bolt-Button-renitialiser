@@ -5,13 +5,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Package, Eye, EyeOff, CheckCircle, LayoutGrid } from 'lucide-react-native';
+import { Package, Eye, EyeOff, CheckCircle, LayoutGrid, Folder, X } from 'lucide-react-native';
+import { Category } from '@/types/database';
 
 interface MyListingsSidebarProps {
   selectedFilter: 'all' | 'active' | 'suspended' | 'sold';
   onFilterChange: (filter: 'all' | 'active' | 'suspended' | 'sold') => void;
+  selectedCategory: string | null;
+  onCategoryChange: (categoryId: string | null) => void;
+  categories: Category[];
   counts: {
     all: number;
     active: number;
@@ -23,9 +28,19 @@ interface MyListingsSidebarProps {
 export default function MyListingsSidebar({
   selectedFilter,
   onFilterChange,
+  selectedCategory,
+  onCategoryChange,
+  categories,
   counts,
 }: MyListingsSidebarProps) {
-  const { t, isRTL } = useLanguage();
+  const { t, language, isRTL } = useLanguage();
+
+  const getCategoryName = (category: Category) => {
+    if (language === 'ar' && category.name_ar) return category.name_ar;
+    if (language === 'en' && category.name) return category.name;
+    if (language === 'fr' && category.name) return category.name;
+    return category.name || category.name_ar;
+  };
 
   const filters = [
     {
@@ -66,56 +81,111 @@ export default function MyListingsSidebar({
         </Text>
       </View>
 
-      <View style={styles.filtersList}>
-        {filters.map((filter) => {
-          const isSelected = selectedFilter === filter.id;
-          const Icon = filter.icon;
+      <ScrollView style={styles.scrollContent}>
+        <View style={styles.filtersList}>
+          {filters.map((filter) => {
+            const isSelected = selectedFilter === filter.id;
+            const Icon = filter.icon;
 
-          return (
-            <TouchableOpacity
-              key={filter.id}
-              style={[
-                styles.filterItem,
-                isSelected && styles.filterItemSelected,
-              ]}
-              onPress={() => onFilterChange(filter.id)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.filterContent}>
-                <Icon
-                  size={20}
-                  color={isSelected ? filter.color : '#94A3B8'}
-                  strokeWidth={2}
-                />
-                <Text
-                  style={[
-                    styles.filterLabel,
-                    isSelected && styles.filterLabelSelected,
-                    isRTL && styles.textRTL,
-                  ]}
-                >
-                  {filter.label}
-                </Text>
-              </View>
-              <View
+            return (
+              <TouchableOpacity
+                key={filter.id}
                 style={[
-                  styles.countBadge,
-                  isSelected && { backgroundColor: filter.color },
+                  styles.filterItem,
+                  isSelected && styles.filterItemSelected,
                 ]}
+                onPress={() => onFilterChange(filter.id)}
+                activeOpacity={0.7}
               >
-                <Text
+                <View style={styles.filterContent}>
+                  <Icon
+                    size={20}
+                    color={isSelected ? filter.color : '#94A3B8'}
+                    strokeWidth={2}
+                  />
+                  <Text
+                    style={[
+                      styles.filterLabel,
+                      isSelected && styles.filterLabelSelected,
+                      isRTL && styles.textRTL,
+                    ]}
+                  >
+                    {filter.label}
+                  </Text>
+                </View>
+                <View
                   style={[
-                    styles.countText,
-                    isSelected && styles.countTextSelected,
+                    styles.countBadge,
+                    isSelected && { backgroundColor: filter.color },
                   ]}
                 >
-                  {filter.count}
+                  <Text
+                    style={[
+                      styles.countText,
+                      isSelected && styles.countTextSelected,
+                    ]}
+                  >
+                    {filter.count}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {categories.length > 0 && (
+          <View style={styles.categoriesSection}>
+            <View style={styles.sectionHeader}>
+              <Folder size={16} color="#64748B" />
+              <Text style={[styles.sectionTitle, isRTL && styles.textRTL]}>
+                {t('myListings.filters.categories')}
+              </Text>
+            </View>
+
+            {selectedCategory && (
+              <TouchableOpacity
+                style={styles.clearButton}
+                onPress={() => onCategoryChange(null)}
+                activeOpacity={0.7}
+              >
+                <X size={14} color="#64748B" />
+                <Text style={[styles.clearButtonText, isRTL && styles.textRTL]}>
+                  {t('common.all')}
                 </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+              </TouchableOpacity>
+            )}
+
+            <View style={styles.categoriesList}>
+              {categories.map((category) => {
+                const isSelected = selectedCategory === category.id;
+
+                return (
+                  <TouchableOpacity
+                    key={category.id}
+                    style={[
+                      styles.categoryItem,
+                      isSelected && styles.categoryItemSelected,
+                    ]}
+                    onPress={() => onCategoryChange(isSelected ? null : category.id)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.categoryLabel,
+                        isSelected && styles.categoryLabelSelected,
+                        isRTL && styles.textRTL,
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {getCategoryName(category)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        )}
+      </ScrollView>
 
       <View style={styles.infoSection}>
         <Package size={16} color="#94A3B8" />
@@ -144,6 +214,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#1E293B',
+  },
+  scrollContent: {
+    flex: 1,
   },
   filtersList: {
     paddingVertical: 8,
@@ -196,13 +269,70 @@ const styles = StyleSheet.create({
   countTextSelected: {
     color: '#FFFFFF',
   },
+  categoriesSection: {
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  clearButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    marginBottom: 4,
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
+  },
+  clearButtonText: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  categoriesList: {
+    paddingHorizontal: 12,
+  },
+  categoryItem: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginVertical: 2,
+    borderRadius: 6,
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+    }),
+  },
+  categoryItemSelected: {
+    backgroundColor: '#EFF6FF',
+  },
+  categoryLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#64748B',
+  },
+  categoryLabelSelected: {
+    color: '#2563EB',
+    fontWeight: '600',
+  },
   infoSection: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     paddingHorizontal: 20,
     paddingVertical: 16,
-    marginTop: 'auto',
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
   },
