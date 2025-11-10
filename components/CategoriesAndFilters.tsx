@@ -251,7 +251,34 @@ export default function CategoriesAndFilters({
         onFiltersApply([]);
       } else if (data) {
         console.log('Loaded listings count:', data.length);
-        onFiltersApply(data);
+        
+        // Enrichir avec category_slug et parent_category_slug
+        const enrichedData = await Promise.all(data.map(async (listing) => {
+          const { data: cat } = await supabase
+            .from('categories')
+            .select('slug, parent_id')
+            .eq('id', listing.category_id)
+            .single();
+
+          let parentSlug = null;
+          if (cat?.parent_id) {
+            const { data: parentCat } = await supabase
+              .from('categories')
+              .select('slug')
+              .eq('id', cat.parent_id)
+              .single();
+            parentSlug = parentCat?.slug || null;
+          }
+
+          return {
+            ...listing,
+            category_slug: cat?.slug || null,
+            parent_category_slug: parentSlug,
+          };
+        }));
+        
+        console.log('Enriched listings with category info:', enrichedData[0]?.category_slug, enrichedData[0]?.parent_category_slug);
+        onFiltersApply(enrichedData);
       }
     } catch (error) {
       console.error('Exception loading all listings:', error);

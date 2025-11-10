@@ -66,29 +66,21 @@ export default function HomePage() {
           };
         }
 
-        // Récupérer les annonces de ces sous-catégories avec leurs informations de catégorie
-        const { data: listings } = await supabase
+        // Récupérer les annonces de ces sous-catégories
+        const { data: listings, error } = await supabase
           .from('listings')
           .select(`
             *,
-            category:categories!listings_category_id_fkey(
-              id,
-              slug,
-              parent_id,
-              parent:categories!categories_parent_id_fkey(slug)
-            ),
-            profiles(
-              id,
-              full_name,
-              phone_number,
-              whatsapp_number,
-              messenger_username
-            )
+            profiles(phone_number, whatsapp_number, messenger_username, full_name)
           `)
           .eq('status', 'active')
           .in('category_id', subcategoryIds)
           .order('created_at', { ascending: false })
           .limit(20);
+
+        if (error) {
+          console.error('[HomePage] Error fetching listings:', error);
+        }
 
         // Filtrer les véhicules mal catégorisés dans Location Immobilière
         let filteredListings = listings || [];
@@ -111,11 +103,30 @@ export default function HomePage() {
           });
         }
 
-        // Transformer les données pour correspondre à la structure attendue par ListingCard
-        const normalizedListings = filteredListings.map(listing => ({
-          ...listing,
-          category_slug: listing.category?.slug,
-          parent_category_slug: listing.category?.parent?.slug || null,
+        // Enrichir les listings avec les slugs de catégorie
+        const normalizedListings = await Promise.all(filteredListings.map(async (listing) => {
+          // Récupérer la catégorie et sa parente si nécessaire
+          const { data: cat } = await supabase
+            .from('categories')
+            .select('slug, parent_id')
+            .eq('id', listing.category_id)
+            .single();
+
+          let parentSlug = null;
+          if (cat?.parent_id) {
+            const { data: parentCat } = await supabase
+              .from('categories')
+              .select('slug')
+              .eq('id', cat.parent_id)
+              .single();
+            parentSlug = parentCat?.slug || null;
+          }
+
+          return {
+            ...listing,
+            category_slug: cat?.slug || null,
+            parent_category_slug: parentSlug,
+          };
         }));
 
         return {
