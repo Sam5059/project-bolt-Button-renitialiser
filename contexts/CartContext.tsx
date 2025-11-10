@@ -38,7 +38,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const cartTotal = cartItems.reduce((sum, item) => sum + (item.listing.price * item.quantity), 0);
+  const cartTotal = cartItems.reduce((sum, item) => {
+    if (!item.listing || item.listing.price == null) return sum;
+    return sum + (item.listing.price * item.quantity);
+  }, 0);
 
   const refreshCart = async () => {
     if (!user) {
@@ -79,11 +82,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
       console.log('[CART v2] Items count:', data?.length || 0);
       console.log('[CART v2] Raw data:', JSON.stringify(data, null, 2));
       
-      const normalizedData = (data || []).map((item: any) => ({
-        ...item,
-        listing: Array.isArray(item.listing) ? item.listing[0] : item.listing
-      })) as CartItem[];
+      const normalizedData = (data || [])
+        .map((item: any) => ({
+          ...item,
+          listing: Array.isArray(item.listing) ? item.listing[0] : item.listing
+        }))
+        .filter((item: any) => item.listing !== null) as CartItem[];
       
+      console.log('[CART v2] Valid items after filtering:', normalizedData.length);
       setCartItems(normalizedData);
     } catch (error) {
       console.error('[CART v2] Error fetching cart:', error);

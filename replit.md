@@ -13,6 +13,7 @@ Preferred communication style: Simple, everyday language.
 - **Key Design Patterns**: Context-based state management (Auth, Language, Search), multi-language support (French, Arabic, English with RTL), responsive design, tab-based navigation, intelligent category auto-detection.
 - **Core Features**: User authentication, multi-category listings, advanced search with geolocation, smart global search synchronization, automatic category detection, real-time messaging with a right-side chat drawer, PRO subscription system, admin dashboard, shopping cart.
 - **UI/UX Decisions**: Resizable and collapsible filter sidebar with persistence, responsive filter layouts adapting to sidebar width, engaging multilingual placeholders, streamlined publish forms with smart offer type selection, edge-to-edge image display on listing cards, quick action buttons on listing cards for instant seller contact, intuitive color-coded navigation, and clear listing card badges.
+- **Cart System Robustness**: Cart context handles deleted listings gracefully by filtering null listings during refresh and using safe null-checks in total calculations to prevent runtime crashes.
 
 ### Backend
 - **Database**: Supabase (PostgreSQL).
@@ -29,7 +30,7 @@ Preferred communication style: Simple, everyday language.
 - **Admin System**: Multi-tier admin system (user, admin, super_admin) for moderation.
 - **Multi-Channel Contact System**: Offers WhatsApp, Messenger, and phone contact options, with smart rendering based on seller data and multilingual support.
 - **Chat Drawer**: A right-side chat drawer for seamless messaging, featuring real-time updates, unread counter management, and responsive design for web and mobile.
-- **Listing Card Quick Actions**: Circular phone, message, and CTA buttons on listing cards. CTA buttons use event.stopPropagation() and pointerEvents="box-none" to prevent parent TouchableOpacity from intercepting clicks, enabling direct action execution (add to cart, open booking modal, etc.) without navigating to listing details.
+- **Listing Card Quick Actions**: Circular phone, message, and CTA buttons on listing cards. Uses a ref-based guard system (`skipCardPressRef`) with 100ms timeout to prevent parent TouchableOpacity navigation when action buttons are pressed, enabling direct modal opening (add to cart, rental booking, etc.) without navigating to listing details. The ref provides synchronous reading to avoid race conditions in React Native Web where multiple onPress events can fire.
 - **Category Harmonization**: Synchronization of category-specific fields between publish forms and search filters, as demonstrated with the 'Animals' category.
 - **Category Consolidation**: Merging of redundant categories (e.g., 'Loisirs & Divertissement' into 'Loisirs & Hobbies') for improved data consistency and user experience.
 - **Multi-Type Offer Forms**: Specialized request forms for different offer types:
