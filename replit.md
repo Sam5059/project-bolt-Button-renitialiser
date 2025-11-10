@@ -1,108 +1,7 @@
 # BuyGo - Algerian Classifieds Marketplace
 
 ## Overview
-BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) and Supabase. It allows users to buy, sell, and rent items across various categories, featuring specialized "PRO Stores" for professional sellers. The platform aims to be the go-to destination for classifieds in Algeria.
-
-## Recent Changes (November 10, 2025)
-
-### Edge-to-Edge Image Display on Listing Cards
-- **Full-Width Images**: Adapted listing card images to fill the entire container (edge-to-edge) for a more immersive and professional look
-  - **Container Styling**: Added `overflow: 'hidden'` with `borderTopLeftRadius: 12` and `borderTopRightRadius: 12` to `imageContainer`
-  - **Image Sizing**: Changed from fixed `height: 220` to `width: '100%', height: '100%'` for full container coverage
-  - **Removed Inline Styles**: Eliminated `{width: cardWidth}` inline style that was overriding the 100% width rule
-  - **ScrollView Optimization**: Added `contentContainerStyle={{ flexGrow: 1 }}` for proper carousel behavior
-  - **Removed Debug Border**: Cleaned up temporary blue border (1px #0062FF) on card wrapper
-- **Visual Impact**: Images now reach true edge-to-edge like professional marketplace cards, with rounded corners only on top
-- **No Regressions**: Carousel scrolling, pagination dots, badges, and quick action buttons remain fully functional
-
-### Quick Action Buttons on Listing Cards
-- **Position**: Added Phone (📞) and Message (💬) circular buttons **in bas à gauche of each listing card** in search results
-  - **Phone Button** (green #10B981, 36×36px): Quick call seller action, opens `tel:` on mobile, displays modal on web
-  - **Message Button** (blue #2563EB, 36×36px): Direct messaging to seller, creates/navigates to conversation
-  - **Layout**: Footer flexbox with buttons left, "Détails →" link right
-  - **Conditional rendering**: Buttons only appear when handlers are provided
-  - **Smart disabling**: Phone button disabled if seller has no phone number
-- **Shared Logic Hook**: Created `hooks/useListingActions.ts` for reusable handler logic across all ListingCard usages
-  - `onCallSeller(listing)`: Validates phone, prevents self-call, handles web vs mobile flows
-  - `onSendMessage(listing)`: Validates auth, prevents self-message, creates/reuses conversations
-  - `visiblePhone` state + modal for displaying phone number on web
-  - Uses `useAuth`, `useLanguage`, `supabase`, `router`, `Linking`, `Alert`
-- **Integration**: Implemented in `app/(tabs)/searchnew.tsx` with phone modal for web users
-- **Data Fix**: Updated Supabase query in `CategoriesAndFilters.tsx` to include `profiles(phone_number)`
-- **UX Benefit**: Users can instantly contact sellers from search results without navigating to detail pages
-
-### Quick Action Buttons on Listing Details (Removed)
-- **Overlay Action Buttons**: Added two circular floating buttons on listing detail images for instant seller contact
-  - **Phone Button** (green #10B981): Quick call seller action, disabled if no phone number
-  - **Message Button** (blue #2563EB): Direct messaging to seller
-  - Position: Bottom-right of main image (`bottom: 90, right: 20`), above mini-map button
-  - Design: 56×56px circular buttons with white border (3px), shadow for depth (elevation: 8)
-  - Smart visibility: Hidden for listing owner (only shown to potential buyers)
-  - Responsive layout: Vertical stack with 12px gap between buttons
-  - Conflict-free positioning: Avoids overlapping with image counter (top-right), price badge (bottom-left), and mini-map button (bottom-right)
-- **UX Benefit**: Users can instantly contact sellers without scrolling down, improving conversion rates
-
-### Animals Category Synchronization
-- **Complete Field Synchronization**: Harmonized all 8 animal-specific fields between publish form and search sidebar
-  - **Text Filters**: Âge (age), Race (breed), État de santé (healthStatus) with case-insensitive partial matching
-  - **Select Filter**: Sexe (gender) with Mâle/Femelle options, exact matching
-  - **Boolean Filters**: Vacciné (vaccinated), Stérilisé (sterilized), Pedigree (pedigree), Pucé (microchipped)
-  - Created CATEGORY_ATTRIBUTE_DEFINITIONS registry for scalable category-specific metadata
-  - Implemented `matchesText()` helper for partial text matching
-  - Created `animalBooleanMap` for camelCase → snake_case attribute mapping (vaccinated → is_vaccinated)
-- **Architecture Impact**: Established pattern for future category harmonizations (vehicles, real estate, etc.)
-- **User Experience**: Users can now filter animal listings with the same criteria used when creating listings
-
-### Category Consolidation - Loisirs
-- **Unified Category**: Merged "Loisirs & Divertissement" into "Loisirs & Hobbies" to eliminate duplication
-  - Created migration `20251110_merge_loisirs_categories.sql` to consolidate database records
-  - Updated all code references from 'loisirs-divertissement' to 'loisirs-hobbies'
-  - Removed obsolete slug mappings and added proper mappings in both `SLUG_TO_CATEGORY_TYPE` and `SLUG_TO_BRAND_CATEGORY_TYPE`
-  - Fixed issue where publish form showed no subcategories for "Loisirs & Hobbies"
-- **Filter Configuration**: 'loisirs-hobbies' now correctly maps to 'sport' filter profile with enabled fields: listingType, subcategory, brand, price, condition, location
-- **Cart Categories**: Updated purchaseUtils.ts to use 'loisirs-hobbies' instead of deprecated slug
-
-## Recent Changes (November 9, 2025)
-
-### Publish Form Optimization
-- **Smart Offer Type Selection**: Implemented intelligent auto-selection based on category (location → rent, immobilier-vente → sale, default → sale)
-  - New function `getSmartOfferType()` automatically detects appropriate offer type
-  - Pre-selects offer type when category changes while preserving manual user overrides
-  - Considers both category slug and listing type for accurate determination
-- **Streamlined Layout**: Redesigned "Type d'offre" section for better UX
-  - Moved between Category and Subcategory for logical flow
-  - Changed from 2x2 grid to single horizontal row (4 buttons side-by-side)
-  - Optimized button sizing: reduced padding (12px), icons (24px), font (13px)
-  - Equal-width distribution with `flex: 1` for responsive balance
-  - New `offerTypeRow` style: `flexDirection: 'row', gap: 8, justifyContent: 'space-between'`
-
-### Sidebar UX Enhancements
-- **Resizable/Collapsible Sidebar**: Implemented fully functional sidebar with mouse-drag resize (240-460px) and toggle collapse button
-  - localStorage persistence for width and collapsed state
-  - Smooth toggle animation with chevron icons
-  - Drag handle with visual feedback (GripVertical icon)
-- **Responsive Filter Layout**: Dynamic field sizing based on sidebar width with 3 breakpoints
-  - <320px: single-column stacked layout
-  - 320-400px: 2-column layout with reduced spacing
-  - ≥400px: standard layout with optimal spacing
-- **Input Overflow Fix**: Resolved critical issue where input fields exceeded sidebar boundaries
-  - Added CSS constraints: `width: 100%`, `box-sizing: border-box`, `minWidth: 0`, `flexShrink: 1`
-  - Improved responsive breakpoint: range inputs switch to column layout at <360px (was <320px)
-  - Created `getResponsivePlaceholder()` function with adaptive placeholder lengths based on sidebar width
-- **Engaging Multilingual Placeholders**: All filter inputs now display guiding questions instead of generic "Min/Max"
-  - Examples FR: "Quelle marque recherchez-vous ?", "Prix minimum en DA ? Ex: 500000"
-  - Adaptive shortening: Full version (≥340px) → Medium ("Prix min ?") → Short ("Min DA?") for narrow sidebars
-  - Examples EN: "Which brand are you looking for?", "Minimum price in DA? e.g. 500000"
-  - Examples AR: "أي علامة تجارية تبحث عنها؟", "السعر الأدنى بالدينار؟ مثال: 500000"
-- **Visual Empty Field Feedback**: Empty inputs display in italic gray style for better UX clarity
-- **Clean UI**: Removed bottom CTA button "Afficher les annonces" for cleaner sidebar interface
-- **Centered Results Header**: Search results title and count are now centered for better visual balance
-
-### Smart Category Detection
-- **Intelligent Category Detection System**: Implemented automatic category detection based on search keywords with visual highlighting in sidebar
-- **Enhanced Keyword Dictionary**: Added comprehensive multilingual keywords (montre, maçonnerie, informatique, plomberie, électricité, etc.)
-- **Category Filter Bug Fix**: Fixed critical bug where all categories defaulted to vehicle filters; created centralized filter configuration system
-- **Visual UX Improvements**: Auto-detected categories display with cream background, orange left border, and multilingual "Détectée" badge
+BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) and Supabase. It enables users to buy, sell, and rent items across various categories, featuring specialized "PRO Stores" for professional sellers. The platform aims to be the leading destination for classifieds in Algeria, offering a comprehensive and user-friendly experience.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -112,7 +11,8 @@ Preferred communication style: Simple, everyday language.
 ### Frontend
 - **Technology Stack**: React Native (Expo), TypeScript, Expo Router, NativeWind.
 - **Key Design Patterns**: Context-based state management (Auth, Language, Search), multi-language support (French, Arabic, English with RTL), responsive design, tab-based navigation, intelligent category auto-detection.
-- **Core Features**: User authentication, multi-category listings, advanced search with geolocation, smart global search synchronization, automatic category detection, real-time messaging, PRO subscription system, admin dashboard, shopping cart.
+- **Core Features**: User authentication, multi-category listings, advanced search with geolocation, smart global search synchronization, automatic category detection, real-time messaging with a right-side chat drawer, PRO subscription system, admin dashboard, shopping cart.
+- **UI/UX Decisions**: Resizable and collapsible filter sidebar with persistence, responsive filter layouts adapting to sidebar width, engaging multilingual placeholders, streamlined publish forms with smart offer type selection, edge-to-edge image display on listing cards, quick action buttons on listing cards for instant seller contact, intuitive color-coded navigation, and clear listing card badges.
 
 ### Backend
 - **Database**: Supabase (PostgreSQL).
@@ -121,26 +21,17 @@ Preferred communication style: Simple, everyday language.
 - **Key Stored Functions**: `search_listings()`, `calculate_distance_km()`, `activate_pro_subscription()`, `check_pro_status()`, `assign_admin_role()`.
 - **Data Architecture Decisions**: Separated categories and subcategories, migrated critical searchable fields from JSONB to dedicated columns, implemented GIN indexes, automatic triggers for timestamps and analytics.
 
-### UI/UX Decisions
-- **Resizable Sidebar**: Users can resize filter sidebar (240-460px) and collapse/expand with toggle button; state persists across sessions
-- **Responsive Filters**: Filter layout adapts dynamically to sidebar width with 3 responsive breakpoints
-- **Engaging Placeholders**: All filter inputs use contextual questions in 3 languages (FR/EN/AR) instead of generic labels
-- Streamlined publish form, smart category detection with visual feedback, global search synchronization via TopBar, adaptive TopBar layout based on page context (e.g., search bar appears only on search page), color-coded navigation buttons for intuitive action types.
-- Listing card badges updated for clarity (e.g., "RECHERCHÉ" to "DEMANDE").
-
 ### Feature Specifications
-- **Smart Category Detection via Keywords**: 
-  - Intelligent keyword-based category detection with multilingual support (FR/EN/AR)
-  - 300ms debounce for optimal performance during typing
-  - Comprehensive keyword dictionary covering 9 major categories: Vehicles, Real Estate, Electronics, Furniture, Clothing, Animals, Services, Employment, Rentals
-  - Auto-highlighting in sidebar with distinct visual feedback (cream background, orange border, "Détectée" badge)
-  - Scoring algorithm: exact match (10 pts) > partial match (5 pts)
-  - Examples: "renault" → Véhicules, "appartement" → Immobilier, "montre" → Électronique, "maçonnerie" → Services
-  - Architecture: 3-layer mapping (keyword dict → logical ID → Supabase slug → category ID)
-- **Global Search Synchronization**: Single search bar in TopBar controls app-wide search state, query persists across navigation, synchronizes bidirectionally with URL.
+- **Smart Category Detection via Keywords**: Intelligent keyword-based category detection with multilingual support (FR/EN/AR), 300ms debounce, comprehensive keyword dictionary, visual highlighting in sidebar, and a scoring algorithm.
+- **Global Search Synchronization**: A single search bar in the TopBar controls app-wide search state, persisting queries across navigation and synchronizing bidirectionally with the URL.
 - **Rental Listings**: Category-aware filter rendering to correctly display rental listings.
 - **PRO Stores**: Professional seller storefronts with tiered subscription packages.
 - **Admin System**: Multi-tier admin system (user, admin, super_admin) for moderation.
+- **Multi-Channel Contact System**: Offers WhatsApp, Messenger, and phone contact options, with smart rendering based on seller data and multilingual support.
+- **Chat Drawer**: A right-side chat drawer for seamless messaging, featuring real-time updates, unread counter management, and responsive design for web and mobile.
+- **Listing Card Quick Actions**: Circular phone and message buttons on listing cards enable direct contact with sellers from search results.
+- **Category Harmonization**: Synchronization of category-specific fields between publish forms and search filters, as demonstrated with the 'Animals' category.
+- **Category Consolidation**: Merging of redundant categories (e.g., 'Loisirs & Divertissement' into 'Loisirs & Hobbies') for improved data consistency and user experience.
 
 ## External Dependencies
 
@@ -150,4 +41,3 @@ Preferred communication style: Simple, everyday language.
 - **React Native Maps**: Native map components for mobile.
 - **Payment Methods**: CCP (Compte Chèque Postal), BaridiMob, Bank transfers.
 - **Deployment Platforms**: Netlify (Web), Expo Application Services (EAS) for native builds.
-- **Development Tools**: EAS CLI, Supabase CLI, Expo CLI.
