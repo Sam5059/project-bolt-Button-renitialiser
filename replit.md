@@ -3,6 +3,12 @@
 ## Overview
 BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) and Supabase. It enables users to buy, sell, and rent items across various categories, featuring specialized "PRO Stores" for professional sellers. The platform aims to be the leading destination for classifieds in Algeria, offering a comprehensive and user-friendly experience.
 
+## Recent Changes (November 10, 2025)
+- **My Listings Page Redesign**: Complete refactor with modern sidebar-based filtering (All, Active, Suspended, Sold) and grid layout similar to search page
+- **New MyListingCard Component**: Action buttons integrated directly into cards (Edit, Deactivate/Reactivate, Mark as Sold, Delete)
+- **MyListingsSidebar Component**: Filter panel with live counts and multilingual support
+- **Improved UX**: Users can manage all their listings in one place with visual status badges and quick actions
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
