@@ -1,25 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useListingActions } from '@/hooks/useListingActions';
-import { useCart } from '@/contexts/CartContext';
 import TopBar from '@/components/TopBar';
-import CategoryBar from '@/components/CategoryBar';
 import ListingCard from '@/components/ListingCard';
-import ContactOptionsModal from '@/components/ContactOptionsModal';
-import ReservationModal from '@/components/ReservationModal';
 
 export default function HomePage() {
   const [categories, setCategories] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [categoriesWithListings, setCategoriesWithListings] = useState([]);
-  const [reservationListing, setReservationListing] = useState<any>(null);
-  
   const { language } = useLanguage();
-  const { onCallSeller, onSendMessage, contactOptionsData, dismissContactOptions } = useListingActions();
-  const { addToCart } = useCart();
 
   useEffect(() => {
     fetchCategories();
@@ -36,22 +27,8 @@ export default function HomePage() {
   }
 
   async function fetchCategoriesWithListings() {
-    console.log('[HomePage] Starting fetchCategoriesWithListings...');
-    
-    // Charger TOUTES les catégories une seule fois pour mapping
-    const { data: allCategories } = await supabase
-      .from('categories')
-      .select('*');
-
-    console.log('[HomePage] All categories loaded:', allCategories?.length);
-
-    // Créer un map pour lookup rapide
-    const categoryMap = new Map();
-    allCategories?.forEach(cat => {
-      categoryMap.set(cat.id, cat);
-    });
-
     // Récupérer toutes les catégories parentes principales
+    // Exclure la catégorie "Stores PRO" car les annonces de l'accueil sont pour les particuliers
     const { data: parentCategories } = await supabase
       .from('categories')
       .select('*')
@@ -59,12 +36,7 @@ export default function HomePage() {
       .neq('slug', 'stores-pro')
       .order('display_order', { ascending: true });
 
-    console.log('[HomePage] Parent categories:', parentCategories?.length);
-
-    if (!parentCategories) {
-      console.log('[HomePage] No parent categories found!');
-      return;
-    }
+    if (!parentCategories) return;
 
     // Pour chaque catégorie, récupérer ses annonces via ses sous-catégories
     const categoriesData = await Promise.all(
@@ -77,61 +49,53 @@ export default function HomePage() {
 
         const subcategoryIds = subcats ? subcats.map(s => s.id) : [];
 
-        console.log(`[HomePage] Category ${category.name}: ${subcategoryIds.length} subcategories found`);
+        // Si la catégorie n'a pas de sous-catégories, ne pas récupérer d'annonces
+        if (subcategoryIds.length === 0) {
+          return {
+            category,
+            listings: [],
+          };
+        }
 
-        // Charger les listings de la catégorie parente ET de ses sous-catégories
-        const allCategoryIds = [category.id, ...subcategoryIds];
-        
-        console.log(`[HomePage] Searching in ${allCategoryIds.length} categories (parent + subs)`);
-
-        // Récupérer les annonces de la catégorie ET ses sous-catégories
-        const { data: listings, error: listingsError } = await supabase
+        // Récupérer les annonces de ces sous-catégories
+        const { data: listings } = await supabase
           .from('listings')
-          .select('*, profiles(phone_number, whatsapp_number, messenger_username, full_name)')
-          .in('category_id', allCategoryIds)
+          .select('*')
+          .eq('status', 'active')
+          .in('category_id', subcategoryIds)
           .order('created_at', { ascending: false })
           .limit(20);
 
-        if (listingsError) {
-          console.error(`[HomePage] Error loading listings for ${category.name}:`, listingsError);
-        }
-
-        console.log(`[HomePage] Category ${category.name}: ${listings?.length || 0} listings loaded (without status filter)`);
-
+        // Filtrer les véhicules mal catégorisés dans Location Immobilière
         let filteredListings = listings || [];
-        
-        // Filtrer véhicules mal catégorisés
         if (category.slug === 'location-immobiliere' || category.slug === 'immobilier-location') {
           filteredListings = filteredListings.filter(listing => {
             const title = listing.title?.toLowerCase() || '';
-            return !(title.includes('bmw') || title.includes('mercedes') || 
-                    title.includes('voiture') || title.includes('moto'));
+            // Exclure si le titre contient des mots-clés de véhicules
+            const isVehicle =
+              title.includes('bmw') ||
+              title.includes('mercedes') ||
+              title.includes('benz') ||
+              title.includes('dacia') ||
+              title.includes('serie') ||
+              title.includes('voiture') ||
+              title.includes('auto') ||
+              title.includes('moto') ||
+              title.includes('vehicule') ||
+              title.includes('véhicule');
+            return !isVehicle;
           });
         }
 
-        // Enrichir avec slugs en utilisant le map (PAS de requêtes supplémentaires !)
-        const enrichedListings = filteredListings.map(listing => {
-          const cat = categoryMap.get(listing.category_id);
-          const parentCat = cat?.parent_id ? categoryMap.get(cat.parent_id) : null;
-          
-          return {
-            ...listing,
-            category_slug: cat?.slug || null,
-            parent_category_slug: parentCat?.slug || null,
-          };
-        });
-
         return {
           category,
-          listings: enrichedListings,
+          listings: filteredListings,
         };
       })
     );
 
-    const withListings = categoriesData.filter(c => c.listings.length > 0);
-    console.log('[HomePage] Categories with listings:', withListings.length);
-    console.log('[HomePage] First enriched listing:', withListings[0]?.listings[0]?.category_slug, withListings[0]?.listings[0]?.parent_category_slug);
-    setCategoriesWithListings(withListings);
+    // Filtrer seulement les catégories qui ont des annonces
+    setCategoriesWithListings(categoriesData.filter(c => c.listings.length > 0));
   }
 
   const handleCategoryPress = (category) => {
@@ -146,30 +110,6 @@ export default function HomePage() {
       });
       router.push(`/(tabs)/searchnew?category_id=${category.id}`);
     }
-  };
-
-  const handleAddToCart = async (listing: any) => {
-    try {
-      await addToCart(listing.id);
-      Alert.alert(
-        language === 'ar' ? 'تم' : language === 'en' ? 'Success' : 'Succès',
-        language === 'ar'
-          ? 'تمت الإضافة إلى السلة'
-          : language === 'en'
-          ? 'Added to cart'
-          : 'Ajouté au panier'
-      );
-    } catch (error) {
-      console.error('[HomePage] Add to cart error:', error);
-      Alert.alert(
-        language === 'ar' ? 'خطأ' : language === 'en' ? 'Error' : 'Erreur',
-        language === 'ar' ? 'فشل في إضافة إلى السلة' : language === 'en' ? 'Failed to add to cart' : 'Échec de l\'ajout au panier'
-      );
-    }
-  };
-
-  const handleReserve = (listing: any) => {
-    setReservationListing(listing);
   };
 
   const getCategoryName = (cat) => {
@@ -242,12 +182,32 @@ export default function HomePage() {
         onSearchChange={setSearchText}
         onSearch={handleSearch}
       />
-      <CategoryBar 
-        categories={categories} 
-        onCategoryPress={handleCategoryPress}
-      />
 
       <ScrollView style={styles.content}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoriesScroll}
+          contentContainerStyle={styles.categoriesContent}
+        >
+          {categories.map((cat, index) => {
+            const colors = getCategoryColor(index);
+            return (
+              <TouchableOpacity
+                key={cat.id}
+                style={[styles.categoryCard, { backgroundColor: colors.bg }]}
+                onPress={() => handleCategoryPress(cat)}
+              >
+                <View style={[styles.categoryIcon, { backgroundColor: '#FFFFFF' }]}>
+                  <Text style={styles.categoryEmoji}>{getCategoryIcon(cat.slug)}</Text>
+                </View>
+                <Text style={styles.categoryText} numberOfLines={2}>
+                  {getCategoryName(cat)}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
 
         {categoriesWithListings.map(({ category, listings }) => (
           <View key={category.id}>
@@ -280,10 +240,6 @@ export default function HomePage() {
                   <ListingCard
                     listing={listing}
                     onPress={() => router.push(`/listing/${listing.id}`)}
-                    onCallSeller={() => onCallSeller(listing)}
-                    onSendMessage={() => onSendMessage(listing)}
-                    onAddToCart={() => handleAddToCart(listing)}
-                    onReserve={() => handleReserve(listing)}
                     isWeb={false}
                     width={280}
                   />
@@ -293,38 +249,6 @@ export default function HomePage() {
           </View>
         ))}
       </ScrollView>
-
-      {/* Contact Options Modal */}
-      {contactOptionsData && (
-        <ContactOptionsModal
-          visible={!!contactOptionsData}
-          onClose={dismissContactOptions}
-          sellerName={contactOptionsData.sellerName}
-          phoneNumber={contactOptionsData.phoneNumber}
-          whatsappNumber={contactOptionsData.whatsappNumber}
-          messengerUsername={contactOptionsData.messengerUsername}
-        />
-      )}
-
-      {/* Reservation Modal */}
-      {reservationListing && (
-        <ReservationModal
-          visible={!!reservationListing}
-          onClose={() => setReservationListing(null)}
-          listing={reservationListing}
-          onSuccess={() => {
-            setReservationListing(null);
-            Alert.alert(
-              language === 'ar' ? 'تم' : language === 'en' ? 'Success' : 'Succès',
-              language === 'ar'
-                ? 'تم إرسال طلب الحجز'
-                : language === 'en'
-                ? 'Reservation request sent'
-                : 'Demande de réservation envoyée'
-            );
-          }}
-        />
-      )}
     </View>
   );
 }

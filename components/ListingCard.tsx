@@ -39,17 +39,6 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
     listing?.parent_category_slug
   );
 
-  console.log('[ListingCard] Purchase Type DEBUG:', {
-    title: listing?.title,
-    category_slug: listing?.category_slug,
-    parent_category_slug: listing?.parent_category_slug,
-    purchaseType,
-    hasOnAddToCart: !!onAddToCart,
-    hasOnReserve: !!onReserve,
-    hasOnCallSeller: !!onCallSeller,
-    hasOnSendMessage: !!onSendMessage
-  });
-
   const formatPrice = (price: number) => {
     if (!price) return new Intl.NumberFormat('fr-DZ', {
       style: 'currency',
@@ -152,12 +141,13 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
               onScroll={handleScroll}
               scrollEventThrottle={16}
               style={styles.carousel}
+              contentContainerStyle={{ flexGrow: 1 }}
             >
               {images.map((image: string, index: number) => (
                 <Image
                   key={index}
                   source={{ uri: image }}
-                  style={[styles.image, { width: cardWidth }]}
+                  style={styles.image}
                   resizeMode="cover"
                 />
               ))}
