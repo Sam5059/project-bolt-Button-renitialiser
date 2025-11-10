@@ -865,6 +865,51 @@ export default function ListingDetailsScreen() {
                       </View>
                     )}
                   </View>
+
+                  {/* Boutons d'action après informations vendeur */}
+                  <View style={[styles.actionButtonsContainer, isDesktop && styles.actionButtonsRow]}>
+                    {(!user || (listing?.user_id !== user.id)) && listing?.listing_type !== 'purchase' && (
+                      <TouchableOpacity
+                        style={[styles.actionReserveButton, isDesktop && styles.actionButtonFlex]}
+                        onPress={handleAddToCart}
+                        disabled={addingToCart}
+                      >
+                        {addingToCart ? (
+                          <ActivityIndicator size="small" color="#FFFFFF" />
+                        ) : (
+                          <>
+                            <Text style={styles.actionButtonIcon}>
+                              {getPurchaseButtonIcon(getPurchaseType())}
+                            </Text>
+                            <Text style={[styles.actionReserveButtonText, isRTL && styles.textRTL]}>
+                              {getPurchaseButtonText(getPurchaseType(), language as any)}
+                            </Text>
+                          </>
+                        )}
+                      </TouchableOpacity>
+                    )}
+
+                    <TouchableOpacity
+                      style={[styles.actionCallButton, isDesktop && styles.actionButtonFlex]}
+                      onPress={handleCallSeller}
+                      disabled={!listing?.profiles?.phone_number}
+                    >
+                      <Phone size={20} color="#FFFFFF" />
+                      <Text style={[styles.actionCallButtonText, isRTL && styles.textRTL]}>
+                        {t('listing.callSeller') || 'Appeler le vendeur'}
+                      </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.actionMessageButton, isDesktop && styles.actionButtonFlex]}
+                      onPress={handleSendMessage}
+                    >
+                      <MessageCircle size={20} color="#2563EB" />
+                      <Text style={[styles.actionMessageButtonText, isRTL && styles.textRTL]}>
+                        {t('listing.sendMessage') || 'Envoyer un message'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
@@ -962,48 +1007,6 @@ export default function ListingDetailsScreen() {
         {/* Footer */}
         <Footer />
       </ScrollView>
-
-      {/* Footer fixe avec boutons d'action */}
-      <View style={styles.footer}>
-        {(!user || (listing?.user_id !== user.id)) && listing?.listing_type !== 'purchase' && (
-          <TouchableOpacity
-            style={styles.cartButton}
-            onPress={handleAddToCart}
-            disabled={addingToCart}
-          >
-            {addingToCart ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <Text style={styles.buttonIcon}>
-                {getPurchaseButtonIcon(getPurchaseType())}
-              </Text>
-            )}
-            <Text style={[styles.cartButtonText, isRTL && styles.textRTL]}>
-              {getPurchaseButtonText(getPurchaseType(), language as any)}
-            </Text>
-          </TouchableOpacity>
-        )}
-
-        <TouchableOpacity
-          style={styles.contactButton}
-          onPress={handleCallSeller}
-          disabled={!listing?.profiles?.phone_number}
-        >
-          <Phone size={20} color="#FFFFFF" />
-          <Text style={[styles.contactButtonText, isRTL && styles.textRTL]}>
-            {t('listing.callSeller') || 'Appeler'}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.messageButton}
-          onPress={handleSendMessage}
-        >
-          <MessageCircle size={20} color="#2563EB" />
-          <Text style={[styles.messageButtonText, isRTL && styles.textRTL]}>
-            {t('listing.sendMessage') || 'Message'}
-          </Text>
-        </TouchableOpacity>
-      </View>
 
       {/* Modals en dehors du footer */}
       {listing && (
@@ -1686,77 +1689,81 @@ const styles = StyleSheet.create({
   similarContentMobile: {
     padding: 12,
   },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    padding: 20,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+  actionButtonsContainer: {
+    flexDirection: 'column',
     gap: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 10,
+    marginTop: 20,
+    marginBottom: 24,
   },
-  buttonIconWrapper: {
-    width: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+  actionButtonsRow: {
+    flexDirection: 'row',
   },
-  buttonIcon: {
+  actionButtonFlex: {
+    flex: 1,
+  },
+  actionButtonIcon: {
     fontSize: 18,
   },
-  cartButton: {
-    flex: 1,
+  actionReserveButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#10B981',
-    paddingVertical: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
     borderRadius: 12,
     gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  cartButtonText: {
+  actionReserveButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
   },
-  contactButton: {
-    flex: 1,
+  actionCallButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#2563EB',
-    paddingVertical: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
     borderRadius: 12,
     gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  contactButtonText: {
+  actionCallButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
   },
-  messageButton: {
-    flex: 1,
+  actionMessageButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
-    paddingVertical: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#2563EB',
     gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  messageButtonText: {
+  actionMessageButtonText: {
     color: '#2563EB',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
   },
   loadingContainer: {
