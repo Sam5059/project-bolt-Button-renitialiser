@@ -5,6 +5,17 @@ BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) a
 
 ## Recent Changes (November 10, 2025)
 
+### Quick Action Buttons on Listing Details
+- **Overlay Action Buttons**: Added two circular floating buttons on listing detail images for instant seller contact
+  - **Phone Button** (green #10B981): Quick call seller action, disabled if no phone number
+  - **Message Button** (blue #2563EB): Direct messaging to seller
+  - Position: Bottom-right of main image (`bottom: 90, right: 20`), above mini-map button
+  - Design: 56×56px circular buttons with white border (3px), shadow for depth (elevation: 8)
+  - Smart visibility: Hidden for listing owner (only shown to potential buyers)
+  - Responsive layout: Vertical stack with 12px gap between buttons
+  - Conflict-free positioning: Avoids overlapping with image counter (top-right), price badge (bottom-left), and mini-map button (bottom-right)
+- **UX Benefit**: Users can instantly contact sellers without scrolling down, improving conversion rates
+
 ### Animals Category Synchronization
 - **Complete Field Synchronization**: Harmonized all 8 animal-specific fields between publish form and search sidebar
   - **Text Filters**: Âge (age), Race (breed), État de santé (healthStatus) with case-insensitive partial matching
