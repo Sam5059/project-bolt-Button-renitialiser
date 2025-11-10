@@ -211,9 +211,10 @@ export const SLUG_TO_CATEGORY_TYPE: Record<string, string> = {
   'location-equipement': 'equipment_rental',
   'materiel': 'equipment_rental',
   
-  // Sport
+  // Sport & Loisirs
   'sport': 'sport',
   'sports': 'sport',
+  'loisirs-hobbies': 'sport',
   'sports-loisirs': 'sport',
   'equipements-sport': 'sport',
   'vetements-sport': 'sport',
@@ -259,9 +260,9 @@ export const SLUG_TO_BRAND_CATEGORY_TYPE: Record<string, string> = {
   'meubles': 'home_garden',
   'decoration': 'home_garden',
   
-  // Sports & Loisirs -> 'sports_leisure'
-  'sport': 'sports_leisure',
-  'sports': 'sports_leisure',
-  'loisirs': 'sports_leisure',
-  'sports-loisirs': 'sports_leisure',
+  // Sport & Loisirs -> 'sport'
+  'sport': 'sport',
+  'sports': 'sport',
+  'loisirs-hobbies': 'sport',
+  'sports-loisirs': 'sport',
 };

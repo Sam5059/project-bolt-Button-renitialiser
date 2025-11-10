@@ -133,7 +133,6 @@ export default function HomePage() {
       'services': '🔧',
       'emploi-services': '💼',
       'loisirs-hobbies': '🎮',
-      'loisirs-divertissement': '🎪',
       'materiel-professionnel': '🏭',
       'entreprises-vendre': '🏢',
       'bebe-enfants': '👶',

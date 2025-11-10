@@ -19,7 +19,7 @@ const CART_CATEGORIES = [
   'maison-jardin',
   'animaux',
   'bebe-enfants',
-  'loisirs-divertissement'
+  'loisirs-hobbies'
 ];
 
 export function getListingPurchaseType(
