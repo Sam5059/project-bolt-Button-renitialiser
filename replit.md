@@ -16,10 +16,10 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend
 - **Database**: Supabase (PostgreSQL).
-- **Core Tables**: `profiles`, `categories`, `sub_categories`, `listings`, `pro_packages`, `pro_subscriptions`, `pro_stores`, `pro_transactions`, `brands`, `communes`, `vehicle_reservations`, `purchase_requests`, `free_item_requests`, `exchange_requests`.
+- **Core Tables**: `profiles`, `categories`, `sub_categories`, `listings`, `pro_packages`, `pro_subscriptions`, `pro_stores`, `pro_transactions`, `brands`, `communes`, `wilayas`, `vehicle_reservations`, `purchase_requests`, `free_item_requests`, `exchange_requests`.
 - **Security Model**: Row Level Security (RLS), `SECURITY DEFINER` functions, role-based access control, API key authentication.
 - **Key Stored Functions**: `search_listings()`, `calculate_distance_km()`, `activate_pro_subscription()`, `check_pro_status()`, `assign_admin_role()`, `check_vehicle_availability()`.
-- **Data Architecture Decisions**: Separated categories and subcategories, migrated critical searchable fields from JSONB to dedicated columns, implemented GIN indexes, automatic triggers for timestamps and analytics, offer-type-specific request tables with RLS policies.
+- **Data Architecture Decisions**: Separated categories and subcategories, migrated critical searchable fields from JSONB to dedicated columns, implemented GIN indexes, automatic triggers for timestamps and analytics, offer-type-specific request tables with RLS policies, wilayas table with all 58 Algerian provinces for location selection.
 
 ### Feature Specifications
 - **Smart Category Detection via Keywords**: Intelligent keyword-based category detection with multilingual support (FR/EN/AR), 300ms debounce, comprehensive keyword dictionary, visual highlighting in sidebar, and a scoring algorithm.
@@ -29,7 +29,7 @@ Preferred communication style: Simple, everyday language.
 - **Admin System**: Multi-tier admin system (user, admin, super_admin) for moderation.
 - **Multi-Channel Contact System**: Offers WhatsApp, Messenger, and phone contact options, with smart rendering based on seller data and multilingual support.
 - **Chat Drawer**: A right-side chat drawer for seamless messaging, featuring real-time updates, unread counter management, and responsive design for web and mobile.
-- **Listing Card Quick Actions**: Circular phone and message buttons on listing cards enable direct contact with sellers from search results.
+- **Listing Card Quick Actions**: Circular phone, message, and CTA buttons on listing cards. CTA buttons use event.stopPropagation() and pointerEvents="box-none" to prevent parent TouchableOpacity from intercepting clicks, enabling direct action execution (add to cart, open booking modal, etc.) without navigating to listing details.
 - **Category Harmonization**: Synchronization of category-specific fields between publish forms and search filters, as demonstrated with the 'Animals' category.
 - **Category Consolidation**: Merging of redundant categories (e.g., 'Loisirs & Divertissement' into 'Loisirs & Hobbies') for improved data consistency and user experience.
 - **Multi-Type Offer Forms**: Specialized request forms for different offer types:

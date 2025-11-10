@@ -212,7 +212,7 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
           styles.badge,
           listing.offer_type === 'free' && styles.badgeFree,
           listing.offer_type === 'exchange' && styles.badgeExchange,
-          listing.offer_type === 'rent' && styles.badgeRent,
+          (listing.offer_type === 'rent' || listing.listing_type === 'rent') && styles.badgeRent,
           listing.listing_type === 'purchase' && styles.badgeWanted,
         ]}>
           <Text style={styles.badgeText}>
@@ -220,12 +220,10 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
               ? language === 'ar' ? 'مجاني' : language === 'en' ? 'FREE' : 'GRATUIT'
               : listing.offer_type === 'exchange'
               ? language === 'ar' ? 'للتبادل' : language === 'en' ? 'EXCHANGE' : 'ÉCHANGE'
-              : listing.offer_type === 'rent'
-              ? language === 'ar' ? 'للإيجار' : language === 'en' ? 'RENT' : 'LOCATION'
+              : (listing.offer_type === 'rent' || listing.listing_type === 'rent')
+              ? language === 'ar' ? 'للإيجار' : language === 'en' ? 'RENT' : 'À LOUER'
               : listing.listing_type === 'sale'
               ? language === 'ar' ? 'للبيع' : language === 'en' ? 'FOR SALE' : 'À VENDRE'
-              : listing.listing_type === 'rent'
-              ? language === 'ar' ? 'للإيجار' : language === 'en' ? 'FOR RENT' : 'À LOUER'
               : language === 'ar' ? 'مطلوب' : language === 'en' ? 'WANTED' : 'DEMANDE'
             }
           </Text>
@@ -320,11 +318,14 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
 
         {/* Footer avec boutons d'action à gauche et lien "Détails" à droite */}
         <View style={styles.footer}>
-          <View style={styles.quickActionsContainer}>
+          <View style={styles.quickActionsContainer} pointerEvents="box-none">
             {onCallSeller && (
               <TouchableOpacity
                 style={styles.quickActionBtn}
-                onPress={onCallSeller}
+                onPress={(e) => {
+                  e?.stopPropagation?.();
+                  onCallSeller();
+                }}
                 disabled={!listing?.profiles?.phone_number}
               >
                 <Phone size={18} color="#FFFFFF" strokeWidth={2.5} />
@@ -333,7 +334,10 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
             {onSendMessage && (
               <TouchableOpacity
                 style={[styles.quickActionBtn, styles.quickActionBtnMessage]}
-                onPress={onSendMessage}
+                onPress={(e) => {
+                  e?.stopPropagation?.();
+                  onSendMessage();
+                }}
               >
                 <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.5} />
               </TouchableOpacity>
@@ -341,7 +345,10 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
             {onActionClick && actionButton && (
               <TouchableOpacity
                 style={[styles.ctaButton, { backgroundColor: actionButton.color }]}
-                onPress={onActionClick}
+                onPress={(e) => {
+                  e?.stopPropagation?.();
+                  onActionClick();
+                }}
               >
                 <actionButton.icon size={18} color="#FFFFFF" strokeWidth={2.5} />
               </TouchableOpacity>
