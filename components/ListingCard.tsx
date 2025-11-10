@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Phone, MessageCircle } from 'lucide-react-native';
 
 interface ListingCardProps {
   listing: any;
@@ -18,9 +19,11 @@ interface ListingCardProps {
   width?: number;
   distance?: number | null;
   averagePrice?: number | null;
+  onCallSeller?: () => void;
+  onSendMessage?: () => void;
 }
 
-export default function ListingCard({ listing, onPress, isWeb = false, width, distance, averagePrice }: ListingCardProps) {
+export default function ListingCard({ listing, onPress, isWeb = false, width, distance, averagePrice, onCallSeller, onSendMessage }: ListingCardProps) {
   const { language } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const screenWidth = Dimensions.get('window').width;
@@ -271,11 +274,33 @@ export default function ListingCard({ listing, onPress, isWeb = false, width, di
           )}
         </View>
 
-        {/* Lien "Détails" en bas à droite */}
-        <View style={styles.detailsLinkContainer}>
-          <Text style={styles.detailsLinkText}>
-            {language === 'ar' ? 'التفاصيل ←' : language === 'en' ? 'Details →' : 'Détails →'}
-          </Text>
+        {/* Footer avec boutons d'action à gauche et lien "Détails" à droite */}
+        <View style={styles.footer}>
+          <View style={styles.quickActionsContainer}>
+            {onCallSeller && (
+              <TouchableOpacity
+                style={styles.quickActionBtn}
+                onPress={onCallSeller}
+                disabled={!listing?.profiles?.phone_number}
+              >
+                <Phone size={18} color="#FFFFFF" strokeWidth={2.5} />
+              </TouchableOpacity>
+            )}
+            {onSendMessage && (
+              <TouchableOpacity
+                style={[styles.quickActionBtn, styles.quickActionBtnMessage]}
+                onPress={onSendMessage}
+              >
+                <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.5} />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <View style={styles.detailsLinkContainer}>
+            <Text style={styles.detailsLinkText}>
+              {language === 'ar' ? 'التفاصيل ←' : language === 'en' ? 'Details →' : 'Détails →'}
+            </Text>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -541,9 +566,34 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 0.2,
   },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  quickActionsContainer: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  quickActionBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#10B981',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  quickActionBtnMessage: {
+    backgroundColor: '#2563EB',
+  },
   detailsLinkContainer: {
     alignSelf: 'flex-end',
-    marginTop: 8,
   },
   detailsLinkText: {
     fontSize: 11,
