@@ -3,6 +3,17 @@
 ## Overview
 BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) and Supabase. It allows users to buy, sell, and rent items across various categories, featuring specialized "PRO Stores" for professional sellers. The platform aims to be the go-to destination for classifieds in Algeria.
 
+## Recent Changes (November 10, 2025)
+
+### Category Consolidation - Loisirs
+- **Unified Category**: Merged "Loisirs & Divertissement" into "Loisirs & Hobbies" to eliminate duplication
+  - Created migration `20251110_merge_loisirs_categories.sql` to consolidate database records
+  - Updated all code references from 'loisirs-divertissement' to 'loisirs-hobbies'
+  - Removed obsolete slug mappings and added proper mappings in both `SLUG_TO_CATEGORY_TYPE` and `SLUG_TO_BRAND_CATEGORY_TYPE`
+  - Fixed issue where publish form showed no subcategories for "Loisirs & Hobbies"
+- **Filter Configuration**: 'loisirs-hobbies' now correctly maps to 'sport' filter profile with enabled fields: listingType, subcategory, brand, price, condition, location
+- **Cart Categories**: Updated purchaseUtils.ts to use 'loisirs-hobbies' instead of deprecated slug
+
 ## Recent Changes (November 9, 2025)
 
 ### Publish Form Optimization
