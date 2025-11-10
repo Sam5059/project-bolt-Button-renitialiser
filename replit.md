@@ -12,6 +12,8 @@ BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) a
   - **DeliveryMethodSelector Component**: Reusable UI component with read-only mode for single methods, radio selection for multiple methods, multilingual labels/pricing
   - **Data Integrity**: Handles free shipping (shipping_price = 0), validates numeric prices, prevents publication without delivery method selection
   - **Race Condition Safety**: Robust upsert logic with fallback SELECT ensures delivery selections persist correctly even with concurrent refreshCart calls
+  - **Delivery Badge**: "Livraison disponible" badge (🚚) displays on listing cards when shipping is available, positioned below the main badge with cyan color (#06B6D4)
+  - **Clarified Translations**: Updated FR/EN/AR translations to specify "Via sociétés de livraison (Yalidine, EcoDz, Procolis...)" for shipping method, emphasizing Algerian delivery companies
 - **Help Center Page**: New dedicated help page (/help) with comprehensive FAQ sections (Getting Started, Account, Payments, Safety, Contact) and full multilingual support (FR/EN/AR)
 - **TopBar Enhancements**: Language selector now displays abbreviated codes (FR/EN/AR), added badge counters on icons (cart shows real item count, favorites and listings show placeholders), help icon now routes to /help page
 - **Badge Component**: New reusable Badge component for displaying notification counters with customizable size and color, auto-hides when count is zero
