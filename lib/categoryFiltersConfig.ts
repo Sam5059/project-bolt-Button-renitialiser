@@ -27,7 +27,16 @@ export type FilterField =
   | 'salary'
   | 'experience'
   | 'sector'
-  | 'location';
+  | 'location'
+  // Animaux
+  | 'age'
+  | 'breed'
+  | 'gender'
+  | 'vaccinated'
+  | 'sterilized'
+  | 'pedigree'
+  | 'microchipped'
+  | 'healthStatus';
 
 export interface CategoryFilterConfig {
   categoryType: string;
@@ -76,9 +85,9 @@ export const CATEGORY_FILTERS_CONFIG: Record<string, CategoryFilterConfig> = {
   },
   animals: {
     categoryType: 'animals',
-    enabled: ['listingType', 'subcategory', 'price', 'location'],
-    disabled: ['brand', 'model', 'year', 'fuel', 'transmission', 'mileage', 'color', 'propertyType', 'surface', 'rooms', 'bedrooms', 'bathrooms', 'furnished', 'monthlyRent', 'amenities', 'deviceType', 'storage', 'contractType', 'salary', 'experience', 'sector', 'condition'],
-    description: 'Animaux: vente et adoption d\'animaux',
+    enabled: ['listingType', 'subcategory', 'price', 'age', 'breed', 'gender', 'vaccinated', 'sterilized', 'pedigree', 'microchipped', 'location'],
+    disabled: ['brand', 'model', 'year', 'fuel', 'transmission', 'mileage', 'color', 'propertyType', 'surface', 'rooms', 'bedrooms', 'bathrooms', 'furnished', 'monthlyRent', 'amenities', 'deviceType', 'storage', 'contractType', 'salary', 'experience', 'sector', 'condition', 'healthStatus'],
+    description: 'Animaux: vente et adoption d\'animaux, chiens, chats, oiseaux',
   },
   fashion: {
     categoryType: 'fashion',
@@ -265,4 +274,68 @@ export const SLUG_TO_BRAND_CATEGORY_TYPE: Record<string, string> = {
   'sports': 'sport',
   'loisirs-hobbies': 'sport',
   'sports-loisirs': 'sport',
+};
+
+/**
+ * Registry of category-specific attribute definitions
+ * Defines metadata for each category-specific field (label, type, options, grouping)
+ * Used by both publish form and sidebar to render fields consistently
+ */
+export interface AttributeDefinition {
+  id: string;
+  labelKey: string;  // Key for translation
+  inputType: 'text' | 'select' | 'multiselect' | 'boolean' | 'textarea';
+  options?: Array<{ value: string; labelKey: string }>;
+  group?: string;  // For grouping related fields (e.g., 'healthOptions')
+  placeholder?: string;
+}
+
+export const CATEGORY_ATTRIBUTE_DEFINITIONS: Record<string, AttributeDefinition[]> = {
+  animals: [
+    {
+      id: 'age',
+      labelKey: 'animals.age',
+      inputType: 'text',
+      placeholder: 'Ex: 2 ans, 6 mois',
+    },
+    {
+      id: 'breed',
+      labelKey: 'animals.breed',
+      inputType: 'text',
+      placeholder: 'Ex: Berger Allemand, Persan',
+    },
+    {
+      id: 'gender',
+      labelKey: 'animals.gender',
+      inputType: 'select',
+      options: [
+        { value: 'male', labelKey: 'animals.male' },
+        { value: 'female', labelKey: 'animals.female' },
+      ],
+    },
+    {
+      id: 'vaccinated',
+      labelKey: 'animals.vaccinated',
+      inputType: 'boolean',
+      group: 'healthOptions',
+    },
+    {
+      id: 'sterilized',
+      labelKey: 'animals.sterilized',
+      inputType: 'boolean',
+      group: 'healthOptions',
+    },
+    {
+      id: 'pedigree',
+      labelKey: 'animals.pedigree',
+      inputType: 'boolean',
+      group: 'healthOptions',
+    },
+    {
+      id: 'microchipped',
+      labelKey: 'animals.microchipped',
+      inputType: 'boolean',
+      group: 'healthOptions',
+    },
+  ],
 };
