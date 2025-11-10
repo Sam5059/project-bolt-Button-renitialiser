@@ -49,7 +49,7 @@ export default function Footer() {
   const { t, isRTL, language } = useLanguage();
 
   const handleEmail = () => {
-    Linking.openURL('mailto:contact@buygo.dz');
+    Linking.openURL('mailto:contact@weshdz.com');
   };
 
   const handlePhone = () => {
@@ -58,10 +58,10 @@ export default function Footer() {
 
   const handleSocialMedia = (platform: string) => {
     const urls: { [key: string]: string } = {
-      facebook: 'https://facebook.com/buygo.dz',
-      twitter: 'https://twitter.com/buygo_dz',
-      instagram: 'https://instagram.com/buygo.dz',
-      linkedin: 'https://linkedin.com/company/buygo-dz'
+      facebook: 'https://facebook.com/weshdz',
+      twitter: 'https://twitter.com/weshdz',
+      instagram: 'https://instagram.com/weshdz',
+      linkedin: 'https://linkedin.com/company/weshdz'
     };
     Linking.openURL(urls[platform]);
   };
@@ -74,14 +74,14 @@ export default function Footer() {
         {/* Section 1: À propos */}
         <View style={styles.footerSection}>
           <Text style={[styles.footerTitle, isRTL && styles.textRTL]}>
-            {language === 'fr' ? 'À propos de BuyGo' : language === 'en' ? 'About BuyGo' : 'حول BuyGo'}
+            {language === 'fr' ? 'À propos de Wesh-DZ' : language === 'en' ? 'About Wesh-DZ' : 'حول Wesh-DZ'}
           </Text>
           <Text style={[styles.footerText, isRTL && styles.textRTL]}>
             {language === 'fr'
-              ? 'BuyGo est la première plateforme algérienne de petites annonces en ligne. Achetez et vendez facilement entre particuliers et professionnels.'
+              ? 'Wesh-DZ est la première plateforme algérienne de petites annonces en ligne. Achetez et vendez facilement entre particuliers et professionnels.'
               : language === 'en'
-              ? 'BuyGo is the first Algerian online classifieds platform. Buy and sell easily between individuals and professionals.'
-              : 'BuyGo هي أول منصة جزائرية للإعلانات المبوبة على الإنترنت. اشتري وبيع بسهولة بين الأفراد والمهنيين.'
+              ? 'Wesh-DZ is the first Algerian online classifieds platform. Buy and sell easily between individuals and professionals.'
+              : 'Wesh-DZ هي أول منصة جزائرية للإعلانات المبوبة على الإنترنت. اشتري وبيع بسهولة بين الأفراد والمهنيين.'
             }
           </Text>
 
@@ -271,7 +271,7 @@ export default function Footer() {
           >
             <Mail size={16} color="#64748B" />
             <Text style={[styles.contactText, isRTL && styles.textRTL]}>
-              contact@buygo.dz
+              contact@weshdz.com
             </Text>
           </TouchableOpacity>
 
@@ -324,7 +324,7 @@ export default function Footer() {
       {/* Copyright */}
       <View style={styles.copyright}>
         <Text style={[styles.copyrightText, isRTL && styles.textRTL]}>
-          © {currentYear} BuyGo. {language === 'fr'
+          © {currentYear} Wesh-DZ. {language === 'fr'
             ? 'Tous droits réservés.'
             : language === 'en'
             ? 'All rights reserved.'

@@ -93,7 +93,7 @@ export default function HelpModal() {
                   {language === 'ar' ? 'هل تحتاج إلى مزيد من المساعدة؟' : language === 'en' ? 'Need more help?' : 'Besoin d\'aide supplémentaire ?'}
                 </Text>
                 <Text style={[styles.contactText, isRTL && styles.textRTL]}>
-                  {language === 'ar' ? 'اتصل بنا على' : language === 'en' ? 'Contact us at' : 'Contactez-nous à'} support@buygo.dz
+                  {language === 'ar' ? 'اتصل بنا على' : language === 'en' ? 'Contact us at' : 'Contactez-nous à'} support@weshdz.com
                 </Text>
               </View>
             </ScrollView>

@@ -1,11 +1,11 @@
 module.exports = {
   expo: {
-    name: "OuechDZ",
-    slug: "ouechdz-mvp",
+    name: "Wesh-DZ",
+    slug: "weshdz-mvp",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
-    scheme: "ouechdz",
+    scheme: "weshdz",
     userInterfaceStyle: "automatic",
     splash: {
       image: "./assets/images/splash.png",
@@ -17,14 +17,14 @@ module.exports = {
     ],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.ouechdz.app"
+      bundleIdentifier: "com.weshdz.app"
     },
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
       },
-      package: "com.ouechdz.app"
+      package: "com.weshdz.app"
     },
     web: {
       bundler: "metro",

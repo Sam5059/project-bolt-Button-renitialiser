@@ -28,8 +28,8 @@ export const useHelp = () => {
 const defaultHelpItems: HelpItem[] = [
   {
     id: 'getting-started',
-    title: 'Débuter sur BuyGo',
-    content: 'BuyGo est votre plateforme de petites annonces en Algérie.\n\n📱 Créez un compte gratuit en quelques secondes\n🔍 Parcourez des milliers d\'annonces dans toutes les catégories\n📸 Publiez vos annonces gratuitement\n💬 Contactez directement les vendeurs\n⭐ Sauvegardez vos annonces favorites\n\nPas besoin de compte pour consulter les annonces, mais l\'inscription vous permet de publier, contacter les vendeurs et gérer vos favoris.',
+    title: 'Débuter sur Wesh-DZ',
+    content: 'Wesh-DZ est votre plateforme de petites annonces en Algérie.\n\n📱 Créez un compte gratuit en quelques secondes\n🔍 Parcourez des milliers d\'annonces dans toutes les catégories\n📸 Publiez vos annonces gratuitement\n💬 Contactez directement les vendeurs\n⭐ Sauvegardez vos annonces favorites\n\nPas besoin de compte pour consulter les annonces, mais l\'inscription vous permet de publier, contacter les vendeurs et gérer vos favoris.',
     category: 'general',
   },
   {
@@ -53,7 +53,7 @@ const defaultHelpItems: HelpItem[] = [
   {
     id: 'pricing',
     title: 'Comment fixer le bon prix ?',
-    content: '💰 GUIDE DES PRIX\n\n🔍 RECHERCHER LES PRIX DU MARCHÉ\n1. Cherchez des articles similaires sur BuyGo\n2. Comparez l\'état et les caractéristiques\n3. Vérifiez les prix récents (pas ceux de 2 ans)\n\n📊 FACTEURS DE PRIX\n• État : Neuf, Excellent, Bon, À réparer\n• Âge : Plus récent = plus cher\n• Marque : Les marques réputées gardent leur valeur\n• Rareté : Article difficile à trouver\n• Accessoires : Boîte, facture, garantie\n\n💡 STRATÉGIES\n• Prix légèrement négociable : Ajoutez 5-10%\n• Prix ferme : Indiquez "Prix non négociable"\n• Prix attractif : Vendez rapidement\n• Prix premium : Article rare ou neuf\n\n✅ MENTIONS UTILES\n• "À débattre" = Négociable\n• "Prix ferme" = Non négociable\n• "Urgent" = Baisse possible\n• "Dernier prix" = Prix final',
+    content: '💰 GUIDE DES PRIX\n\n🔍 RECHERCHER LES PRIX DU MARCHÉ\n1. Cherchez des articles similaires sur Wesh-DZ\n2. Comparez l\'état et les caractéristiques\n3. Vérifiez les prix récents (pas ceux de 2 ans)\n\n📊 FACTEURS DE PRIX\n• État : Neuf, Excellent, Bon, À réparer\n• Âge : Plus récent = plus cher\n• Marque : Les marques réputées gardent leur valeur\n• Rareté : Article difficile à trouver\n• Accessoires : Boîte, facture, garantie\n\n💡 STRATÉGIES\n• Prix légèrement négociable : Ajoutez 5-10%\n• Prix ferme : Indiquez "Prix non négociable"\n• Prix attractif : Vendez rapidement\n• Prix premium : Article rare ou neuf\n\n✅ MENTIONS UTILES\n• "À débattre" = Négociable\n• "Prix ferme" = Non négociable\n• "Urgent" = Baisse possible\n• "Dernier prix" = Prix final',
     category: 'general',
   },
   {
@@ -83,7 +83,7 @@ const defaultHelpItems: HelpItem[] = [
   {
     id: 'pro-store',
     title: 'Créer sa boutique professionnelle',
-    content: '🏪 BOUTIQUE PROFESSIONNELLE\n\n🎨 PERSONNALISATION\n• Logo de votre entreprise\n• Bannière personnalisée\n• Couleurs de marque\n• Description de votre activité\n• Horaires d\'ouverture\n• Coordonnées complètes\n\n📍 URL PERSONNALISÉE\nExemple : buygo.dz/pro/votre-boutique\nPartagez facilement avec vos clients !\n\n✨ FONCTIONNALITÉS\n• Toutes vos annonces sur une seule page\n• Tri par catégorie\n• Galerie photos professionnelle\n• Bouton contact direct\n• Avis et évaluations clients\n• Réseaux sociaux liés\n\n📊 GESTION\n• Tableau de bord complet\n• Statistiques de vues\n• Gestion des annonces\n• Historique des ventes\n• Messages centralisés\n\n💡 CONSEILS\n• Photos professionnelles\n• Description complète de l\'entreprise\n• Mettez à jour régulièrement\n• Répondez rapidement aux messages\n• Proposez des promotions',
+    content: '🏪 BOUTIQUE PROFESSIONNELLE\n\n🎨 PERSONNALISATION\n• Logo de votre entreprise\n• Bannière personnalisée\n• Couleurs de marque\n• Description de votre activité\n• Horaires d\'ouverture\n• Coordonnées complètes\n\n📍 URL PERSONNALISÉE\nExemple : weshdz.com/pro/votre-boutique\nPartagez facilement avec vos clients !\n\n✨ FONCTIONNALITÉS\n• Toutes vos annonces sur une seule page\n• Tri par catégorie\n• Galerie photos professionnelle\n• Bouton contact direct\n• Avis et évaluations clients\n• Réseaux sociaux liés\n\n📊 GESTION\n• Tableau de bord complet\n• Statistiques de vues\n• Gestion des annonces\n• Historique des ventes\n• Messages centralisés\n\n💡 CONSEILS\n• Photos professionnelles\n• Description complète de l\'entreprise\n• Mettez à jour régulièrement\n• Répondez rapidement aux messages\n• Proposez des promotions',
     category: 'pro',
   },
   {

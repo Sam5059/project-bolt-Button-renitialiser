@@ -1,7 +1,7 @@
-# BuyGo - Algerian Classifieds Marketplace
+# Wesh-DZ - Algerian Classifieds Marketplace
 
 ## Overview
-BuyGo is a classifieds marketplace for Algeria, built with React Native (Expo) and Supabase. It enables users to buy, sell, and rent items across various categories, featuring specialized "PRO Stores" for professional sellers. The platform aims to be the leading destination for classifieds in Algeria, offering a comprehensive and user-friendly experience.
+Wesh-DZ is a classifieds marketplace for Algeria, built with React Native (Expo) and Supabase. It enables users to buy, sell, and rent items across various categories, featuring specialized "PRO Stores" for professional sellers. The platform aims to be the leading destination for classifieds in Algeria, offering a comprehensive and user-friendly experience.
 
 ## Recent Changes (November 10, 2025)
 - **Delivery System Implementation**: Complete delivery options workflow from publish forms to cart

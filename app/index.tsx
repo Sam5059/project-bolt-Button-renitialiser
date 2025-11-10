@@ -17,7 +17,7 @@ export default function Index() {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#2563EB" />
-        <Text style={styles.loadingText}>Chargement de BuyGo...</Text>
+        <Text style={styles.loadingText}>Chargement de Wesh-DZ...</Text>
       </View>
     );
   }
